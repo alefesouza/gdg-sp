@@ -1,0 +1,136 @@
+﻿<!--
+Copyright (C) 2016 Alefe Souza <http://alefesouza.com/>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<Page
+    x:Class="GDGSP.EventsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GDGSP"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <CommandBar Name="CB" x:Uid="CB" Background="{StaticResource TitleBarBackgroundThemeBrush}" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" Grid.Row="0" Grid.Column="0" HorizontalContentAlignment="Stretch">
+            <CommandBar.Content>
+                <StackPanel>
+                    <TextBlock Name="CBTitle" x:Uid="CBTitle" FontWeight="Bold" Margin="12,14" TextTrimming="WordEllipsis" />
+                </StackPanel>
+            </CommandBar.Content>
+
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="Atualizar" Name="Refresh" Click="Refresh_Click" />
+                <AppBarButton Label="Abrir meetup" Name="OpenMeetup" Click="OpenMeetup_Click" />
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+
+        <Grid Name="CBMobile" Visibility="Collapsed" x:Uid="CBMobile" Background="{StaticResource TitleBarBackgroundThemeBrush}" Grid.Row="0" Height="48" Padding="48 0 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel>
+                <TextBlock Name="CBMobileTitle" x:Uid="CBMobileTitle" FontWeight="Bold" Margin="12,14" />
+            </StackPanel>
+        </Grid>
+
+        <RelativePanel Grid.Row="1">
+            <ProgressRing Visibility="Collapsed" Name="ToKnow" IsActive="False" />
+            
+            <ProgressRing IsActive="True" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Name="PRing"></ProgressRing>
+
+            <ListView Name="ListEvents" xmlns:m="using:GDGSP.Models" Visibility="Collapsed" SelectionChanged="ListEvents_SelectionChanged">
+                <ListView.Header>
+                    <Image Name="HeaderImage"></Image>
+                </ListView.Header>
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="m:Event">
+                        <Grid Margin="5" Background="White">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="{Binding Name}" Foreground="Black" Margin="10" FontSize="22" TextWrapping="Wrap" Grid.Row="0" />
+                            <Image Source="{Binding Image}" Grid.Row="1" />
+                            <Grid x:Uid="CardFooter" Padding="15" Grid.Row="3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                
+                                <TextBlock Text="{Binding Start}" HorizontalAlignment="Left" TextWrapping="Wrap" />
+                                <TextBlock Text="{Binding Place}" HorizontalAlignment="Right" TextWrapping="Wrap" Grid.Column="1" />
+                            </Grid>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <StackPanel RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True" x:Name="ErrorScreen" Visibility="Collapsed">
+                <TextBlock x:Name="ErrorMessage" />
+                <Button x:Name="TryAgain" Content="Tentar novamente" HorizontalAlignment="Center" Margin="0, 10, 0, 0" />
+            </StackPanel>
+        </RelativePanel>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="CB.Padding" Value="48 0 0 0" />
+                        <Setter Target="ToKnow.IsActive" Value="False" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="660" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="CB.Padding" Value="0" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="848" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="ToKnow.IsActive" Value="True" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
+</Page>

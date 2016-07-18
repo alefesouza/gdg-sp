@@ -1,0 +1,68 @@
+﻿<!--
+Copyright (C) 2016 Alefe Souza <http://alefesouza.com/>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GDG_SP.AboutPage">
+
+  <ScrollView>
+    <StackLayout Padding="10">
+      <Label Text="GDG" FontAttributes="Bold">
+        <Label.FontSize>
+          <OnPlatform x:TypeArguments="x:Double"
+            iOS="18"
+            WinPhone="20"/>
+        </Label.FontSize>
+      </Label>
+      <!-- Tentei simular um links fazendo Orientation="Horizontal" mas podia ficar "amassado" em alguns disposivos, por isso fiz desse jeito -->
+      <Label>
+        O Google Developers Group é uma iniciativa de pessoas interessadas em construir com tecnologia e disseminar o conhecimento. Nossos eventos são direcionados para a comunidade de desenvolvedores, engenheiros, designers e empreendedores, organizados pelos nossos membros de forma voluntária e sem fins lucrativos. Encontre outros capítulos do GDG no Brasil no:
+      </Label>
+      <Label TextColor="Blue" x:Name="GdV">Google Developers</Label>
+
+      <Label Text="Aplicativo" FontAttributes="Bold">
+        <Label.FontSize>
+          <OnPlatform x:TypeArguments="x:Double"
+            iOS="18"
+            WinPhone="20"/>
+        </Label.FontSize>
+      </Label>
+
+      <Label>GDG-SP para Xamarin versão: 1.0</Label>
+
+      <Label>Aplicativo desenvolvido por:</Label>
+      <Label TextColor="Blue" x:Name="AlS">Alefe Souza</Label>
+
+      <Label>
+        Desenvolvi o aplicativo do GDG-SP por sentir falta de notificações de novos eventos em tempo real no aplicativo oficial do meetup, e para facilitar como os sorteios são feitos. Desenvolvi várias versões desse aplicativo, todas em código aberto para ajudar pessoas que querem aprender a desenvolver para diversas plataformas, sendo elas nativamente para Android e Universal Windows Platform, e em Xamarin para iOS e Windows Phone, você pode ver o código exato dos aplicativos e o backend em PHP no meu:
+      </Label>
+      <Label TextColor="Blue" x:Name="GtH">GitHub</Label>
+      <Label>
+        Procurei deixar o código para ser facilmente adaptado para outros meetups, bastando editar apenas um arquivo em cada plataforma e mudar os ícones.
+      </Label>
+
+      <Label>
+        Neste aplicativo foi utilizado:
+      </Label>
+      <Label TextColor="Blue" x:Name="OnS">One Signal</Label>
+      <Label TextColor="Blue" x:Name="Ic8">Icons8</Label>
+      <Label TextColor="Blue" x:Name="NsJ">Newtonsoft.Json</Label>
+      <Label TextColor="Blue" x:Name="ImC">ImageCircle</Label>
+      <Label TextColor="Blue" x:Name="PlS">Plugin.Settings</Label>
+      <Label TextColor="Blue" x:Name="PlSh">Plugin.Share</Label>
+    </StackLayout>
+  </ScrollView>
+</ContentPage>

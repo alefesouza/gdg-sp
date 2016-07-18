@@ -1,0 +1,187 @@
+﻿<!--
+Copyright (C) 2016 Alefe Souza <http://alefesouza.com/>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<Page
+    x:Class="GDGSP.PeoplePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GDGSP"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <CommandBar Name="CB" x:Uid="CB" Background="{StaticResource TitleBarBackgroundThemeBrush}" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" Grid.Row="0" Grid.Column="0" HorizontalContentAlignment="Stretch">
+            <CommandBar.Content>
+                <StackPanel>
+                    <TextBlock Name="CBTitle" Text="Pessoas" FontWeight="Bold" Margin="12,14" TextTrimming="WordEllipsis" />
+                </StackPanel>
+            </CommandBar.Content>
+
+            <AppBarButton Label="Sortear" Name="CBRandom" Click="CBRandom_Click" Visibility="Collapsed">
+                <AppBarButton.Icon>
+                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE14B;" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+        </CommandBar>
+
+        <Grid Name="CBMobile" Visibility="Collapsed" x:Uid="CBMobile" Background="{StaticResource TitleBarBackgroundThemeBrush}" Grid.Row="0" Height="48" Padding="48 0 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel>
+                <TextBlock Name="CBMobileTitle" x:Uid="CBMobileTitle" FontWeight="Bold" Margin="12,14" />
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+            <ProgressRing Visibility="Collapsed" Name="ToKnow" IsActive="False" />
+
+            <ProgressRing IsActive="True" Name="PRing"></ProgressRing>
+
+            <Pivot x:Name="ListsPivot" Visibility="Collapsed">
+                <PivotItem Header="Vão">
+                        <ListView Name="ListPeople" xmlns:m="using:GDGSP.Models" SelectionChanged="ListPeople_SelectionChanged">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="m:Person">
+                                    <Grid Margin="5" Padding="10" Background="White" HorizontalAlignment="Stretch">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                    <Ellipse Width="75" Height="75" Grid.Row="0" Grid.RowSpan="2">
+                                        <Ellipse.Fill>
+                                            <ImageBrush ImageSource="{Binding Photo}" />
+                                        </Ellipse.Fill>
+                                    </Ellipse>
+
+                                    <TextBlock Text="{Binding Name}" Foreground="Black" Margin="10, 0, 0, 0" FontSize="22" TextWrapping="Wrap" Grid.Row="0" Grid.Column="1" />
+                                    <TextBlock Text="{Binding Intro}" Foreground="Black" Margin="10, 5, 0, 0" TextWrapping="Wrap" Grid.Row="1" Grid.Column="1" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                </PivotItem>
+                <PivotItem Header="Esperando" x:Name="PeopleWait">
+                    <ListView Name="ListPeopleWait" xmlns:m="using:GDGSP.Models" SelectionChanged="ListPeople_SelectionChanged">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="m:Person">
+                                <Grid Margin="5" Padding="10" Background="White" HorizontalAlignment="Stretch">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Ellipse Width="75" Height="75" Grid.Row="0" Grid.RowSpan="2">
+                                        <Ellipse.Fill>
+                                            <ImageBrush ImageSource="{Binding Photo}" />
+                                        </Ellipse.Fill>
+                                    </Ellipse>
+
+                                    <TextBlock Text="{Binding Name}" Foreground="Black" Margin="10, 0, 0, 0" FontSize="22" TextWrapping="Wrap" Grid.Row="0" Grid.Column="1" />
+                                    <TextBlock Text="{Binding Intro}" Foreground="Black" Margin="10, 5, 0, 0" TextWrapping="Wrap" Grid.Row="1" Grid.Column="1" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </PivotItem>
+                <PivotItem Header="Não vão" x:Name="PeopleNo">
+                    <ListView Name="ListPeopleNo" xmlns:m="using:GDGSP.Models" SelectionChanged="ListPeople_SelectionChanged">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="m:Person">
+                                <Grid Margin="5" Padding="10" Background="White" HorizontalAlignment="Stretch">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Ellipse Width="75" Height="75" Grid.Row="0" Grid.RowSpan="2">
+                                        <Ellipse.Fill>
+                                            <ImageBrush ImageSource="{Binding Photo}" />
+                                        </Ellipse.Fill>
+                                    </Ellipse>
+
+                                    <TextBlock Text="{Binding Name}" Foreground="Black" Margin="10, 0, 0, 0" FontSize="22" TextWrapping="Wrap" Grid.Row="0" Grid.Column="1" />
+                                    <TextBlock Text="{Binding Intro}" Foreground="Black" Margin="10, 5, 0, 0" TextWrapping="Wrap" Grid.Row="1" Grid.Column="1" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </PivotItem>
+            </Pivot>
+        </Grid>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="CB.Padding" Value="48 0 0 0" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="660" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="CB.Padding" Value="0" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
+</Page>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright (C) 2016 Alefe Souza <http://alefesouza.com/>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_site"
+            android:icon="@drawable/ic_site"
+            android:title="@string/site" />
+        <item
+            android:id="@+id/nav_old_meetups"
+            android:icon="@drawable/ic_youtube"
+            android:title="@string/old_meetups" />
+        <item
+            android:id="@+id/nav_facebook"
+            android:icon="@drawable/ic_facebook"
+            android:title="@string/facebook" />
+        <item
+            android:id="@+id/nav_googleplus"
+            android:icon="@drawable/ic_googleplus"
+            android:title="@string/googleplus" />
+        <item
+            android:id="@+id/nav_instagram"
+            android:icon="@drawable/ic_instagram"
+            android:title="@string/instagram" />
+        <item
+            android:id="@+id/nav_twitter"
+            android:icon="@drawable/ic_twitter"
+            android:title="@string/twitter" />
+        <item
+            android:id="@+id/nav_youtube"
+            android:icon="@drawable/ic_youtube"
+            android:title="@string/youtube" />
+    </group>
+	
+    <group android:checkableBehavior="none"
+		android:id="@+id/sub_group">
+		<item
+			android:id="@+id/nav_contact"
+			android:icon="@drawable/ic_mail"
+			android:title="@string/contact" />
+		<item
+			android:id="@+id/nav_settings"
+			android:icon="@drawable/ic_settings"
+			android:title="@string/settings" />
+		<item
+			android:id="@+id/nav_about"
+			android:icon="@drawable/ic_about"
+			android:title="@string/about" />
+	</group>
+
+</menu>

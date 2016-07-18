@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceCategory android:title="@string/notifications">
+        <CheckBoxPreference
+            android:key="prefNotification"
+            android:defaultValue="true"
+            android:title="@string/pref_notification"
+            android:summary="@string/pref_notification_summary" />
+</PreferenceCategory>
+</PreferenceScreen>
