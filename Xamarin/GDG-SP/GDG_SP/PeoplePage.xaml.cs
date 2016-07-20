@@ -31,6 +31,8 @@ namespace GDG_SP
 	{
 		ObservableCollection<Person> listPeople = new ObservableCollection<Person>();
         int id;
+        bool peopleWithApp = false;
+        ToolbarItem withApp;
 
         public PeoplePage(int id)
 		{
@@ -99,7 +101,15 @@ namespace GDG_SP
             ToolbarItem randomButton = new ToolbarItem("Sortear", Device.OnPlatform(null, null, "Assets/Images/Random.png"), () =>
             {
                 // Para sortear, primeiro o aplicativo pega a lista de todas as pessoas que foram
-                ObservableCollection<Person> go = new ObservableCollection<Person>(listPeople.Where(P => P.Response.Equals("yes")));
+                ObservableCollection<Person> go;
+                if (peopleWithApp)
+                {
+                    go = new ObservableCollection<Person>(listPeople.Where(P => P.Response.Equals("yes") && P.Has_app));
+                }
+                else
+                {
+                    go = new ObservableCollection<Person>(listPeople.Where(P => P.Response.Equals("yes")));
+                }
 
                 // Se o total de itens na lista for maior que 0
                 if (go.Count > 0)
@@ -114,13 +124,72 @@ namespace GDG_SP
             });
 
             ToolbarItems.Add(randomButton);
+            
+            if (Device.OS == TargetPlatform.iOS)
+            {
+                var more = new ToolbarItem("Mais", "More.png", async () =>
+                {
+                    string action = "";
+
+                    if (peopleWithApp)
+                    {
+                        action = await DisplayActionSheet("Menu", "Cancelar", null, "Todos");
+                    }
+                    else
+                    {
+                        action = await DisplayActionSheet("Menu", "Cancelar", null, "Com o app");
+                    }
+
+                    if (action != null)
+                    {
+                        if (action.Equals("Com o app") || action.Equals("Todos"))
+                        {
+                            peopleWithApp = !peopleWithApp;
+
+                            if (peopleWithApp)
+                            {
+                                ListPeople.ItemsSource = new ObservableCollection<Person>(listPeople.Where(P => P.Response.Equals("yes") && P.Has_app));
+                            }
+                            else
+                            {
+                                ListPeople.ItemsSource = new ObservableCollection<Person>(listPeople.Where(P => P.Response.Equals("yes")));
+                            }
+                        }
+                    }
+                });
+
+                ToolbarItems.Add(more);
+            }
+            else
+            {
+                withApp = new ToolbarItem("Com o app", "Assets/Images/OpenMeetup.png", () =>
+                {
+                    peopleWithApp = !peopleWithApp;
+
+                    if (peopleWithApp)
+                    {
+                        ListPeople.ItemsSource = new ObservableCollection<Person>(listPeople.Where(P => P.Response.Equals("yes") && P.Has_app));
+                        withApp.Text = "Todos";
+                    }
+                    else
+                    {
+                        ListPeople.ItemsSource = new ObservableCollection<Person>(listPeople.Where(P => P.Response.Equals("yes")));
+                        withApp.Text = "Com o app";
+                    }
+                }, ToolbarItemOrder.Secondary);
+
+                ToolbarItems.Add(withApp);
+            }
 
             Title = "Vão";
 
             ObservableCollection<Person> wait = new ObservableCollection<Person>(listPeople.Where(P => P.Response.Equals("waitlist") || P.Response.Equals("watching")));
             ObservableCollection<Person> no = new ObservableCollection<Person>(listPeople.Where(P => P.Response.Equals("no")));
 
+            if (wait.Count > 0)
+            {
                 TabbedPeoplePage.page.Children.Add(new PeoplePage(wait) { Title = "Esperando" });
+            }
 
             if (no.Count > 0)
             {

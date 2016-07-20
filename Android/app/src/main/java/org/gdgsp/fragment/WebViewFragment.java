@@ -138,7 +138,7 @@ public class WebViewFragment extends Fragment {
 				} else if(url.contains("nonmember=none")) {
 					AlertDialog alertDialog = new AlertDialog.Builder(activity)
 						.setMessage(getString(R.string.login_nonmember).replace("{meetupid}", getString(R.string.meetup_id)))
-						.setPositiveButton(getString(android.R.string.yes), new DialogInterface.OnClickListener() {
+						.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface p1, int p2) {
 								getArguments().remove("islogin");
@@ -193,16 +193,16 @@ public class WebViewFragment extends Fragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater = getActivity().getMenuInflater();
-		inflater.inflate(R.menu.webview, menu);
-
-		menu.findItem(R.id.menu_share).setVisible(!getArguments().getBoolean("islogin", false));
-		menu.findItem(R.id.menu_open).setVisible(!getArguments().getBoolean("islogin", false));
+		inflater.inflate(R.menu.menu_webview, menu);
 
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.menu_share).setVisible(!getArguments().getBoolean("islogin", false));
+        menu.findItem(R.id.menu_open).setVisible(!getArguments().getBoolean("islogin", false));
+
 		menu.findItem(R.id.menu_forward).setEnabled(webView.canGoForward());
 
 		super.onPrepareOptionsMenu(menu);

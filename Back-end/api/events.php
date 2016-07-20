@@ -31,6 +31,15 @@ if($_POST["refresh_token"] != "") {
 		$membername = $member->name;
 		$memberphoto = $member->photo->photo_link;
 		$memberintro = $member->group_profile->intro;
+		
+		$isadmin = checkIsAdmin($memberid, $token);
+		
+		$last_activity = date("Ymd", time());
+		mysqli_query($dbi, "UPDATE meetup_app_members SET last_activity=$last_activity WHERE member_id=$memberid");
+		
+		if($platform == "windows" && $_POST["ChannelUri"] != "") {
+			mysqli_query($dbi, "UPDATE meetup_wns_users SET member_id=$memberid WHERE device='".$_POST["ChannelUri"]."'");
+		}
 	} else {
 		$json = file_get_contents("https://api.meetup.com/$meetupid/events?fields=rsvpable");
 	}
@@ -95,8 +104,6 @@ if($_GET["platform"] == "ios" && $_GET["via"] == "xamarin") {
 	$newjson["header_height"] = $height;
 }
 
-// Para testes
-//echo $newevents[0]["description"];
 echo json_encode($newjson);
 
 function getHtml($title, $description, $lat, $lon, $place, $address, $start, $end, $yes_rsvp_count, $who, $how_to_find_us) {
@@ -104,7 +111,7 @@ function getHtml($title, $description, $lat, $lon, $place, $address, $start, $en
   global $platform;
 	global $mapbox_token;
   
-	if($platform == "windows") {
+	if($platform == "windows" || $platform == "wp") {
 		$geotag = "bingmaps:?cp=$lat~$lon&lvl=10&where=".urlencode("$place, $address");
 	} else if($platform == "ios") {
 		$geotag = "maps://maps.apple.com/?ll=$lat,$lon&q=".urlencode("$place, $address");

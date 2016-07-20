@@ -4,6 +4,7 @@ using System.Linq;
 
 using Foundation;
 using UIKit;
+using Com.OneSignal;
 
 namespace GDG_SP.iOS
 {
@@ -14,7 +15,13 @@ namespace GDG_SP.iOS
         {
             // if you want to use a different Application Delegate class from "AppDelegate"
             // you can specify it here.
+
             UIApplication.Main(args, null, "AppDelegate");
+
+            if (!Other.Other.GetSetting("one_signal").Equals(""))
+            {
+                OneSignal.SendTag("meetup_id", Other.Other.GetSetting("one_signal"));
+            }
         }
     }
 }

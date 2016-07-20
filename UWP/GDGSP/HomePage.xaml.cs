@@ -24,7 +24,7 @@ namespace GDGSP
     /// </summary>
     public sealed partial class HomePage : Page
     {
-        public Frame eventopen;
+        public Frame mainframe, eventopen;
         public static HomePage homePage;
 
         public HomePage()
@@ -34,8 +34,8 @@ namespace GDGSP
             homePage = this;
 
             eventopen = EventFrame;
+            mainframe = EventsFrame;
 
-            EventsFrame.Navigate(typeof(EventsPage));
             MainPage.mainPage.headerList.SelectedIndex = 0;
         }
     }

@@ -27,12 +27,12 @@ function check_uri()
 	$uricheck = mysqli_num_rows($sql);;
 	if($uricheck == 1)
 	{
-		$data = array("uri_exists"=>"true");
+		$data = array("uri_exists"=>true);
 		echo json_encode($data);
 	}
 	else
 	{
-		$data = array("uri_exists"=>"false");
+		$data = array("uri_exists"=>false);
 		echo json_encode($data);
 		register_wns();
 	}
@@ -125,7 +125,7 @@ function notify_wns_users($count, $title, $description, $image, $id)
 	}
 }
 
-function notify_wns_users2($title, $message, $image, $url)
+function notify_wns_users2($title, $message, $image, $url, $eventid)
 {
 	global $dbi;
 	global $wns_sid;
@@ -142,12 +142,30 @@ function notify_wns_users2($title, $message, $image, $url)
 	
 	$sql = mysqli_query($dbi, "select * from meetup_wns_users where meetupid='$meetupid'") or die ("ERROR: ".mysqli_error($dbi));
 	
-	while($row = mysqli_fetch_array($sql))
-	{
-		$uri = $row['device'];
-		
-		$obj = new WPN($wns_sid,$wns_client_secret);
-		$obj->post_tile($uri, $xml_toast, $type = WPNTypesEnum::Toast, $tileTag = '');
+	if($eventid == "") {
+		while($row = mysqli_fetch_array($sql))
+		{
+			$uri = $row['device'];
+
+			$obj = new WPN($wns_sid,$wns_client_secret);
+			$obj->post_tile($uri, $xml_toast, $type = WPNTypesEnum::Toast, $tileTag = '');
+		}
+	} else {
+		$json = file_get_contents("http://api.meetup.com/$meetupid/events/$eventid/rsvps");
+		$people = json_decode($json);
+		foreach($people as $person) {
+			$ids[] = $person->member->id;
+		}
+
+		while($row = mysqli_fetch_array($sql))
+		{
+			if(in_array($row['member_id'], $ids)) {
+				$uri = $row['device'];
+
+				$obj = new WPN($wns_sid,$wns_client_secret);
+				$obj->post_tile($uri, $xml_toast, $type = WPNTypesEnum::Toast, $tileTag = '');
+			}
+		}
 	}
 }
 ?>

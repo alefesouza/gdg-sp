@@ -31,7 +31,7 @@ namespace GDG_SP.Other
         /// <summary>
         /// String que tem que aparecer no final de todas as URLs no aplicativo.
         /// </summary>
-		public static string finalUrl = "?meetupid=" + AppResources.MeetupId + "&platform=" + Device.OnPlatform("ios", null, "windows") + "&via=xamarin";
+		public static string finalUrl = "?meetupid=" + AppResources.MeetupId + "&platform=" + Device.OnPlatform("ios", null, "wp") + "&via=xamarin";
 
         /// <summary>
         /// Métodos que retorna a URL de receber os eventos.
@@ -68,7 +68,15 @@ namespace GDG_SP.Other
         public static string GetLoginUrl()
 		{
 			return "http://" + AppResources.BackendUrl + "api/login.php" + finalUrl;
-		}
+        }
+
+        /// <summary>
+        /// Método que retorna a URL para o administrador enviar notificação.
+        /// </summary>
+        public static string GetNotificationUrl()
+        {
+            return "http://" + AppResources.BackendUrl + "notifications/send.php" + finalUrl;
+        }
 
         /// <summary>
         /// Método que retorna o refresh token armazenado nas configurações para fazer um post junto com uma URL.

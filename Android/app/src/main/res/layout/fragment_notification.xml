@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright (C) 2016 Alefe Souza <http://alefesouza.com/>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+	<android.support.v7.widget.CardView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_margin="5dp"
+		app:cardUseCompatPadding="true" >
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:padding="15dp"
+            android:orientation="vertical">
+
+			<CheckBox
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/send_to_all"
+                android:checked="true"
+                android:id="@+id/checkbox_to_all" />
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:id="@+id/spinner_events"
+                android:visibility="gone" />
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+				android:textColor="#000000"
+				android:textSize="16sp"
+				android:text="@string/title"
+			/>
+
+			<EditText
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/edit_title" />
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+				android:textColor="#000000"
+				android:textSize="16sp"
+				android:text="@string/link"
+			/>
+
+			<EditText
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/edit_link" />
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+				android:textColor="#000000"
+				android:textSize="16sp"
+                android:text="@string/image"
+			/>
+
+			<EditText
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/edit_image" />
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+				android:textColor="#000000"
+				android:textSize="16sp"
+                android:text="@string/message"
+			/>
+
+			<EditText
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/edit_message" />
+
+			<Button
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/send"
+				android:id="@+id/button_send" />
+		</LinearLayout>
+	</android.support.v7.widget.CardView>
+</ScrollView>

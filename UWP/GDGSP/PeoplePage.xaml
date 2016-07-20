@@ -42,6 +42,10 @@ limitations under the License.
                     <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE14B;" />
                 </AppBarButton.Icon>
             </AppBarButton>
+
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="Com o app" Name="CBPeopleWithApp" Click="PeopleWithApp_Click" Visibility="Collapsed" />
+            </CommandBar.SecondaryCommands>
         </CommandBar>
 
         <Grid Name="CBMobile" Visibility="Collapsed" x:Uid="CBMobile" Background="{StaticResource TitleBarBackgroundThemeBrush}" Grid.Row="0" Height="48" Padding="48 0 0 0">

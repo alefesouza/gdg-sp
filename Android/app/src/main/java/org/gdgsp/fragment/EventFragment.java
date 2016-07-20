@@ -102,7 +102,7 @@ public class EventFragment extends Fragment {
 				@Override
 				public void onClick(View p1) {
 					if(preferences.contains("refresh_token")) {
-						if(event.isRsvpable() || event.getResponse().matches("yes|waitlist")) {
+						if(event.isRsvpable() || (event.getResponse() != null && event.getResponse().matches("yes|waitlist"))) {
 							Intent rsvp = new Intent(activity, FragmentActivity.class);
 							rsvp.putExtra("fragment", 4);
 							rsvp.putExtra("event", event);
@@ -161,7 +161,7 @@ public class EventFragment extends Fragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater = getActivity().getMenuInflater();
-		inflater.inflate(R.menu.event, menu);
+		inflater.inflate(R.menu.menu_event, menu);
 
 		menu.findItem(R.id.menu_people).setTitle(event.getWho());
 

@@ -21,4 +21,9 @@ limitations under the License.
         android:id="@+id/menu_random"
         android:title="@string/raffle"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_hasapp"
+        android:title="@string/with_app"
+        app:showAsAction="never"
+        android:checkable="true" />
 </menu>

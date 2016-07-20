@@ -48,13 +48,22 @@ limitations under the License.
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <ListBox Name="HeaderLB" Grid.Row="1" SelectionChanged="HeaderLB_SelectionChanged" ScrollViewer.VerticalScrollMode="Disabled" Margin="0 48 0 0">
-                        <ListBoxItem x:Name="home">
+                        <ListBoxItem x:Name="Home">
                             <ToolTipService.ToolTip>
                                 <TextBlock Text="Eventos"></TextBlock>
                             </ToolTipService.ToolTip>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="&#xE80F;" FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="4" />
                                 <TextBlock Text="Eventos" Margin="18 0 0 0" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </ListBoxItem>
+                        <ListBoxItem x:Name="SendNotification" Visibility="Collapsed">
+                            <ToolTipService.ToolTip>
+                                <TextBlock Text="Enviar notificação"></TextBlock>
+                            </ToolTipService.ToolTip>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE724;" FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="4" />
+                                <TextBlock Text="Enviar notificação" Margin="18 0 0 0" VerticalAlignment="Center" />
                             </StackPanel>
                         </ListBoxItem>
                     </ListBox>
@@ -74,7 +83,7 @@ limitations under the License.
                                 <TextBlock Text="Contato"></TextBlock>
                             </ToolTipService.ToolTip>
                             <StackPanel Orientation="Horizontal">
-                                <Image Source="ms-appx:///Assets/Images/Contact.png" Margin="4" VerticalAlignment="Center" Width="16" Height="16" />
+                                <TextBlock Text="&#xE715;" FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="4" />
                                 <TextBlock Text="Contato" Margin="18 0 0 0" VerticalAlignment="Center" />
                             </StackPanel>
                         </ListBoxItem>

@@ -28,6 +28,10 @@
     <MtouchExtraArgs>
     </MtouchExtraArgs>
     <IntermediateOutputPath>..\..\..\..\..\..\..\Alefe\IntermediateOutput\iPhoneApp1\obj\iPhone\Debug</IntermediateOutputPath>
+    <BuildIpa>True</BuildIpa>
+    <IpaIncludeArtwork>False</IpaIncludeArtwork>
+    <IpaPackageName>org.gdgsp</IpaPackageName>
+    <CodesignKey>iPhone Distribution: Alefe Souza (7BXAGJWJ87)</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -39,6 +43,10 @@
     <MtouchArch>i386, x86_64</MtouchArch>
     <ConsolePause>false</ConsolePause>
     <IntermediateOutputPath>..\..\..\..\..\..\..\Alefe\IntermediateOutput\iPhoneApp1\obj\iPhone\Debug</IntermediateOutputPath>
+    <BuildIpa>True</BuildIpa>
+    <IpaIncludeArtwork>False</IpaIncludeArtwork>
+    <IpaPackageName>org.gdgsp</IpaPackageName>
+    <CodesignKey>iPhone Developer: Alefe Souza (APQ4T8Y73W)</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -66,6 +74,9 @@
     <CodesignKey>iPhone Developer</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <IntermediateOutputPath>..\..\..\..\..\..\..\Alefe\IntermediateOutput\iPhoneApp1\obj\iPhone\Debug</IntermediateOutputPath>
+    <BuildIpa>True</BuildIpa>
+    <IpaIncludeArtwork>False</IpaIncludeArtwork>
+    <IpaPackageName>org.gdgsp</IpaPackageName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
     <DebugType>none</DebugType>
@@ -93,6 +104,14 @@
     <CodesignKey>iPhone Distribution</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <IntermediateOutputPath>..\..\..\..\..\..\..\Alefe\IntermediateOutput\iPhoneApp1\obj\iPhone\Debug</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhoneSimulator'">
+    <BuildIpa>True</BuildIpa>
+    <IpaIncludeArtwork>False</IpaIncludeArtwork>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AppStore|iPhoneSimulator'">
+    <BuildIpa>True</BuildIpa>
+    <IpaIncludeArtwork>False</IpaIncludeArtwork>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Helpers\Settings.cs" />
@@ -278,6 +297,24 @@
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\Icon-76%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\SendNotification.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\SendNotification%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\SendNotification%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Icon-60.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Icon-Small-50%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Icon%403x.png" />
   </ItemGroup>
   <Import Project="..\..\..\..\..\Users\Alefe\Downloads\OneSignal-Xamarin-SDK-0.9.5\SDK\Common\Com.OneSignal\Com.OneSignal\Com.OneSignal.projitems" Label="Shared" Condition="Exists('..\..\..\..\..\Users\Alefe\Downloads\OneSignal-Xamarin-SDK-0.9.5\SDK\Common\Com.OneSignal\Com.OneSignal\Com.OneSignal.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

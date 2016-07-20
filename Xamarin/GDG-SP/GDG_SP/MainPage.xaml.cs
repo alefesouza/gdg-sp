@@ -33,12 +33,14 @@ namespace GDG_SP
     public partial class MainPage : ContentPage
     {
         public static MainPage main;
+        public ObservableCollection<Event> listEvents;
         Event _event;
         public static int openEvent = 0;
         int time = 0;
         double imageWidth = 0;
         ToolbarItem more;
         bool tabletMenu;
+        bool notificationAdded;
 
         public MainPage()
         {
@@ -59,7 +61,7 @@ namespace GDG_SP
 
             if (Device.OS == TargetPlatform.iOS)
             {
-                // Não sei por que fica uma margem lateral direita no iPhone, mesmo tirando o WebView continuou, por isso pra parece igual eu coloquei outra margem na esquerda
+                // Não sei por que fica uma margem na lateral direita no iPhone, mesmo tirando o WebView continuou, parece algo do TabedPage, por isso para parece igual eu coloquei outra margem na esquerda
                 if (Device.Idiom == TargetIdiom.Phone)
                 {
                     MainGrid.Padding = new Thickness(7, 0, 0, 0);
@@ -99,7 +101,6 @@ namespace GDG_SP
 
             TryAgain.Clicked += (s, e) =>
             {
-                ErrorScreen.IsVisible = false;
                 GetEvents();
             };
 
@@ -108,6 +109,8 @@ namespace GDG_SP
 
         public async void GetEvents(bool refresh = false)
         {
+            ErrorScreen.IsVisible = false;
+
             // PopToRootAsync não funciona como esperado no Windows
             if (Device.OS == TargetPlatform.Windows)
             {
@@ -127,7 +130,7 @@ namespace GDG_SP
             ListEvents.IsVisible = false;
             Loading.IsVisible = true;
 
-            ObservableCollection<Event> listEvents = new ObservableCollection<Event>();
+            listEvents = new ObservableCollection<Event>();
 
             string jsonString = "";
 
@@ -204,6 +207,20 @@ namespace GDG_SP
                 LinksPage.linksPage.profileImage.Source = ImageSource.FromUri(new Uri(LinksPage.member.Photo));
                 LinksPage.linksPage.profileName.Text = LinksPage.member.Name;
                 LinksPage.linksPage.profileIntro.Text = LinksPage.member.Intro;
+
+                if(Other.Other.GetSetting("one_signal").Equals(""))
+                {
+                    Other.Other.AddSetting("one_signal", LinksPage.member.Id.ToString());
+                }
+
+                if((bool)root["member"]["is_admin"])
+                {
+                    if (!notificationAdded)
+                    {
+                        LinksPage.linksPage.listLinks.Insert(0, new Link() { Title = "Enviar notificação", Icon = Device.OnPlatform("SendNotification.png", null, "Assets/Images/SendNotification.png"), Value = "send_notification" });
+                        notificationAdded = true;
+                    }
+                }
             }
             else
             {
@@ -367,6 +384,8 @@ namespace GDG_SP
             }
 
             Loading.IsVisible = false;
+
+            SuggestLogin();
         }
 
         private void TabletPost()
@@ -378,6 +397,19 @@ namespace GDG_SP
 
             EventWebView.Source = htmlSource;
             EventWebView.Navigating += WView_Navigating;
+        }
+
+        private async void SuggestLogin()
+        {
+            if (Other.Other.GetSetting("suggest_login").Equals(""))
+            {
+                var alert = await DisplayAlert("Bem-vindo ao app do " + AppResources.AppName + "!", "Ao fazer login você:\n\n• Participa de sorteios exclusivos para quem usa o app.\n• Faz RSVP em eventos usando o aplicativo.\n• Vê a localização de eventos com localização oculta para não membros.\n• Recebe notificações sobre eventos que você marcou presença.\n\nDeseja fazer login agora?", "Sim", "Não");
+                if (alert)
+                {
+                    await Navigation.PushAsync(new WebViewPage(Other.Other.GetLoginUrl(), true) { Title = "Login" });
+                }
+                Other.Other.AddSetting("suggest_login", "true");
+            }
         }
 
         private void WView_Navigating(object sender, WebNavigatingEventArgs e)

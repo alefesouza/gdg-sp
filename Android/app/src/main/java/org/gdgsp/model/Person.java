@@ -22,6 +22,7 @@ package org.gdgsp.model;
 public class Person {
 	private int id;
     private String name, photo, intro, response;
+    private boolean has_app;
 
 	public int getId() {
 		return id;
@@ -62,4 +63,12 @@ public class Person {
 	public void setResponse(String response) {
 		this.response = response;
 	}
+
+    public boolean isHas_app() {
+        return has_app;
+    }
+
+    public void setHas_app(boolean has_app) {
+        this.has_app = has_app;
+    }
 }

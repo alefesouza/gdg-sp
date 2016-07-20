@@ -41,12 +41,16 @@ import org.gdgsp.other.Other;
 
 /**
  * Fragment onde é exibido a lista de pessoas que deram alguma resposta ao evento.
+ * Esses código tem algumas gambiarras pra arrumar os save state ao escolher somente quem tem o aplicativo.
  */
 public class PeopleFragment extends Fragment {
     private Activity activity;
     private View view;
-	
-	private List<Person> listPeople = new ArrayList<Person>();
+
+    private Gson gson;
+    private List<Person> listPeople;
+    private List<Person> hasAppPeople = new ArrayList<Person>();
+    private List<Person> selectedList = new ArrayList<Person>();
     private RecyclerView list;
     private ProgressBar progress;
 	private PeopleAdapter adapter;
@@ -73,13 +77,24 @@ public class PeopleFragment extends Fragment {
 
 		list.setVisibility(View.VISIBLE);
 		progress.setVisibility(View.GONE);
-		
-		Gson gson = new Gson();
+
+        gson = new Gson();
 
 		Type datasetListType = new TypeToken<List<Person>>() {}.getType();
 		listPeople = gson.fromJson(getArguments().getString("peopleJson"), datasetListType);
 
-        adapter = new PeopleAdapter(activity, listPeople);
+        if(hasAppPeople.size() == 0) {
+            for (Person p : listPeople) {
+                if (p.isHas_app()) {
+                    hasAppPeople.add(p);
+                }
+            }
+        }
+
+        selectedList.clear();
+        selectedList.addAll(listPeople);
+
+        adapter = new PeopleAdapter(activity, selectedList);
         list.setLayoutManager(new LinearLayoutManager(activity));
         list.setAdapter(adapter);
 		
@@ -90,26 +105,44 @@ public class PeopleFragment extends Fragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		if(getArguments().getInt("position") == 0) {
 			inflater = getActivity().getMenuInflater();
-			inflater.inflate(R.menu.people, menu);
+			inflater.inflate(R.menu.menu_people, menu);
 		}
 
 		super.onCreateOptionsMenu(menu, inflater);
 	}
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        if(selectedList.size() == hasAppPeople.size()) {
+            menu.findItem(R.id.menu_hasapp).setChecked(true);
+        }
+        super.onPrepareOptionsMenu(menu);
+    }
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
             case R.id.menu_random:
 				// Se o tamanho da lista for maior que 0 significa que já carregou
-				if(listPeople.size() > 0) {
+				if(selectedList.size() > 0) {
 					// Aqui vai gerar um número aleatório entre 0 e o tamanho da lista - 1
 					Random random = new Random();
-					int number = random.nextInt(listPeople.size());
+					int number = random.nextInt(selectedList.size());
 					// Após isso o aplicativo vai dar scroll e exibir a pessoa na posição do número aleatório
 					((LinearLayoutManager)list.getLayoutManager()).scrollToPositionWithOffset(number, 0);
-					Other.showMessage(activity, getString(R.string.raffle_person), listPeople.get(number).getName());
+					Other.showMessage(activity, getString(R.string.raffle_person), selectedList.get(number).getName());
 				}
 				return true;
+            case R.id.menu_hasapp:
+                // Mostrar apenas pessoas que usam o aplicativo, essa informação vem de um banco de dados no back-end
+                item.setChecked(!item.isChecked());
+
+                selectedList.clear();
+
+                selectedList.addAll(item.isChecked() ? hasAppPeople : listPeople);
+
+                adapter.notifyDataSetChanged();
+                return true;
             default:
                 return
 					super.onOptionsItemSelected(item);

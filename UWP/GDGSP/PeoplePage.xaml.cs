@@ -20,9 +20,11 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
+using Windows.UI;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 namespace GDGSP
@@ -34,14 +36,36 @@ namespace GDGSP
     {
         Event _event;
         ObservableCollection<Person> listPeople = new ObservableCollection<Person>();
+        bool peopleWithApp;
+        TextBlock title;
 
         public PeoplePage()
         {
             this.InitializeComponent();
 
+            if (Other.Other.IsMobile())
+            {
+                Grid.SetRow(CB, 2);
+
+                DispatcherTimer tmr = new DispatcherTimer();
+                tmr.Interval = TimeSpan.FromMilliseconds(0);
+                tmr.Tick += (s, e) => { CB.Padding = new Thickness(0, 0, 0, 0); tmr.Stop(); };
+                tmr.Start();
+
+                CBMobile.Visibility = Visibility.Visible;
+                CBTitle.Visibility = Visibility.Collapsed;
+                CB.Background = new SolidColorBrush(Color.FromArgb(255, 27, 27, 27));
+                title = CBMobileTitle;
+            }
+            else
+            {
+                title = CBTitle;
+            }
+
             ListsPivot.SelectionChanged += (s, e) =>
             {
                 CBRandom.Visibility = ListsPivot.SelectedIndex == 0 ? Visibility.Visible : Visibility.Collapsed;
+                CBPeopleWithApp.Visibility = ListsPivot.SelectedIndex == 0 ? Visibility.Visible : Visibility.Collapsed;
             };
         }
 
@@ -50,7 +74,7 @@ namespace GDGSP
             _event = e.Parameter as Event;
             GetPeople();
 
-            CBTitle.Text = _event.Who;
+            title.Text = _event.Who;
         }
 
         /// <summary>
@@ -60,11 +84,11 @@ namespace GDGSP
         {
             string jsonString = "";
 
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.PostAsync(Other.Other.GetRSVPSUrl(_event.Id), Other.Other.GetRefreshToken());
+
             try
             {
-                HttpClient client = new HttpClient();
-                HttpResponseMessage response = await client.PostAsync(Other.Other.GetRSVPSUrl(_event.Id), Other.Other.GetRefreshToken());
-
                 if (response.IsSuccessStatusCode)
                 {
                     jsonString = await response.Content.ReadAsStringAsync();
@@ -79,7 +103,7 @@ namespace GDGSP
                 ShowMessage("Verifique sua conexão de internet");
                 return;
             }
-            
+
             try
             {
                 listPeople = JsonConvert.DeserializeObject<ObservableCollection<Person>>(jsonString);
@@ -94,7 +118,7 @@ namespace GDGSP
             ListPeopleWait.ItemsSource = listPeople.Where(P => P.Response.Equals("waitlist") || P.Response.Equals("watching"));
             ListPeopleNo.ItemsSource = listPeople.Where(P => P.Response.Equals("no"));
 
-            if(ListPeopleWait.Items.Count == 0)
+            if (ListPeopleWait.Items.Count == 0)
             {
                 ListsPivot.Items.Remove(PeopleWait);
             }
@@ -105,6 +129,8 @@ namespace GDGSP
             }
 
             CBRandom.Visibility = Visibility.Visible;
+            CBPeopleWithApp.Visibility = Visibility.Visible;
+
             PRing.Visibility = Visibility.Collapsed;
             ListsPivot.Visibility = Visibility.Visible;
         }
@@ -131,7 +157,7 @@ namespace GDGSP
             if ((sender as ListView).SelectedIndex != -1)
             {
                 Person selected = e.AddedItems[0] as Person;
-                
+
                 MainPage.mainPage.ToWebView(new Link() { Title = selected.Name, Value = "http://meetup.com/" + Other.Other.resourceLoader.GetString("MeetupId") + "/member/" + selected.Id });
 
                 (sender as ListView).SelectedIndex = -1;
@@ -141,16 +167,41 @@ namespace GDGSP
         private void CBRandom_Click(object sender, RoutedEventArgs e)
         {
             // Para sortear, primeiro o aplicativo pega a lista de todas as pessoas que foram
-            ObservableCollection<Person> go = new ObservableCollection<Person>(listPeople.Where(P => P.Response.Equals("yes")));
+            ObservableCollection<Person> go;
+            if (peopleWithApp)
+            {
+                go = new ObservableCollection<Person>(listPeople.Where(P => P.Response.Equals("yes") && P.Has_app));
+            }
+            else
+            {
+                go = new ObservableCollection<Person>(listPeople.Where(P => P.Response.Equals("yes")));
+            }
 
             // Se o total de itens na lista for maior que 0
-            if (go.Count > 0) {
+            if (go.Count > 0)
+            {
                 Random random = new Random();
                 // Ele criará um random de 0 até o número de pessoas na lista menos 1
                 int number = random.Next(go.Count);
                 // E dará scroll até esta posição na lista, exibindo o nome da pessoa.
-                ListPeople.ScrollIntoView(go[number]);
+                ListPeople.ScrollIntoView(go[number], ScrollIntoViewAlignment.Leading);
                 Other.Other.ShowMessage(go[number].Name);
+            }
+        }
+
+        private void PeopleWithApp_Click(object sender, RoutedEventArgs e)
+        {
+            peopleWithApp = !peopleWithApp;
+
+            if (peopleWithApp)
+            {
+                ListPeople.ItemsSource = new ObservableCollection<Person>(listPeople.Where(P => P.Response.Equals("yes") && P.Has_app));
+                (sender as AppBarButton).Label = "Todos";
+            }
+            else
+            {
+                ListPeople.ItemsSource = new ObservableCollection<Person>(listPeople.Where(P => P.Response.Equals("yes")));
+                (sender as AppBarButton).Label = "Com o app";
             }
         }
     }

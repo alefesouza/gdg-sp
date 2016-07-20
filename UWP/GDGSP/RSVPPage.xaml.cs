@@ -130,7 +130,7 @@ namespace GDGSP
 
                         switch(result)
                         {
-                            case "success":
+                            case "yes":
                                 message = "RSVP realizado com sucesso";
                                 break;
                             case "waitlist":

@@ -69,6 +69,9 @@ foreach($meetupids as $meetupid) {
 
       notify_wns_users(count($events), $name, $message, getImage($name, $description), $id);
     }
+    
+    // Para testes
+    //mysqli_query($dbi, "UPDATE meetups SET last_event=0 WHERE meetupid='$meetupid'");
   }
 }
 ?>

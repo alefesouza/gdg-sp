@@ -16,6 +16,14 @@ limitations under the License.
 -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<group android:checkableBehavior="none"
+		android:id="@+id/admin_group">
+		<item
+			android:id="@+id/nav_notification"
+			android:icon="@drawable/ic_send"
+			android:title="@string/send_notification"
+            android:visible="false" />
+	</group>
 
     <group android:checkableBehavior="none">
         <item

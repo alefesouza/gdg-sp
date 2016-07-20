@@ -47,21 +47,31 @@ if(isset($_GET["code"])) {
   
 	$token = refreshMeetupToken($json->refresh_token);
 	
-	$ismember = file_get_contents("https://api.meetup.com/$meetupid?access_token=$token&fields=self");
+	$ismember = @file_get_contents("https://api.meetup.com/$meetupid?access_token=$token&fields=self");
   $json2 = json_decode($ismember);
   
   $status = $json2->self->status;
   
-  if($status != "active") {
-    header("location:$location?nonmember=$status&meetupid=$meetupid");
-  } else if(isset($_SESSION["send_notification"])) {
-    $_SESSION["refresh_token"] = $json->refresh_token;
-    $_SESSION["meetupid"] = $_GET["meetupid"];
-    
-    header("location:".str_replace("api/login.php", "notifications/send.php", $location));
-  } else {
-    header("location:$location?refresh_token=".$json->refresh_token);
-  }
+	if(strpos($http_response_header[0], "200") !== false) {
+		if($status != "active") {
+			 header("location:$location?nonmember=$status&meetupid=$meetupid");
+		} else {
+			$memberdata = @file_get_contents("https://api.meetup.com/$meetupid/members/self?access_token=$token");
+			$memberjson = json_decode($memberdata);
+			$memberid = $memberjson->id;
+
+			$query = mysqli_query($dbi, "SELECT * FROM meetup_app_members WHERE member_id=$memberid");
+
+			if(mysqli_num_rows($query) == 0) {
+				$last_activity = date("Ymd", time());
+				mysqli_query($dbi, "INSERT INTO meetup_app_members (member_id, last_activity) VALUES ($memberid, $last_activity)");
+			}
+
+			header("location:$location?refresh_token=".$json->refresh_token);
+		}
+	} else {
+		header("location:$location?error=token&meetupid=$meetupid");
+	}
 } else if(isset($_GET["refresh_token"]) || isset($_GET["error"]) || isset($_GET["nonmember"])) {
 } else {
   header("location:https://secure.meetup.com/oauth2/authorize?client_id=$meetup_client_key&response_type=code&redirect_uri=$location?meetupid=$meetupid&scope=rsvp+event_management");

@@ -27,6 +27,12 @@ if($_POST["refresh_token"] != "") {
 	$json = file_get_contents("http://api.meetup.com/$meetupid/events/$eventid/rsvps");
 }
 
+$query = mysqli_query($dbi, "SELECT member_id FROM meetup_app_members");
+
+while($row = mysqli_fetch_array($query)) {
+	$members_with_app[] = $row["member_id"];
+}
+
 $people = json_decode($json);
 
 foreach($people as $person) {
@@ -35,13 +41,16 @@ foreach($people as $person) {
   $photo = $person->member->photo->photo_link;
   $bio = $person->member->bio;
   $response = $person->response;
+	
+	$has_app = in_array($id, $members_with_app);
   
   $newpeople[] = array(
     "id" => (int)$id,
     "name" => $name,
     "photo" => (string)$photo,
     "intro" => (string)$bio,
-		"response" => $response
+		"response" => $response,
+		"has_app" => (boolean)$has_app
 	);
 }
 

@@ -129,6 +129,9 @@
     <Compile Include="RSVPPage.xaml.cs">
       <DependentUpon>RSVPPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SendNotificationPage.xaml.cs">
+      <DependentUpon>SendNotificationPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
@@ -149,7 +152,6 @@
     <Content Include="Assets\BadgeLogo.scale-150.png" />
     <Content Include="Assets\BadgeLogo.scale-200.png" />
     <Content Include="Assets\BadgeLogo.scale-400.png" />
-    <Content Include="Assets\Images\Contact.png" />
     <Content Include="Assets\Images\Facebook.png" />
     <Content Include="Assets\Images\GooglePlus.png" />
     <Content Include="Assets\Images\Instagram.png" />
@@ -228,6 +230,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="RSVPPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SendNotificationPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

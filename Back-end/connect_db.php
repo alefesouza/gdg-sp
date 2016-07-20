@@ -27,6 +27,8 @@ mysqli_query($dbi, "CREATE TABLE IF NOT EXISTS meetups (id int auto_increment pr
 
 //mysqli_query($dbi, "INSERT INTO meetups (meetupid, meetupapi_client, meetupapi_secret, onesignal_appid, onesignal_restkey, wns_sid, wns_clientsecret, cover_image, last_event) VALUES ('GDG-SP', 'meetupapi_client', 'meetupapi_secret', 'onesignal_appid', 'onesignal_restkey', 'wns_sid', 'wns_clientsecret', 'http:// cover_image', 0)") or die("ERROR: ".mysqli_error($dbi));
 
+mysqli_query($dbi, "CREATE TABLE IF NOT EXISTS meetup_app_members (id int auto_increment primary key, member_id int, last_activity int)") or die("ERROR: ".mysqli_error($dbi));
+
 // Até a criação desse aplicativo o OneSignal não suportava Windows 10, por isso precisa de um banco de dados para armazenar todos os usuários de Windows 10 e enviar notificações para eles
-mysqli_query($dbi, "CREATE TABLE IF NOT EXISTS meetup_wns_users (id int auto_increment primary key, device varchar(255), meetupid varchar(50), expire int)") or die("ERROR: ".mysqli_error($dbi));
+mysqli_query($dbi, "CREATE TABLE IF NOT EXISTS meetup_wns_users (id int auto_increment primary key, device varchar(255), meetupid varchar(50), expire int, member_id int)") or die("ERROR: ".mysqli_error($dbi));
 ?>

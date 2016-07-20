@@ -16,6 +16,7 @@
 
 package org.gdgsp.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -27,6 +28,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -45,6 +47,8 @@ import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.onesignal.OneSignal;
+
 import java.lang.reflect.Type;
 import java.util.List;
 import org.gdgsp.R;
@@ -67,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	private DrawerLayout drawer;
 	private Person person = null;
 	private Gson gson = new Gson();
+
+	public static List<Event> listEvents;
 
 	private LinearLayout errorScreen;
 	private View navHeader;
@@ -157,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Método que solicita a lista de eventos e preenche a lista.
      */
-	public void getEvents() {
+	private void getEvents() {
 		list.setVisibility(View.GONE);
 		progress.setVisibility(View.VISIBLE);
 
@@ -192,6 +198,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 						profileIntro.setText(person.getIntro());
 
 						Ion.with(MainActivity.this).load(person.getPhoto()).intoImageView(profilePhoto);
+
+						if(member.get("is_admin").getAsBoolean()) {
+							navigationView.getMenu().getItem(0).setVisible(true);
+						}
+
+						OneSignal.sendTag("member_id", String.valueOf(person.getId()));
 					} else {
 						// Se o id retornar 0 e o usuário tiver a configuração refresh_token significa que tem algum problema com o token dele, nesse caso apaga o token atual e pede login novamente
 						if(preferences.contains("refresh_token")) {
@@ -206,8 +218,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 					}
 
 					Type datasetListType = new TypeToken<List<Event>>() {}.getType();
-
-					List<Event> listEvents;
 
 					listEvents = gson.fromJson(json.get("events").getAsJsonArray().toString(), datasetListType);
 
@@ -239,9 +249,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 					progress.setVisibility(View.GONE);
 				}
 			});
+		suggestLogin();
 	}
 
-    /**
+	/**
+	 * Método que sugere ao usuário fazer login
+	 */
+	private void suggestLogin() {
+		if(!preferences.contains("suggest_login")) {
+			final AlertDialog alertDialog = new AlertDialog.Builder(this)
+					.setTitle(getString(R.string.suggest_login_title).replace("{meetupid}", getString(R.string.meetup_id)))
+					.setMessage(getString(R.string.suggest_login_sub))
+					.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface p1, int p2) {
+							Intent intent = new Intent(MainActivity.this, FragmentActivity.class);
+							intent.putExtra("fragment", 2);
+							intent.putExtra("title", getString(R.string.login_do));
+							intent.putExtra("url", Other.getLoginUrl(MainActivity.this));
+							intent.putExtra("islogin", true);
+							startActivity(intent);
+
+							p1.dismiss();
+						}
+					})
+					.setNegativeButton(getString(R.string.no), null)
+					.create();
+
+			alertDialog.show();
+
+			editor.putBoolean("suggest_login", true);
+			editor.commit();
+		}
+	}
+
+	/**
      * Método que abre o evento selecionado, criando uma Activity no mobile, ou abrindo na coluna direita no tablet.
      * @param event Evento a ser aberto.
      */
@@ -276,6 +318,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+			case R.id.nav_notification:
+				Intent notification = new Intent(MainActivity.this, FragmentActivity.class);
+				notification.putExtra("fragment", 5);
+				startActivity(notification);
+				break;
             case R.id.nav_site:
                 Other.openSite(this, getString(R.string.site_url));
                 break;
@@ -321,7 +368,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 

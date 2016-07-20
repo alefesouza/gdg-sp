@@ -43,9 +43,7 @@ limitations under the License.
         </Grid>
 
         <StackPanel x:Name="QuestionsStack" Grid.Row="1" Padding="10">
-            <StackPanel Orientation="Horizontal">
-                <ToggleSwitch x:Name="ResponseSwitch" Header="Você irá?" />
-            </StackPanel>
+            <ToggleSwitch x:Name="ResponseSwitch" Header="Você irá?" />
         </StackPanel>
 
         <VisualStateManager.VisualStateGroups>

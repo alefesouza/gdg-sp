@@ -11,14 +11,15 @@ Nesse repositório há versões do aplicativo do GDG-SP que desenvolvi para Andr
 Você pode baixar na:
 
 [Play Store](https://play.google.com/store/apps/details?id=org.gdgsp)
+[Windows Store](https://www.microsoft.com/store/apps/gdg-sp/9nblggh4xcj7)
 
-Outras versões estão em aprovação.
+Versão para iOS em aprovação.
 
 Para desenvolver os aplicativos eu usei as IDEs:
 
 [Android Studio](https://developer.android.com/studio/index.html) e [AIDE](https://play.google.com/store/apps/details?id=com.aide.ui) no aplicativo para Android.
 
-[Visual Studio Community 2015](https://www.visualstudio.com/pt-br/products/visual-studio-community-vs.aspx) no aplicativo para UWP e Xamarin.
+[Visual Studio Community 2015](https://www.visualstudio.com/pt-br/products/visual-studio-community-vs.aspx) no aplicativo para UWP e Xamarin, tive problemas para gerar o .ipa do iOS no Visual Studio, por isso usei o [Xamarin Studio](https://www.xamarin.com/studio) no Mac só para isso.
 
 [Codeanywhere](https://codeanywhere.com) e [AWD](https://play.google.com/store/apps/details?id=org.kidinov.awd) no desenvolvimento do back-end.
 

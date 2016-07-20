@@ -38,6 +38,7 @@ namespace GDGSP
         public Frame mainFrame;
         public TextBlock profileName, profileIntro;
         public ImageBrush profilePhoto;
+        public ListBoxItem sendNotification;
 
         ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
         public static MainPage mainPage;
@@ -68,6 +69,8 @@ namespace GDGSP
             profileName = ProfileName;
             profilePhoto = ProfilePhoto;
             profileIntro = ProfileIntro;
+
+            sendNotification = SendNotification;
 
             if (localSettings.Values.ContainsKey("member_profile"))
             {
@@ -175,19 +178,21 @@ namespace GDGSP
                     toWebView = false;
                 }
 
-                if (HomePage.homePage.eventopen.Visibility == Visibility.Visible && !EventsPage.events.toKnow.IsActive)
-                {
-                    HomePage.homePage.eventopen.SetNavigationState("1,0");
-                    HomePage.homePage.eventopen.Visibility = Visibility.Collapsed;
-                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-                }
-
                 if (MainSplitView.IsPaneOpen == true)
                 {
                     MainSplitView.IsPaneOpen = false;
                 }
 
                 SettingsLB.SelectedIndex = -1;
+
+                if(e.AddedItems[0] == SendNotification)
+                {
+                    HomePage.homePage.mainframe.Navigate(typeof(SendNotificationPage));
+                }
+                else
+                {
+                    HomePage.homePage.mainframe.Navigate(typeof(EventsPage));
+                }
             }
         }
 
@@ -275,6 +280,7 @@ namespace GDGSP
             {
                 if (HomePage.homePage.eventopen.Visibility == Visibility.Visible)
                 {
+                    // My canGoBack always return false, that's my programmer way https://github.com/alefesouza/alefe-ultimate-programmer/
                     if (HomePage.homePage.eventopen.CanGoBack)
                     {
                         HomePage.homePage.eventopen.GoBack();

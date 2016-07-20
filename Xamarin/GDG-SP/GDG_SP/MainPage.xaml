@@ -1,4 +1,5 @@
-﻿<!--
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
 Copyright (C) 2016 Alefe Souza <http://alefesouza.com/>
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +42,7 @@ limitations under the License.
         <Button Text="Tentar novamente" x:Name="TryAgain"></Button>
       </StackLayout>
 
-      <ListView x:Name="ListEvents" HasUnevenRows="True" ItemSelected="ListEvents_ItemSelected" VerticalOptions="FillAndExpand" SeparatorVisibility="None">
+      <ListView x:Name="ListEvents" HasUnevenRows="True" ItemSelected="ListEvents_ItemSelected" VerticalOptions="FillAndExpand" SeparatorVisibility="None" IsVisible="False">
         <ListView.Header>
           <StackLayout BackgroundColor="Black" HorizontalOptions="FillAndExpand">
             <Image HorizontalOptions="FillAndExpand" x:Name="HeaderImage" Aspect="AspectFill" />

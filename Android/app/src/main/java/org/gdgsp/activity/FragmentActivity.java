@@ -82,6 +82,10 @@ public class FragmentActivity extends AppCompatActivity {
 				title = getString(R.string.rsvp);
 				fragment = new RSVPFragment();
 				break;
+			case 5:
+				title = getString(R.string.send_notification);
+				fragment = new SendNotificationFragment();
+				break;
 		}
 
 		if(fragment != null) {
@@ -96,7 +100,7 @@ public class FragmentActivity extends AppCompatActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case android.R.id.home:
-				FragmentActivity.this.finish();
+				finish();
 				return true;
 			default:
 				return
@@ -106,8 +110,8 @@ public class FragmentActivity extends AppCompatActivity {
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (getIntent().getIntExtra("fragment", 0) != 3) {
-			FragmentActivity.this.finish();
+		if (getIntent().getIntExtra("fragment", 0) != 2) {
+			finish();
 		}
 		return super.onKeyDown(keyCode, event);
 	}

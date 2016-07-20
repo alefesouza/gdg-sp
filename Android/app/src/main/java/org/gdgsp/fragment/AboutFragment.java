@@ -33,8 +33,8 @@ import org.gdgsp.other.Other;
  * Fragment da tela "Sobre".
  */
 public class AboutFragment extends Fragment {
-	AppCompatActivity activity;
-	View view;
+	private AppCompatActivity activity;
+	private View view;
 
 	@Override
 	public void onAttach(Activity activity) {

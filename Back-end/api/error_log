@@ -1,0 +1,16 @@
+[17-Jul-2016 15:06:58 America/Sao_Paulo] PHP Warning:  file_get_contents(https://api.meetup.com/GDG-SP?access_token=&amp;fields=self): failed to open stream: HTTP request failed! HTTP/1.1 401 Unauthorized
+ in /home/aloog304/public_html/apps/meetup/backend/api/login.php on line 50
+[17-Jul-2016 15:06:58 America/Sao_Paulo] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/aloog304/public_html/apps/meetup/backend/api/login.php:50) in /home/aloog304/public_html/apps/meetup/backend/api/login.php on line 56
+[17-Jul-2016 15:07:00 America/Sao_Paulo] PHP Warning:  file_get_contents(https://api.meetup.com/GDG-SP?access_token=&amp;fields=self): failed to open stream: HTTP request failed! HTTP/1.1 401 Unauthorized
+ in /home/aloog304/public_html/apps/meetup/backend/api/login.php on line 50
+[17-Jul-2016 15:07:00 America/Sao_Paulo] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/aloog304/public_html/apps/meetup/backend/api/login.php:50) in /home/aloog304/public_html/apps/meetup/backend/api/login.php on line 56
+[17-Jul-2016 15:14:08 America/Sao_Paulo] PHP Warning:  file_get_contents(https://api.meetup.com/GDG-SP?access_token=&amp;fields=self): failed to open stream: HTTP request failed! HTTP/1.1 401 Unauthorized
+ in /home/aloog304/public_html/apps/meetup/backend/api/login.php on line 50
+[17-Jul-2016 15:14:08 America/Sao_Paulo] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/aloog304/public_html/apps/meetup/backend/api/login.php:50) in /home/aloog304/public_html/apps/meetup/backend/api/login.php on line 56
+[17-Jul-2016 15:16:11 America/Sao_Paulo] PHP Warning:  file_get_contents(https://api.meetup.com/GDG-SP?access_token=&amp;fields=self): failed to open stream: HTTP request failed! HTTP/1.1 401 Unauthorized
+ in /home/aloog304/public_html/apps/meetup/backend/api/login.php on line 50
+[17-Jul-2016 15:16:11 America/Sao_Paulo] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/aloog304/public_html/apps/meetup/backend/api/login.php:50) in /home/aloog304/public_html/apps/meetup/backend/api/login.php on line 56
+[17-Jul-2016 15:19:57 America/Sao_Paulo] PHP Warning:  file_get_contents(https://api.meetup.com/GDG-SP?access_token=&amp;fields=self): failed to open stream: HTTP request failed! HTTP/1.1 401 Unauthorized
+ in /home/aloog304/public_html/apps/meetup/backend/api/login.php on line 51
+[17-Jul-2016 15:19:57 America/Sao_Paulo] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/aloog304/public_html/apps/meetup/backend/api/login.php:51) in /home/aloog304/public_html/apps/meetup/backend/api/login.php on line 57
+[17-Jul-2016 13:20:43 America/Chicago] PHP Fatal error:  Cannot use try without catch or finally in /home/aloog304/public_html/apps/meetup/backend/api/login.php on line 72

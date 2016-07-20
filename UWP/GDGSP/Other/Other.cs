@@ -96,14 +96,28 @@ namespace GDGSP.Other
         }
 
         /// <summary>
+        /// Método que retorna a URL para o administrador enviar notificação.
+        /// </summary>
+        public static string GetNotificationUrl()
+        {
+            return "http://" + backendUrl + "notifications/send.php" + finalUrl;
+        }
+
+        /// <summary>
         /// Método que retorna o refresh token armazenado nas configurações para fazer um post junto com uma URL.
         /// </summary>
         /// <returns>FormUrlEncodedContent configurado para post do refresh token no servidor.</returns>
-        public static FormUrlEncodedContent GetRefreshToken()
+        public static FormUrlEncodedContent GetRefreshToken(bool withChannel = false)
         {
             string token = localSettings.Values.ContainsKey("refresh_token") ? localSettings.Values["refresh_token"].ToString() : "";
             var postData = new List<KeyValuePair<string, string>>();
             postData.Add(new KeyValuePair<string, string>("refresh_token", token));
+
+            if(withChannel)
+            {
+                string channel = localSettings.Values.ContainsKey("ChannelUri") ? localSettings.Values["ChannelUri"].ToString() : "";
+                postData.Add(new KeyValuePair<string, string>("ChannelUri", channel));
+            }
 
             return new FormUrlEncodedContent(postData);
         }

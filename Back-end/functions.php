@@ -175,9 +175,11 @@ if(!function_exists('getImage')) {
 		return $response;
 	}
 
-	function sendMessageOneSignal2($title, $message, $image, $url) {
+	function sendMessageOneSignal2($title, $message, $image, $url, $eventid) {
 		global $one_signal_appid;
 		global $one_signal_restkey;
+		global $meetupid;
+		global $dbi;
 
 		$headings = array(
 			"en" => $title
@@ -204,11 +206,33 @@ if(!function_exists('getImage')) {
 		if($url != "") {
 			$fields["url"] = $url;
 		}
+		
+		if($eventid != "") {
+			// "Não é gambiarra, é a sintaxe normal do PHP"
+			// Aqui eu pego todos os ids que vão para o evento, chego quais tem o app e monto um array para enviar ao OneSignal
+			$json = file_get_contents("http://api.meetup.com/$meetupid/events/$eventid/rsvps");
+			$people = json_decode($json);
+			foreach($people as $person) {
+				$ids[] = $person->member->id;
+			}
+			
+			$query = mysqli_query($dbi, "SELECT member_id FROM meetup_app_members");
 
+			while($row = mysqli_fetch_array($query)) {
+				$members_with_app[] = $row["member_id"];
+			}
+
+			foreach($members_with_app as $member_with_app) {
+				if(in_array($member_with_app, $ids)) {
+					$tags[] = array("key" => "meetup_id", "relation" => "=", "value" => $member_with_app);
+				}
+			}
+			
+			$fields["tags"] = $tags;
+		}
+		
 		$fields = json_encode($fields);
-		print("\nJSON sent:\n");
-		print($fields);
-
+		
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/notifications");
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json',
@@ -223,6 +247,29 @@ if(!function_exists('getImage')) {
 		curl_close($ch);
 
 		return $response;
+	}
+	
+	function checkIsAdmin($memberid, $token) {
+		global $meetupid;
+		
+		$getorganizers = @file_get_contents("https://api.meetup.com/$meetupid?access_token=$token");
+		$organizersids[] = json_decode($getorganizers)->organizer->id;
+
+		$getcoorganizers = @file_get_contents("https://api.meetup.com/$meetupid/members?access_token=$token&filter=stepup_eligible");
+		$coorganizers = json_decode($getcoorganizers);
+
+		foreach($coorganizers as $coorganizer) {
+			$organizersids[] = $coorganizer->id;
+		}
+
+		// Ids do Meetup de usuários que podem enviar notificações mas não são organizadores
+		$extramembers = array(193513345);
+
+		if(in_array($memberid, $extramembers) || in_array($memberid, $organizersids)) {
+			return true;
+		}
+		
+		return false;
 	}
 }
 ?>

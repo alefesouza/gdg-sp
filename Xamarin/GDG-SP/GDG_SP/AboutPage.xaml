@@ -1,4 +1,5 @@
-﻿<!--
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
 Copyright (C) 2016 Alefe Souza <http://alefesouza.com/>
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,7 +28,7 @@ limitations under the License.
             WinPhone="20"/>
         </Label.FontSize>
       </Label>
-      <!-- Tentei simular um links fazendo Orientation="Horizontal" mas podia ficar "amassado" em alguns disposivos, por isso fiz desse jeito -->
+      <!-- Tentei simular links fazendo Orientation="Horizontal" mas podia ficar "amassado" em alguns disposivos, por isso fiz desse jeito -->
       <Label>
         O Google Developers Group é uma iniciativa de pessoas interessadas em construir com tecnologia e disseminar o conhecimento. Nossos eventos são direcionados para a comunidade de desenvolvedores, engenheiros, designers e empreendedores, organizados pelos nossos membros de forma voluntária e sem fins lucrativos. Encontre outros capítulos do GDG no Brasil no:
       </Label>

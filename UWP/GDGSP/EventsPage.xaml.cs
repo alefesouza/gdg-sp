@@ -18,9 +18,10 @@ using GDGSP.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Net.Http;
+using Windows.Networking.PushNotifications;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Popups;
@@ -40,6 +41,7 @@ namespace GDGSP
         public ProgressRing toKnow;
         TextBlock title;
         public static EventsPage events;
+        public ObservableCollection<Event> listEvents = null;
 
         public EventsPage()
         {
@@ -102,15 +104,13 @@ namespace GDGSP
             ListEvents.Visibility = Visibility.Collapsed;
             PRing.Visibility = Visibility.Visible;
 
-            ObservableCollection<Event> listEvents = null;
-
             string jsonString = "";
 
             try
             {
                 var client = new HttpClient();
                 client.MaxResponseContentBufferSize = 256000;
-                HttpResponseMessage response = await client.PostAsync(Other.Other.GetEventsUrl(), Other.Other.GetRefreshToken());
+                HttpResponseMessage response = await client.PostAsync(Other.Other.GetEventsUrl(), Other.Other.GetRefreshToken(true));
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -173,6 +173,11 @@ namespace GDGSP
                 MainPage.mainPage.profilePhoto.ImageSource = new BitmapImage(new Uri(MainPage.mainPage.member.Photo));
                 MainPage.mainPage.profileName.Text = MainPage.mainPage.member.Name;
                 MainPage.mainPage.profileIntro.Text = MainPage.mainPage.member.Intro;
+
+                if((bool)root["member"]["is_admin"])
+                {
+                    MainPage.mainPage.sendNotification.Visibility = Visibility.Visible;
+                }
             }
             else
             {
@@ -224,9 +229,33 @@ namespace GDGSP
             }
 
             PRing.Visibility = Visibility.Collapsed;
+            ErrorScreen.Visibility = Visibility.Collapsed;
+
+            SuggestLogin();
         }
 
-        public void ListEvents_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void SuggestLogin()
+        {
+            if (!Other.Other.localSettings.Values.ContainsKey("suggest_login"))
+            {
+                MessageDialog md = new MessageDialog("Ao fazer login você:\n\n• Participa de sorteios exclusivos para quem usa o app.\n• Faz RSVP em eventos usando o aplicativo.\n• Vê a localização de eventos com localização oculta para não membros.\n• Recebe notificações sobre eventos que você marcou presença.\n\nDeseja fazer login agora?");
+                md.Title = "Bem-vindo ao app do " + Other.Other.resourceLoader.GetString("AppName") + "!";
+
+                md.Commands.Add(new UICommand("Sim", new UICommandInvokedHandler((c) =>
+                {
+                    MainPage.mainPage.settingsList.SelectedIndex = 1;
+                }))
+                { Id = 0 });
+                md.Commands.Add(new UICommand("Não", null)
+                { Id = 1 });
+
+                await md.ShowAsync();
+
+                Other.Other.localSettings.Values["suggest_login"] = true;
+            }
+        }
+
+        private void ListEvents_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (ListEvents.SelectedIndex != -1)
             {

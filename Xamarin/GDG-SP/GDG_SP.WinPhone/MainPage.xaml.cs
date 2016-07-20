@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OneSignalSDK_WP_WNS;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,6 +30,11 @@ namespace GDG_SP.WinPhone
             this.NavigationCacheMode = NavigationCacheMode.Required;
 
             LoadApplication(new GDG_SP.App());
+
+            if (!Other.Other.GetSetting("one_signal").Equals(""))
+            {
+                OneSignal.SendTag("meetup_id", Other.Other.GetSetting("one_signal"));
+            }
         }
 
         /// <summary>

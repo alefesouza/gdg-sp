@@ -29,7 +29,7 @@ namespace GDG_SP
     /// </summary>
     public partial class LinksPage : ContentPage
     {
-        ObservableCollection<Link> listLinks = new ObservableCollection<Link>();
+        public ObservableCollection<Link> listLinks = new ObservableCollection<Link>();
         public static LinksPage linksPage;
         public CircleImage profileImage;
         public Label profileName, profileIntro;
@@ -100,7 +100,11 @@ namespace GDG_SP
 
             Link item = e.SelectedItem as Link;
 
-            if(item.Title.Equals("Contato"))
+            if(item.Value.Equals("send_notification"))
+            {
+                Navigation.PushAsync(new SendNotificationPage());
+            }
+            else if(item.Title.Equals("Contato"))
             {
 				Device.OpenUri(new Uri("mailto:" + AppResources.ContactMail));
             }

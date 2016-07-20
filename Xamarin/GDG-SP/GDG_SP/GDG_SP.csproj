@@ -60,6 +60,9 @@
     <Compile Include="RSVPPage.xaml.cs">
       <DependentUpon>RSVPPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SendNotificationPage.xaml.cs">
+      <DependentUpon>SendNotificationPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TabbedMasterPage.cs" />
     <Compile Include="TabbedPeoplePage.cs" />
     <Compile Include="WebViewPage.xaml.cs">
@@ -154,6 +157,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="RSVPPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SendNotificationPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>

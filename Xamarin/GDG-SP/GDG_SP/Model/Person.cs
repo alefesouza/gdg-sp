@@ -26,6 +26,7 @@ namespace GDG_SP
 		public string Photo { get; set; }
         public string Intro { get; set; }
         public string Response { get; set; }
+        public bool Has_app { get; set; }
 	}
 }
 

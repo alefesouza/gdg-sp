@@ -22,8 +22,10 @@ limitations under the License.
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="meetup_id">GDG-SP</string>
+    <string name="backend_url">apps.aloogle.net/meetup/backend/</string>
 
     <string name="meetup">Meetup</string>
+    <string name="send_notification">Enviar notificação</string>
     <string name="site">Site</string>
     <string name="old_meetups">Meetups antigos</string>
     <string name="facebook">Facebook</string>
@@ -40,25 +42,35 @@ limitations under the License.
     <string name="twitter_url">twitter.com/GDGSaoPaulo</string>
     <string name="youtube_url">youtube.com/channel/UCs_F2tnlETe3dt8W86aWnOA</string>
     <string name="contact_mail">organizers@gdgsp.org</string>
-
-    <string name="backend_url">apps.aloogle.net/meetup/backend/</string>
 	
     <string name="contact">Contato</string>
     <string name="settings">Configurações</string>
     <string name="about">Sobre</string>
 
+    <string name="suggest_login_title">Bem-vindo ao app do {meetupid}!</string>
+    <string name="suggest_login_sub">Ao fazer login você:\n\n• Participa de sorteios exclusivos para quem usa o app.\n• Faz RSVP em eventos usando o aplicativo.\n• Vê a localização de meetups com localização oculta para não membros.\n• Recebe notificações sobre eventos que você marcou presença.\n\nDeseja fazer login agora?</string>
+
 	<string name="yes">Sim</string>
 	<string name="no">Não</string>
+
+    <string name="send_to_all">Enviar para todos</string>
+    <string name="title">Título</string>
+    <string name="link">Link (opcional)</string>
+    <string name="image">Imagem (opcional)</string>
+    <string name="message">Mensagem</string>
+    <string name="notification_send">Notificação enviada com sucesso</string>
+    <string name="invalid_user">Usuário inválido</string>
 	
     <string name="people_go">Vão</string>
     <string name="people_wait">Esperando</string>
     <string name="people_dont_go">Não vão</string>
     <string name="raffle">SORTEAR</string>
 	<string name="raffle_person">Pessoa sorteada</string>
+    <string name="with_app">Pessoas com o app</string>
 
 	<string name="rsvp_need">Você precisa fazer login para fazer rsvp</string>
 	<string name="rsvp_need_sub">Deseja fazer login agora?</string>
-	<string name="rsvp_cant">Inscrições encerradas</string>
+	<string name="rsvp_cant">Não é possível fazer RSVP nesse evento</string>
 	<string name="rsvp">RSVP</string>
     <string name="do_you_go">Você irá?</string>
 	<string name="wait_list">Lista de espera</string>
@@ -93,5 +105,5 @@ limitations under the License.
 	
     <string name="notifications">Notificações</string>
     <string name="pref_notification">Receber notificações</string>
-    <string name="pref_notification_summary">Receber em notificações de novos eventos</string>
+    <string name="pref_notification_summary">Receber notificações de novos eventos, transmissões ao vivo, etc.</string>
 </resources>

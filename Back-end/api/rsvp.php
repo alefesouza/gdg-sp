@@ -52,12 +52,6 @@ $result = curl_exec($ch);
 
 $json = json_decode($result);
 
-//Para testes
-// $myfile = fopen("teste.json", "w") or die("Unable to open file!");
-// $txt = $result." ".$json->response;
-// fwrite($myfile, $txt);
-// fclose($myfile);
-
 switch($json->response) {
   case "yes": case "waitlist": case "no":
     echo $json->response;

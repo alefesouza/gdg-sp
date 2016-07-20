@@ -46,12 +46,12 @@ import org.gdgsp.activity.*;
  * Fragment onde o usuário realiza RSVP.
  */
 public class RSVPFragment extends Fragment {
-    Activity activity;
-    View view;
-	Event event;
-	Switch responseSwitch;
-	TextView responseText;
-	List<EditText> entries = new ArrayList<EditText>();
+	private Activity activity;
+	private View view;
+	private Event event;
+	private Switch responseSwitch;
+	private TextView responseText;
+	private List<EditText> entries = new ArrayList<EditText>();
 
     @Override
     public void onAttach(Activity activity) {
@@ -114,10 +114,10 @@ public class RSVPFragment extends Fragment {
 			content.addView(editText, params);
 		}
 		
-		final Button enviar = new Button(activity);
-		enviar.setText(getString(R.string.send));
-		
-		enviar.setOnClickListener(new OnClickListener() {
+		final Button send = new Button(activity);
+		send.setText(getString(R.string.send));
+
+		send.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View p1) {
 				ObjectToSend toSend = new ObjectToSend();
@@ -137,7 +137,7 @@ public class RSVPFragment extends Fragment {
 				Gson gson = new Gson();
 				String json = gson.toJson(toSend);
 				
-				enviar.setEnabled(false);
+				send.setEnabled(false);
 				
 				Ion.with(getContext())
 				    .load(Other.getRSVPUrl(activity, event.getId()))
@@ -148,7 +148,7 @@ public class RSVPFragment extends Fragment {
 						@Override
 						public void onCompleted(Exception e, String response) {
 							if(e != null) {
-								enviar.setEnabled(true);
+								send.setEnabled(true);
 								Other.showToast(activity, getString(R.string.rsvp_error));
 								return;
 							}
@@ -157,7 +157,7 @@ public class RSVPFragment extends Fragment {
 								String message = "";
 								
 								switch(response) {
-									case "success":
+									case "yes":
 										message = getString(R.string.rsvp_success);
 									break;
 									case "waitlist":
@@ -176,7 +176,7 @@ public class RSVPFragment extends Fragment {
 								intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 								startActivity(intent);
 							} else {
-								enviar.setEnabled(true);
+								send.setEnabled(true);
 								Other.showToast(activity, getString(R.string.rsvp_error));
 							}
 						}
@@ -184,7 +184,7 @@ public class RSVPFragment extends Fragment {
 			}
 		});
 		
-		content.addView(enviar);
+		content.addView(send);
 		return view;
     }
 }

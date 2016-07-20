@@ -90,6 +90,13 @@ public class Other extends Activity {
 		return "http://" + context.getString(R.string.backend_url) + "api/login.php?meetupid=" + context.getString(R.string.meetup_id);
 	}
 
+	/**
+	 * Método que retorna a URL para o administrador enviar notificação.
+	 */
+	public static String getNotificationUrl(Context context) {
+		return "http://" + context.getString(R.string.backend_url) + "notifications/send.php?meetupid=" + context.getString(R.string.meetup_id);
+	}
+
     /**
      * Método que retorna o refresh token armazenado nas configurações.
      * @param context Contexto usando para receber a configuração.
