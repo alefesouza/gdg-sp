@@ -11,6 +11,7 @@ Nesse repositório há versões do aplicativo do GDG-SP que desenvolvi para Andr
 Você pode baixar na:
 
 [Play Store](https://play.google.com/store/apps/details?id=org.gdgsp)
+
 [Windows Store](https://www.microsoft.com/store/apps/gdg-sp/9nblggh4xcj7)
 
 Versão para iOS em aprovação.

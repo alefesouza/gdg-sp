@@ -112,6 +112,8 @@ public class SendNotificationFragment extends Fragment {
             });
 
             spinner.setSelection(0);
+        } else {
+            checkBox.setVisibility(View.GONE);
         }
 
         send.setOnClickListener(new View.OnClickListener() {
@@ -125,7 +127,7 @@ public class SendNotificationFragment extends Fragment {
                         .setBodyParameter("link", link.getText().toString())
                         .setBodyParameter("image", image.getText().toString())
                         .setBodyParameter("message", message.getText().toString())
-                        .setBodyParameter("eventid", checkBox.isChecked() ? String.valueOf(listEvents.get(selectedPosition).getId()) : "")
+                        .setBodyParameter("eventid", checkBox.isChecked() ? "" : String.valueOf(listEvents.get(selectedPosition).getId()))
                         .setBodyParameter("refresh_token", Other.getRefreshToken(activity))
                         .asString()
                         .setCallback(new FutureCallback<String>() {
