@@ -23,8 +23,8 @@ import java.util.List;
  * Objeto que representa um evento no aplicativo.
  */
 public class Event implements Serializable {
-    private int id, yes_rsvp_count, rsvp_limit, waitlist_count;
-    private double lat, lon;
+	private int id, yes_rsvp_count, rsvp_limit, waitlist_count;
+	private double lat, lon;
 	private String name, image, description, link, who, place, address, city, start, end, response;
 	private boolean rsvpable;
 	private List<Question> survey_questions, answers;

@@ -42,8 +42,12 @@ limitations under the License.
             </StackPanel>
         </Grid>
 
-        <StackPanel x:Name="QuestionsStack" Grid.Row="1" Padding="10">
+        <StackPanel Grid.Row="1" Padding="10">
             <ToggleSwitch x:Name="ResponseSwitch" Header="Você irá?" />
+
+            <StackPanel x:Name="QuestionsStack" />
+
+            <Button Content="Enviar" x:Name="Send" />
         </StackPanel>
 
         <VisualStateManager.VisualStateGroups>

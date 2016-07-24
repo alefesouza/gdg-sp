@@ -39,7 +39,7 @@ limitations under the License.
                 <StackLayout Grid.RowSpan="2">
                   <controls:CircleImage Aspect="AspectFill" Source="{Binding Photo}" WidthRequest="75" HeightRequest="75" />
                 </StackLayout>
-                
+
                 <Label x:Name="ProfileName" Text="{Binding Name}" Grid.Row="0" Grid.Column="1" FontSize="18" TextColor="Black">
                   <Label.Margin>
                     <OnPlatform x:TypeArguments="Thickness" iOS="10, 5, 0, 0" WinPhone="10, 0, 0, 0" />

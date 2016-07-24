@@ -46,15 +46,15 @@ namespace GDG_SP
         {
             string url = "";
 
-            if(sender == GdV)
+            if (sender == GdV)
             {
                 url = "https://developers.google.com/groups/directory/Brazil";
             }
-            else if(sender == AlS)
+            else if (sender == AlS)
             {
                 url = "http://alefesouza.com";
             }
-            else if(sender == GtH)
+            else if (sender == GtH)
             {
                 url = "http://github.com/alefesouza/gdg-sp";
             }
@@ -62,23 +62,23 @@ namespace GDG_SP
             {
                 url = "http://onesignal.com";
             }
-            else if(sender == Ic8)
+            else if (sender == Ic8)
             {
                 url = "http://icons8.com";
             }
-            else if(sender == NsJ)
+            else if (sender == NsJ)
             {
                 url = "http://www.newtonsoft.com/json";
             }
-            else if(sender == ImC)
+            else if (sender == ImC)
             {
                 url = "https://github.com/jamesmontemagno/Xamarin.Plugins/tree/master/ImageCircle";
             }
-            else if(sender == PlS)
+            else if (sender == PlS)
             {
                 url = "https://github.com/jamesmontemagno/Xamarin.Plugins/tree/master/Settings";
             }
-            else if(sender == PlSh)
+            else if (sender == PlSh)
             {
                 url = "https://github.com/jguertl/SharePlugin";
             }

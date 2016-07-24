@@ -119,7 +119,7 @@ namespace GDGSP
         {
             info.Value = info.Value.StartsWith("http") ? info.Value : "http://" + info.Value;
 
-            if(info.Title.Equals("Login"))
+            if (info.Title.Equals("Login"))
             {
                 toLogin = true;
             }
@@ -185,7 +185,7 @@ namespace GDGSP
 
                 SettingsLB.SelectedIndex = -1;
 
-                if(e.AddedItems[0] == SendNotification)
+                if (e.AddedItems[0] == SendNotification)
                 {
                     HomePage.homePage.mainframe.Navigate(typeof(SendNotificationPage));
                 }
@@ -200,7 +200,7 @@ namespace GDGSP
         {
             if (SettingsLB.SelectedIndex != -1)
             {
-                if(SettingsLB.SelectedIndex == 0)
+                if (SettingsLB.SelectedIndex == 0)
                 {
                     await Launcher.LaunchUriAsync(new Uri("mailto:" + Other.Other.resourceLoader.GetString("ContactMail")));
 

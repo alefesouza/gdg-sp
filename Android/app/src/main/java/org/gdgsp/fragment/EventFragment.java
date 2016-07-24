@@ -51,8 +51,8 @@ import org.gdgsp.other.Other;
  * Fragment onde é exibido o evento selecionado.
  */
 public class EventFragment extends Fragment {
-    private AppCompatActivity activity;
-    private View view;
+	private AppCompatActivity activity;
+	private View view;
 
 	private WebView webView;
 	private ProgressBar progress;
@@ -60,22 +60,22 @@ public class EventFragment extends Fragment {
 	private Event event;
 	private SharedPreferences preferences;
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        this.activity = (AppCompatActivity)getActivity();
-    }
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		this.activity = (AppCompatActivity)getActivity();
+	}
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-        super.onCreate(savedInstanceState);
-    }
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		setHasOptionsMenu(true);
+		super.onCreate(savedInstanceState);
+	}
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        view = inflater.inflate(R.layout.fragment_webview, container, false);
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		view = inflater.inflate(R.layout.fragment_webview, container, false);
 		preferences = PreferenceManager.getDefaultSharedPreferences(activity);
 
 		event = (Event)getArguments().getSerializable("event");
@@ -89,29 +89,29 @@ public class EventFragment extends Fragment {
 
 		// Tempo para carregar o conteúdo sem mostrar aquela "animação" da WebView
 		new Handler().postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					progress.setVisibility(View.GONE);
-					webView.setVisibility(View.VISIBLE);
-				}
-			}, 1000);
+			@Override
+			public void run() {
+				progress.setVisibility(View.GONE);
+				webView.setVisibility(View.VISIBLE);
+			}
+		}, 1000);
 
 		FloatingActionButton do_rsvp = (FloatingActionButton)view.findViewById(R.id.do_rsvp);
 		do_rsvp.setVisibility(View.VISIBLE);
 		do_rsvp.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View p1) {
-					if(preferences.contains("refresh_token")) {
-						if(event.isRsvpable() || (event.getResponse() != null && event.getResponse().matches("yes|waitlist"))) {
-							Intent rsvp = new Intent(activity, FragmentActivity.class);
-							rsvp.putExtra("fragment", 4);
-							rsvp.putExtra("event", event);
-							startActivity(rsvp);
-						} else {
-							Other.showMessage(activity, "", getString(R.string.rsvp_cant));
-						}
+			@Override
+			public void onClick(View p1) {
+				if(preferences.contains("refresh_token")) {
+					if(event.isRsvpable() || (event.getResponse() != null && event.getResponse().matches("yes|waitlist"))) {
+						Intent rsvp = new Intent(activity, FragmentActivity.class);
+						rsvp.putExtra("fragment", 4);
+						rsvp.putExtra("event", event);
+						startActivity(rsvp);
 					} else {
-						AlertDialog alertDialog = new AlertDialog.Builder(activity)
+						Other.showMessage(activity, "", getString(R.string.rsvp_cant));
+					}
+				} else {
+					AlertDialog alertDialog = new AlertDialog.Builder(activity)
 							.setTitle(getString(R.string.rsvp_need))
 							.setMessage(getString(R.string.rsvp_need_sub))
 							.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
@@ -123,13 +123,13 @@ public class EventFragment extends Fragment {
 							.setNegativeButton(getString(R.string.no), null)
 							.create();
 
-						alertDialog.show();
-					}
+					alertDialog.show();
 				}
-			});
+			}
+		});
 
-        return view;
-    }
+		return view;
+	}
 
 	private void openLogin() {
 		Intent intent = new Intent(activity, FragmentActivity.class);
@@ -178,7 +178,7 @@ public class EventFragment extends Fragment {
 				sharePageIntent.setType("text/plain");
 				startActivity(Intent.createChooser(sharePageIntent, getResources().getText(R.string.share)));
 				return true;
-            case R.id.menu_people:
+			case R.id.menu_people:
 				Intent intent = new Intent(activity, PeopleActivity.class);
 				intent.putExtra("id", event.getId());
 				intent.putExtra("who", event.getWho());
@@ -193,9 +193,9 @@ public class EventFragment extends Fragment {
 			case R.id.menu_openinbrowser:
 				Other.openSite(activity, event.getLink());
 				return true;
-            default:
-                return
-					super.onOptionsItemSelected(item);
-        }
+			default:
+				return
+						super.onOptionsItemSelected(item);
+		}
 	}
 }

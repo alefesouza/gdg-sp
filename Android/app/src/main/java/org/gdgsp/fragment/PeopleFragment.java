@@ -53,7 +53,7 @@ public class PeopleFragment extends Fragment {
     private List<Person> selectedList = new ArrayList<Person>();
     private RecyclerView list;
     private ProgressBar progress;
-	private PeopleAdapter adapter;
+    private PeopleAdapter adapter;
 
     @Override
     public void onAttach(Activity activity) {
@@ -75,13 +75,13 @@ public class PeopleFragment extends Fragment {
         list = (RecyclerView)view.findViewById(R.id.list);
         progress = (ProgressBar)view.findViewById(R.id.progress);
 
-		list.setVisibility(View.VISIBLE);
-		progress.setVisibility(View.GONE);
+        list.setVisibility(View.VISIBLE);
+        progress.setVisibility(View.GONE);
 
         gson = new Gson();
 
-		Type datasetListType = new TypeToken<List<Person>>() {}.getType();
-		listPeople = gson.fromJson(getArguments().getString("peopleJson"), datasetListType);
+        Type datasetListType = new TypeToken<List<Person>>() {}.getType();
+        listPeople = gson.fromJson(getArguments().getString("peopleJson"), datasetListType);
 
         if(hasAppPeople.size() == 0) {
             for (Person p : listPeople) {
@@ -97,19 +97,19 @@ public class PeopleFragment extends Fragment {
         adapter = new PeopleAdapter(activity, selectedList);
         list.setLayoutManager(new LinearLayoutManager(activity));
         list.setAdapter(adapter);
-		
-		return view;
+
+        return view;
     }
 
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		if(getArguments().getInt("position") == 0) {
-			inflater = getActivity().getMenuInflater();
-			inflater.inflate(R.menu.menu_people, menu);
-		}
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if(getArguments().getInt("position") == 0) {
+            inflater = getActivity().getMenuInflater();
+            inflater.inflate(R.menu.menu_people, menu);
+        }
 
-		super.onCreateOptionsMenu(menu, inflater);
-	}
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
@@ -119,20 +119,20 @@ public class PeopleFragment extends Fragment {
         super.onPrepareOptionsMenu(menu);
     }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.menu_random:
-				// Se o tamanho da lista for maior que 0 significa que já carregou
-				if(selectedList.size() > 0) {
-					// Aqui vai gerar um número aleatório entre 0 e o tamanho da lista - 1
-					Random random = new Random();
-					int number = random.nextInt(selectedList.size());
-					// Após isso o aplicativo vai dar scroll e exibir a pessoa na posição do número aleatório
-					((LinearLayoutManager)list.getLayoutManager()).scrollToPositionWithOffset(number, 0);
-					Other.showMessage(activity, getString(R.string.raffle_person), selectedList.get(number).getName());
-				}
-				return true;
+                // Se o tamanho da lista for maior que 0 significa que já carregou
+                if(selectedList.size() > 0) {
+                    // Aqui vai gerar um número aleatório entre 0 e o tamanho da lista - 1
+                    Random random = new Random();
+                    int number = random.nextInt(selectedList.size());
+                    // Após isso o aplicativo vai dar scroll e exibir a pessoa na posição do número aleatório
+                    ((LinearLayoutManager)list.getLayoutManager()).scrollToPositionWithOffset(number, 0);
+                    Other.showMessage(activity, getString(R.string.raffle_person), selectedList.get(number).getName());
+                }
+                return true;
             case R.id.menu_hasapp:
                 // Mostrar apenas pessoas que usam o aplicativo, essa informação vem de um banco de dados no back-end
                 item.setChecked(!item.isChecked());
@@ -145,7 +145,7 @@ public class PeopleFragment extends Fragment {
                 return true;
             default:
                 return
-					super.onOptionsItemSelected(item);
+                        super.onOptionsItemSelected(item);
         }
-	}
+    }
 }

@@ -113,7 +113,7 @@ namespace GDGSP.Other
             var postData = new List<KeyValuePair<string, string>>();
             postData.Add(new KeyValuePair<string, string>("refresh_token", token));
 
-            if(withChannel)
+            if (withChannel)
             {
                 string channel = localSettings.Values.ContainsKey("ChannelUri") ? localSettings.Values["ChannelUri"].ToString() : "";
                 postData.Add(new KeyValuePair<string, string>("ChannelUri", channel));
@@ -142,7 +142,7 @@ namespace GDGSP.Other
             bool connected = connections != null && connections.GetNetworkConnectivityLevel() == NetworkConnectivityLevel.InternetAccess;
             return connected;
         }
-        
+
         /// <summary>
         /// Método que configura a URL das live tiles do aplicativo.
         /// </summary>
@@ -180,7 +180,7 @@ namespace GDGSP.Other
             collection.Add(theme);
             p.Transitions = collection;
         }
-        
+
         /// <summary>
         /// Links exibidos ao clicar com o botão direito na live tile ou ícone do aplicativo.
         /// </summary>

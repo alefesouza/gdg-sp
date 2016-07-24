@@ -66,23 +66,23 @@ limitations under the License.
 
             <Pivot x:Name="ListsPivot" Visibility="Collapsed">
                 <PivotItem Header="Vão">
-                        <ListView Name="ListPeople" xmlns:m="using:GDGSP.Models" SelectionChanged="ListPeople_SelectionChanged">
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="ListViewItem">
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                </Style>
-                            </ListView.ItemContainerStyle>
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="m:Person">
-                                    <Grid Margin="5" Padding="10" Background="White" HorizontalAlignment="Stretch">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
+                    <ListView Name="ListPeople" xmlns:m="using:GDGSP.Models" SelectionChanged="ListPeople_SelectionChanged">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="m:Person">
+                                <Grid Margin="5" Padding="10" Background="White" HorizontalAlignment="Stretch">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
 
                                     <Ellipse Width="75" Height="75" Grid.Row="0" Grid.RowSpan="2">
                                         <Ellipse.Fill>
@@ -92,10 +92,10 @@ limitations under the License.
 
                                     <TextBlock Text="{Binding Name}" Foreground="Black" Margin="10, 0, 0, 0" FontSize="22" TextWrapping="Wrap" Grid.Row="0" Grid.Column="1" />
                                     <TextBlock Text="{Binding Intro}" Foreground="Black" Margin="10, 5, 0, 0" TextWrapping="Wrap" Grid.Row="1" Grid.Column="1" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </PivotItem>
                 <PivotItem Header="Esperando" x:Name="PeopleWait">
                     <ListView Name="ListPeopleWait" xmlns:m="using:GDGSP.Models" SelectionChanged="ListPeople_SelectionChanged">

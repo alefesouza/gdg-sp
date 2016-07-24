@@ -73,8 +73,8 @@ public class PeopleAdapter extends RecyclerView.Adapter <RecyclerView.ViewHolder
 
             holder.name.setText(name);
 
-			// Se colocar margin top direto vai ficar um padding bottom desnecessário em cards sem texto
-			holder.intro.setText(intro.equals("") ? "" : "\n" + intro);
+            // Se colocar margin top direto vai ficar um padding bottom desnecessário em cards sem texto
+            holder.intro.setText(intro.equals("") ? "" : "\n" + intro);
 
             Ion.with (context)
                     .load(image)
@@ -83,7 +83,7 @@ public class PeopleAdapter extends RecyclerView.Adapter <RecyclerView.ViewHolder
 
             holder.content.setOnClickListener(new OnClickListener() {
                 public void onClick(View v) {
-					Other.openMeetupApp(context, "http://meetup.com/" + context.getString(R.string.meetup_id) + "/members/" + people.get(position).getId());
+                    Other.openMeetupApp(context, "http://meetup.com/" + context.getString(R.string.meetup_id) + "/members/" + people.get(position).getId());
                 }
             });
         }

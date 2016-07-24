@@ -22,41 +22,41 @@ limitations under the License.
 			android:id="@+id/nav_notification"
 			android:icon="@drawable/ic_send"
 			android:title="@string/send_notification"
-            android:visible="false" />
+			android:visible="false" />
 	</group>
 
-    <group android:checkableBehavior="none">
-        <item
-            android:id="@+id/nav_site"
-            android:icon="@drawable/ic_site"
-            android:title="@string/site" />
-        <item
-            android:id="@+id/nav_old_meetups"
-            android:icon="@drawable/ic_youtube"
-            android:title="@string/old_meetups" />
-        <item
-            android:id="@+id/nav_facebook"
-            android:icon="@drawable/ic_facebook"
-            android:title="@string/facebook" />
-        <item
-            android:id="@+id/nav_googleplus"
-            android:icon="@drawable/ic_googleplus"
-            android:title="@string/googleplus" />
-        <item
-            android:id="@+id/nav_instagram"
-            android:icon="@drawable/ic_instagram"
-            android:title="@string/instagram" />
-        <item
-            android:id="@+id/nav_twitter"
-            android:icon="@drawable/ic_twitter"
-            android:title="@string/twitter" />
-        <item
-            android:id="@+id/nav_youtube"
-            android:icon="@drawable/ic_youtube"
-            android:title="@string/youtube" />
-    </group>
-	
-    <group android:checkableBehavior="none"
+	<group android:checkableBehavior="none">
+		<item
+			android:id="@+id/nav_site"
+			android:icon="@drawable/ic_site"
+			android:title="@string/site" />
+		<item
+			android:id="@+id/nav_old_meetups"
+			android:icon="@drawable/ic_youtube"
+			android:title="@string/old_meetups" />
+		<item
+			android:id="@+id/nav_facebook"
+			android:icon="@drawable/ic_facebook"
+			android:title="@string/facebook" />
+		<item
+			android:id="@+id/nav_googleplus"
+			android:icon="@drawable/ic_googleplus"
+			android:title="@string/googleplus" />
+		<item
+			android:id="@+id/nav_instagram"
+			android:icon="@drawable/ic_instagram"
+			android:title="@string/instagram" />
+		<item
+			android:id="@+id/nav_twitter"
+			android:icon="@drawable/ic_twitter"
+			android:title="@string/twitter" />
+		<item
+			android:id="@+id/nav_youtube"
+			android:icon="@drawable/ic_youtube"
+			android:title="@string/youtube" />
+	</group>
+
+	<group android:checkableBehavior="none"
 		android:id="@+id/sub_group">
 		<item
 			android:id="@+id/nav_contact"

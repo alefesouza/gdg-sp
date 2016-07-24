@@ -19,12 +19,17 @@ limitations under the License.
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GDG_SP.RSVPPage">
   <ScrollView>
-    <StackLayout x:Name="QuestionsStack" Padding="10">
+    <StackLayout Padding="10">
       <Label Text="Você irá?"></Label>
       <StackLayout Orientation="Horizontal">
         <Switch x:Name="ResponseSwitch"></Switch>
         <Label x:Name="State" VerticalOptions="CenterAndExpand"></Label>
       </StackLayout>
+
+      <StackLayout x:Name="QuestionsStack">
+      </StackLayout>
+
+      <Button x:Name="Send" Text="Enviar" />
     </StackLayout>
   </ScrollView>
 </ContentPage>

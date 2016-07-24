@@ -208,12 +208,12 @@ namespace GDG_SP
                 LinksPage.linksPage.profileName.Text = LinksPage.member.Name;
                 LinksPage.linksPage.profileIntro.Text = LinksPage.member.Intro;
 
-                if(Other.Other.GetSetting("one_signal").Equals(""))
+                if (Other.Other.GetSetting("one_signal").Equals(""))
                 {
                     Other.Other.AddSetting("one_signal", LinksPage.member.Id.ToString());
                 }
 
-                if((bool)root["member"]["is_admin"])
+                if ((bool)root["member"]["is_admin"])
                 {
                     if (!notificationAdded)
                     {

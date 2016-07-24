@@ -45,32 +45,32 @@ import org.gdgsp.other.Other;
  */
 public class PeopleActivity extends AppCompatActivity {
 	private Toolbar toolbar;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
+	private TabLayout tabLayout;
+	private ViewPager viewPager;
 	private ProgressBar progress;
 	private PeopleTabAdapter adapter;
-    private List<Person> listPeople;
+	private List<Person> listPeople;
 	private String jsonPeople = null;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_people);
-		
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_people);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		toolbar = (Toolbar) findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
+
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		getSupportActionBar().setTitle(getIntent().getStringExtra("who"));
 
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-        adapter = new PeopleTabAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(adapter);
+		viewPager = (ViewPager) findViewById(R.id.viewpager);
+		adapter = new PeopleTabAdapter(getSupportFragmentManager());
+		viewPager.setAdapter(adapter);
 
-        tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
-        tabLayout.setupWithViewPager(viewPager);
-		
+		tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+		tabLayout.setupWithViewPager(viewPager);
+
 		progress = (ProgressBar)findViewById(R.id.progress);
 
 		if(savedInstanceState == null || savedInstanceState.getString("peopleJson") == null) {
@@ -81,9 +81,9 @@ public class PeopleActivity extends AppCompatActivity {
 
 			setupViewPager(savedInstanceState.getString("peopleJson"));
 		}
-    }
+	}
 
-    public void setupViewPager(String json) {
+	public void setupViewPager(String json) {
 		Gson gson = new Gson();
 
 		Type datasetListType = new TypeToken<List<Person>>() {}.getType();
@@ -109,14 +109,14 @@ public class PeopleActivity extends AppCompatActivity {
 					break;
 			}
 		}
-		
+
 		String[] titles = { getString(R.string.people_go), getString(R.string.people_wait), getString(R.string.people_dont_go)};
 
 		for(int i = 0; i < titles.length; i++) {
 			List<Person> list;
-			
+
 			if(i == 0) list = listGo; else if(i == 1) list = listWait; else list = listDontGo;
-			
+
 			if(list.size() > 0) {
 				Bundle bundle = new Bundle();
 				bundle.putInt("position", i);
@@ -128,45 +128,45 @@ public class PeopleActivity extends AppCompatActivity {
 		}
 
 		adapter.notifyDataSetChanged();
-    }
+	}
 
-    /**
-     * Método que solicita a lista de pessoas que deram alguma resposta ao evento e preenche a lista.
-     */
+	/**
+	 * Método que solicita a lista de pessoas que deram alguma resposta ao evento e preenche a lista.
+	 */
 	private void getPeople() {
-        Ion.with (this)
-			.load(Other.getRSVPSUrl(this, getIntent().getIntExtra("id", 0)))
-			.setBodyParameter("refresh_token", Other.getRefreshToken(this))
-			.asJsonArray()
-			.setCallback(new FutureCallback<JsonArray>() {
-				@Override
-				public void onCompleted(Exception e, final JsonArray json) {
-					if(e != null) {
-						AlertDialog alertDialog = new AlertDialog.Builder(PeopleActivity.this)
-							.setTitle(getString(R.string.connection_error))
-							.setMessage(getString(R.string.try_again))
-							.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface p1, int p2) {
-									getPeople();
-								}
-							})
-							.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface p1, int p2) {
-									finish();
-								}
-							})
-							.create();
+		Ion.with (this)
+				.load(Other.getRSVPSUrl(this, getIntent().getIntExtra("id", 0)))
+				.setBodyParameter("refresh_token", Other.getRefreshToken(this))
+				.asJsonArray()
+				.setCallback(new FutureCallback<JsonArray>() {
+					@Override
+					public void onCompleted(Exception e, final JsonArray json) {
+						if(e != null) {
+							AlertDialog alertDialog = new AlertDialog.Builder(PeopleActivity.this)
+									.setTitle(getString(R.string.connection_error))
+									.setMessage(getString(R.string.try_again))
+									.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+										@Override
+										public void onClick(DialogInterface p1, int p2) {
+											getPeople();
+										}
+									})
+									.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+										@Override
+										public void onClick(DialogInterface p1, int p2) {
+											finish();
+										}
+									})
+									.create();
 
-						alertDialog.show();
-						e.printStackTrace();
-						return;
+							alertDialog.show();
+							e.printStackTrace();
+							return;
+						}
+
+						setupViewPager(json.toString());
 					}
-					
-					setupViewPager(json.toString());
-				}
-			});
+				});
 	}
 
 	@Override
@@ -177,7 +177,7 @@ public class PeopleActivity extends AppCompatActivity {
 				return true;
 			default:
 				return
-					super.onOptionsItemSelected(item);
+						super.onOptionsItemSelected(item);
 		}
 	}
 

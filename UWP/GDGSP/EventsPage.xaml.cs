@@ -131,11 +131,13 @@ namespace GDGSP
                     md.Commands.Add(new UICommand("Sim", new UICommandInvokedHandler((c) => {
                         GetEvents(true);
                         ErrorScreen.Visibility = Visibility.Collapsed;
-                    })) { Id = 0 });
+                    }))
+                    { Id = 0 });
                     md.Commands.Add(new UICommand("Não", new UICommandInvokedHandler((c) => {
                         ListEvents.Visibility = Visibility.Visible;
                         PRing.Visibility = Visibility.Collapsed;
-                    })) { Id = 1 });
+                    }))
+                    { Id = 1 });
 
                     await md.ShowAsync();
                 }
@@ -174,7 +176,7 @@ namespace GDGSP
                 MainPage.mainPage.profileName.Text = MainPage.mainPage.member.Name;
                 MainPage.mainPage.profileIntro.Text = MainPage.mainPage.member.Intro;
 
-                if((bool)root["member"]["is_admin"])
+                if ((bool)root["member"]["is_admin"])
                 {
                     MainPage.mainPage.sendNotification.Visibility = Visibility.Visible;
                 }
@@ -202,9 +204,9 @@ namespace GDGSP
 
                 if (MainPage.openEvent != 0)
                 {
-                    for(int i = 0; i < listEvents.Count; i++)
+                    for (int i = 0; i < listEvents.Count; i++)
                     {
-                        if(listEvents[i].Id == MainPage.openEvent)
+                        if (listEvents[i].Id == MainPage.openEvent)
                         {
                             HomePage.homePage.eventopen.SetNavigationState("1,0");
                             ListEvents.SelectedIndex = i;

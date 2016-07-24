@@ -16,37 +16,37 @@ limitations under the License.
 -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/app_bar_main">
-	
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:listSelector="@android:color/transparent"
-        android:background="#eeeeee"
-        android:scrollbars="none"
-        android:visibility="gone" />
-	
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	app:layout_behavior="@string/appbar_scrolling_view_behavior"
+	tools:showIn="@layout/app_bar_main">
+
+	<android.support.v7.widget.RecyclerView
+		android:id="@+id/list"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:divider="@android:color/transparent"
+		android:dividerHeight="0dp"
+		android:listSelector="@android:color/transparent"
+		android:background="#eeeeee"
+		android:scrollbars="none"
+		android:visibility="gone" />
+
 	<LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/error_screen"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/error_screen"
 		android:visibility="gone"
 		android:gravity="center"
 		android:orientation="vertical"
-        android:layout_centerInParent="true">
+		android:layout_centerInParent="true">
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:id="@+id/error_message" />
-		
+
 		<Button
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -55,9 +55,9 @@ limitations under the License.
 			android:text="@string/try_again" />
 	</LinearLayout>
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:id="@+id/progress" />
+	<ProgressBar
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_centerInParent="true"
+		android:id="@+id/progress" />
 </RelativeLayout>

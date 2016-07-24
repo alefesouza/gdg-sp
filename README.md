@@ -14,9 +14,9 @@ Você pode baixar na:
 
 [Windows Store](https://www.microsoft.com/store/apps/gdg-sp/9nblggh4xcj7)
 
-Versão para iOS em aprovação.
+Versão para iOS em aprovação na App Store.
 
-Para desenvolver os aplicativos eu usei as IDEs:
+Para desenvolver os aplicativos eu utilizei as IDEs:
 
 [Android Studio](https://developer.android.com/studio/index.html) e [AIDE](https://play.google.com/store/apps/details?id=com.aide.ui) no aplicativo para Android.
 

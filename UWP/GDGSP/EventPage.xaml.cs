@@ -62,7 +62,7 @@ namespace GDGSP
         {
             string url = args.Uri.ToString();
 
-            if(url.StartsWith("http://do_login"))
+            if (url.StartsWith("http://do_login"))
             {
                 MainPage.mainPage.toLogin = true;
                 WebViewPage.openEvent = _event.Id;
@@ -120,7 +120,8 @@ namespace GDGSP
                     MainPage.mainPage.toLogin = true;
                     MainPage.mainPage.ToWebView(new Link() { Title = "Login", Value = Other.Other.GetLoginUrl() });
                     WebViewPage.openEvent = _event.Id;
-                })) { Id = 0 });
+                }))
+                { Id = 0 });
                 md.Commands.Add(new UICommand("Não", null) { Id = 1 });
 
                 await md.ShowAsync();

@@ -47,11 +47,11 @@ public class FragmentActivity extends AppCompatActivity {
 
 		Fragment fragment = null;
 		String title = null;
-		
+
 		switch(getIntent().getIntExtra("fragment", 0)) {
 			case 0:
 				title = getString(R.string.settings);
-				
+
 				PreferenceFragment settings = new SettingsFragment();
 				getFragmentManager().beginTransaction().replace(R.id.fragment, settings).commit();
 				break;
@@ -67,11 +67,11 @@ public class FragmentActivity extends AppCompatActivity {
 			case 2:
 				title = getIntent().getStringExtra("title");
 				fragment = new WebViewFragment();
-				
+
 				Bundle bundle = new Bundle();
 				bundle.putString("url", getIntent().getStringExtra("url"));
 				bundle.putBoolean("islogin", getIntent().getBooleanExtra("islogin", false));
-				
+
 				fragment.setArguments(bundle);
 				break;
 			case 3:
@@ -104,7 +104,7 @@ public class FragmentActivity extends AppCompatActivity {
 				return true;
 			default:
 				return
-					super.onOptionsItemSelected(item);
+						super.onOptionsItemSelected(item);
 		}
 	}
 

@@ -37,7 +37,7 @@ limitations under the License.
             <ColumnDefinition Width="48" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        
+
         <SplitView Name="MainSplitView" CompactPaneLength="48" OpenPaneLength="240" Grid.RowSpan="2" Grid.ColumnSpan="2" PaneBackground="Transparent">
             <SplitView.Pane>
                 <Grid>

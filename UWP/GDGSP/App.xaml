@@ -32,5 +32,5 @@ limitations under the License.
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>
-    </Application.Resources>    
+    </Application.Resources>
 </Application>

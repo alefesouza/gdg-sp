@@ -68,9 +68,9 @@ namespace GDG_SP
             }));
 
             ToolbarItems.Add(new ToolbarItem(_event.Who, directory + "People.png", () =>
-                {
-                    Navigation.PushAsync(new TabbedPeoplePage(_event.Id) { Title = _event.Who });
-                }));
+            {
+                Navigation.PushAsync(new TabbedPeoplePage(_event.Id) { Title = _event.Who });
+            }));
 
             ToolbarItems.Add(new ToolbarItem("Compartilhar", directory + "Share.png", () =>
             {

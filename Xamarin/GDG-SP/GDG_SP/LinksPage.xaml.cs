@@ -47,7 +47,7 @@ namespace GDG_SP
 
             if (Other.Other.GetSetting("member_profile").Length > 0)
             {
-               member = JsonConvert.DeserializeObject<Person>(Other.Other.GetSetting("member_profile"));
+                member = JsonConvert.DeserializeObject<Person>(Other.Other.GetSetting("member_profile"));
 
                 if (!member.Name.Equals(""))
                 {
@@ -70,7 +70,7 @@ namespace GDG_SP
             }
 
             listLinks.Add(new Link() { Title = "Site", Icon = directory + "Site.png", Value = AppResources.SiteUrl });
-			listLinks.Add(new Link() { Title = "Meetups antigos", Icon = directory + "YouTube.png", Value = AppResources.OldMeetupsUrl });
+            listLinks.Add(new Link() { Title = "Meetups antigos", Icon = directory + "YouTube.png", Value = AppResources.OldMeetupsUrl });
             listLinks.Add(new Link() { Title = "Facebook", Icon = directory + "Facebook.png", Value = AppResources.FacebookUrl });
             listLinks.Add(new Link() { Title = "Google+", Icon = directory + "Google.png", Value = AppResources.GooglePlusUrl });
             listLinks.Add(new Link() { Title = "Instagram", Icon = directory + "Instagram.png", Value = AppResources.InstagramUrl });
@@ -82,9 +82,9 @@ namespace GDG_SP
 
             var login = new TapGestureRecognizer();
             login.Tapped += (s, e) => {
-                if(member == null)
+                if (member == null)
                 {
-					Navigation.PushAsync(new WebViewPage(Other.Other.GetLoginUrl(), true) { Title = "Login" });
+                    Navigation.PushAsync(new WebViewPage(Other.Other.GetLoginUrl(), true) { Title = "Login" });
                 }
                 else
                 {
@@ -100,13 +100,13 @@ namespace GDG_SP
 
             Link item = e.SelectedItem as Link;
 
-            if(item.Value.Equals("send_notification"))
+            if (item.Value.Equals("send_notification"))
             {
                 Navigation.PushAsync(new SendNotificationPage());
             }
-            else if(item.Title.Equals("Contato"))
+            else if (item.Title.Equals("Contato"))
             {
-				Device.OpenUri(new Uri("mailto:" + AppResources.ContactMail));
+                Device.OpenUri(new Uri("mailto:" + AppResources.ContactMail));
             }
             else
             {

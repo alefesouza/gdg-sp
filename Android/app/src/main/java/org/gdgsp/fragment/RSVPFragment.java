@@ -53,138 +53,140 @@ public class RSVPFragment extends Fragment {
 	private TextView responseText;
 	private List<EditText> entries = new ArrayList<EditText>();
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        this.activity = getActivity();
-    }
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		this.activity = getActivity();
+	}
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+	}
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        view = inflater.inflate(R.layout.fragment_rsvp, container, false);
-		
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		view = inflater.inflate(R.layout.fragment_rsvp, container, false);
+
 		event = (Event)getActivity().getIntent().getSerializableExtra("event");
 		responseSwitch = (Switch)view.findViewById(R.id.response_switch);
-		
+
 		responseText = (TextView)view.findViewById(R.id.response_text);
-		
+
+		final LinearLayout content = (LinearLayout)view.findViewById(R.id.content);
+
 		final boolean checked = event.getResponse() != null && !event.getResponse().equals("no");
-		final boolean isWaitlist = event.getYes_rsvp_count() == event.getRsvp_limit();
-		
+		final boolean isWaitlist = event.getYes_rsvp_count() == event.getRsvp_limit() && !event.getResponse().equals("yes");
+
+		content.setVisibility(checked ? View.VISIBLE : View.GONE);
+
 		responseSwitch.setChecked(checked);
-		
+
 		responseText.setText(checked ? isWaitlist ? getString(R.string.wait_list) : getString(R.string.yes) : getString(R.string.no));
-		
+
 		responseSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton p1, boolean p2) {
 				responseText.setText(p2 ? isWaitlist ? getString(R.string.wait_list) : getString(R.string.yes) : getString(R.string.no));
+
+				content.setVisibility(p2 ? View.VISIBLE : View.GONE);
 			}
 		});
-		
-		LinearLayout content = (LinearLayout)view.findViewById(R.id.content);
+
 		LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-		
+
 		for(int i = 0; i < event.getSurvey_questions().size(); i++) {
 			Question question = event.getSurvey_questions().get(i);
-			
+
 			TextView textView = new TextView(activity);
 			textView.setText(question.getQuestion());
-			
+
 			EditText editText = new EditText(activity);
 			editText.setSingleLine(true);
 			editText.setMaxLines(1);
 			InputFilter[] FilterArray = new InputFilter[1];
 			FilterArray[0] = new InputFilter.LengthFilter(250);
 			editText.setFilters(FilterArray);
-			
+
 			if(event.getAnswers() != null) {
 				editText.setText(event.getAnswers().get(i).getAnswer());
 			}
-			
+
 			entries.add(editText);
-			
+
 			content.addView(textView, params);
 			content.addView(editText, params);
 		}
-		
-		final Button send = new Button(activity);
-		send.setText(getString(R.string.send));
+
+		final Button send = (Button)view.findViewById(R.id.button_send);
 
 		send.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View p1) {
 				ObjectToSend toSend = new ObjectToSend();
-				toSend.setResponse(responseSwitch.isChecked() ? isWaitlist ? "waitlist" : "yes" : "no");
-				
+				toSend.setResponse(responseSwitch.isChecked() ? "yes" : "no");
+
 				List<Question> list = new ArrayList<Question>();
-				
+
 				for(int i = 0; i < entries.size(); i++) {
 					Question question = event.getSurvey_questions().get(i);
 					question.setAnswer(entries.get(i).getText().toString());
-					
+
 					list.add(question);
 				}
-				
+
 				toSend.setAnswers(list);
-				
+
 				Gson gson = new Gson();
 				String json = gson.toJson(toSend);
-				
-				send.setEnabled(false);
-				
-				Ion.with(getContext())
-				    .load(Other.getRSVPUrl(activity, event.getId()))
-					.setBodyParameter("json", json)
-					.setBodyParameter("refresh_token", Other.getRefreshToken(activity))
-					.asString()
-					.setCallback(new FutureCallback<String>() {
-						@Override
-						public void onCompleted(Exception e, String response) {
-							if(e != null) {
-								send.setEnabled(true);
-								Other.showToast(activity, getString(R.string.rsvp_error));
-								return;
-							}
-							
-							if(response.matches("waitlist|success|no")) {
-								String message = "";
-								
-								switch(response) {
-									case "yes":
-										message = getString(R.string.rsvp_success);
-									break;
-									case "waitlist":
-										message = getString(R.string.rsvp_waitlist);
-									break;
-									case "no":
-										message = getString(R.string.rsvp_no);
-									break;
-								}
-								
-								Other.showToast(activity, message);
 
-								Intent intent = new Intent(activity, MainActivity.class);
-								intent.putExtra("fromrsvp", true);
-								MainActivity.openEvent = event.getId();
-								intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-								startActivity(intent);
-							} else {
-								send.setEnabled(true);
-								Other.showToast(activity, getString(R.string.rsvp_error));
+				send.setEnabled(false);
+
+				Ion.with(getContext())
+						.load(Other.getRSVPUrl(activity, event.getId()))
+						.setBodyParameter("json", json)
+						.setBodyParameter("refresh_token", Other.getRefreshToken(activity))
+						.asString()
+						.setCallback(new FutureCallback<String>() {
+							@Override
+							public void onCompleted(Exception e, String response) {
+								if(e != null) {
+									send.setEnabled(true);
+									Other.showToast(activity, getString(R.string.rsvp_error));
+									return;
+								}
+
+								if(response.matches("waitlist|yes|no")) {
+									String message = "";
+
+									switch(response) {
+										case "yes":
+											message = getString(R.string.rsvp_success);
+											break;
+										case "waitlist":
+											message = getString(R.string.rsvp_waitlist);
+											break;
+										case "no":
+											message = getString(R.string.rsvp_no);
+											break;
+									}
+
+									Other.showToast(activity, message);
+
+									Intent intent = new Intent(activity, MainActivity.class);
+									intent.putExtra("fromrsvp", true);
+									MainActivity.openEvent = event.getId();
+									intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+									startActivity(intent);
+								} else {
+									send.setEnabled(true);
+									Other.showToast(activity, getString(R.string.rsvp_error));
+								}
 							}
-						}
-					});
+						});
 			}
 		});
-		
-		content.addView(send);
 		return view;
-    }
+	}
 }

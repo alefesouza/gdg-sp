@@ -16,6 +16,7 @@
 
 using GDGSP.Models;
 using System;
+using System.Diagnostics;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Storage;
@@ -66,7 +67,7 @@ namespace GDGSP
             }
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             Link info = e.Parameter as Link;
 
@@ -76,6 +77,10 @@ namespace GDGSP
             {
                 CBOpen.Visibility = Visibility.Collapsed;
                 CBShare.Visibility = Visibility.Collapsed;
+
+                MessageDialog md = new MessageDialog("O login com Facebook e Google não funcionará devido a limitações do Windows 10, faça login com sua conta do Meetup");
+                md.Title = "Aviso";
+                await md.ShowAsync();
             }
 
             webView1.Navigate(new Uri(info.Value));
@@ -100,7 +105,7 @@ namespace GDGSP
             progress.IsIndeterminate = true;
             progress.Visibility = Visibility.Visible;
 
-            if(!MainPage.mainPage.toLogin)
+            if (!MainPage.mainPage.toLogin)
             {
                 CBOpen.Visibility = Visibility.Visible;
                 CBShare.Visibility = Visibility.Visible;
@@ -115,18 +120,17 @@ namespace GDGSP
             {
                 if (url.Contains("refresh_token"))
                 {
-                    ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-                    localSettings.Values["refresh_token"] = Other.Other.GetQuery(url, "refresh_token");
+                    Debug.WriteLine(Other.Other.GetQuery(url, "refresh_token"));
+                    Other.Other.localSettings.Values["refresh_token"] = Other.Other.GetQuery(url, "refresh_token");
                     MainPage.openEvent = openEvent;
                     openEvent = 0;
                     HomePage.homePage.eventopen.Visibility = Visibility.Collapsed;
                     SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                     Other.Other.CreateTile();
-                    EventsPage.events.GetEvents(true);
                     MainPage.mainPage.toWebView = false;
                     FrameGoBack();
                 }
-                else if(url.Contains("error"))
+                else if (url.Contains("error"))
                 {
                     MessageDialog md = new MessageDialog("Deseja tentar novamente?");
                     md.Title = "Erro ao fazer login";

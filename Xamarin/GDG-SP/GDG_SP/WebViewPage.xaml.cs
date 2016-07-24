@@ -35,8 +35,8 @@ namespace GDG_SP
                 ToolbarItems.Add(new ToolbarItem("Mais", "More.png", async () =>
                 {
                     string action = "";
-                    
-                    if(this.isLogin)
+
+                    if (this.isLogin)
                     {
                         action = await DisplayActionSheet("Menu", "Cancelar", null, "Voltar", "Avançar", "Recarregar");
                     }
@@ -95,7 +95,7 @@ namespace GDG_SP
                     WView.Source = (WView.Source as UrlWebViewSource).Url;
                 }, ToolbarItemOrder.Secondary));
 
-                if(!isLogin)
+                if (!isLogin)
                 {
                     ToolbarItems.Add(new ToolbarItem("Abrir no navegator", null, () =>
                     {
@@ -123,7 +123,7 @@ namespace GDG_SP
                 {
                     bool alert = await DisplayAlert("Erro ao fazer login", "Deseja tentar novamente?", "Sim", "Não");
 
-                    if(alert)
+                    if (alert)
                     {
                         WView.Source = Other.Other.GetLoginUrl();
                     }
@@ -143,7 +143,7 @@ namespace GDG_SP
                             CrossShare.Current.ShareLink((WView.Source as UrlWebViewSource).Url, "", AppResources.AppName);
                         }));
 
-                        if(Device.OS == TargetPlatform.Windows)
+                        if (Device.OS == TargetPlatform.Windows)
                         {
                             ToolbarItems.Add(new ToolbarItem("Abrir no navegator", null, () =>
                             {
@@ -166,6 +166,11 @@ namespace GDG_SP
 
                     await Navigation.PopAsync();
                 }
+            }
+            // Gambiarrinha que evita um erro que ocorre no site do Meetup ao fazer login com redes sociais.
+            else if (e.Url.Contains("submit=") && e.Url.Contains("response=") && e.Url.Contains("meetup.com"))
+            {
+                WView.Source = Other.Other.GetLoginUrl();
             }
         }
     }

@@ -18,8 +18,8 @@ limitations under the License.
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+	android:layout_height="match_parent"
+	android:orientation="vertical">
 	<android.support.v7.widget.CardView
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
@@ -29,30 +29,30 @@ limitations under the License.
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:padding="15dp"
-            android:orientation="vertical">
+			android:orientation="vertical">
 
 			<CheckBox
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:text="@string/send_to_all"
-                android:checked="true"
-                android:id="@+id/checkbox_to_all" />
+				android:checked="true"
+				android:id="@+id/checkbox_to_all" />
 
-            <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:id="@+id/spinner_events"
-                android:visibility="gone" />
+			<Spinner
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="10dp"
+				android:id="@+id/spinner_events"
+				android:visibility="gone" />
 
 			<TextView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+				android:layout_marginTop="10dp"
 				android:textColor="#000000"
 				android:textSize="16sp"
 				android:text="@string/title"
-			/>
+				/>
 
 			<EditText
 				android:layout_width="match_parent"
@@ -62,11 +62,11 @@ limitations under the License.
 			<TextView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+				android:layout_marginTop="10dp"
 				android:textColor="#000000"
 				android:textSize="16sp"
 				android:text="@string/link"
-			/>
+				/>
 
 			<EditText
 				android:layout_width="match_parent"
@@ -76,11 +76,11 @@ limitations under the License.
 			<TextView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+				android:layout_marginTop="10dp"
 				android:textColor="#000000"
 				android:textSize="16sp"
-                android:text="@string/image"
-			/>
+				android:text="@string/image"
+				/>
 
 			<EditText
 				android:layout_width="match_parent"
@@ -90,11 +90,11 @@ limitations under the License.
 			<TextView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+				android:layout_marginTop="10dp"
 				android:textColor="#000000"
 				android:textSize="16sp"
-                android:text="@string/message"
-			/>
+				android:text="@string/message"
+				/>
 
 			<EditText
 				android:layout_width="match_parent"

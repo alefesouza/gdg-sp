@@ -26,7 +26,7 @@ namespace GDG_SP
     {
         public TabbedMasterPage()
         {
-			Title = AppResources.AppName;
+            Title = AppResources.AppName;
 
             Children.Add(new MainPage() { Title = "Eventos", Icon = Device.OnPlatform("Home.png", null, null) });
             Children.Add(new LinksPage() { Title = "Links", Icon = Device.OnPlatform("Links.png", null, null) });

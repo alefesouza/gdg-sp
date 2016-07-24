@@ -63,6 +63,8 @@ namespace GDG_SP
                 State.Text = "Não";
             }
 
+            QuestionsStack.IsVisible = ResponseSwitch.IsToggled;
+
             ResponseSwitch.Toggled += (s, e) =>
             {
                 if (e.Value)
@@ -80,6 +82,8 @@ namespace GDG_SP
                 {
                     State.Text = "Não";
                 }
+
+                QuestionsStack.IsVisible = e.Value;
             };
 
             for (int i = 0; i < _event.Survey_questions.Count; i++)
@@ -109,11 +113,7 @@ namespace GDG_SP
                 QuestionsStack.Children.Add(entry);
             }
 
-            Button button = new Button();
-            button.Text = "Enviar";
-            QuestionsStack.Children.Add(button);
-
-            button.Clicked += async (s, e) =>
+            Send.Clicked += async (s, e) =>
             {
                 try
                 {

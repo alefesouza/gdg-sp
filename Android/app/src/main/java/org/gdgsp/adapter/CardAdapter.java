@@ -48,19 +48,19 @@ public class CardAdapter extends RecyclerView.Adapter <RecyclerView.ViewHolder> 
 	@Override
 	public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, 	int viewType) {
 		View item = LayoutInflater.from(parent.getContext())
-			.inflate(R.layout.card_event, null);
+				.inflate(R.layout.card_event, null);
 
 		ItemViewHolder viewHolder = new ItemViewHolder(item);
 		return viewHolder;
 	}
 
 	public void remove(int position) {
-        events.remove(position);
+		events.remove(position);
 		notifyItemRemoved(position);
 	}
 
 	public void add(Event card, int position) {
-        events.add(card);
+		events.add(card);
 		notifyItemInserted(position);
 	}
 
@@ -71,21 +71,21 @@ public class CardAdapter extends RecyclerView.Adapter <RecyclerView.ViewHolder> 
 
 			final String name = events.get(position).getName();
 			final String url = events.get(position).getLink();
-			
+
 			holder.title.setText(name);
-			
+
 			Ion.with(context).load(events.get(position).getImage()).intoImageView(holder.image);
-			
+
 			holder.date.setText(events.get(position).getStart());
 			holder.location.setText(events.get(position).getPlace());
 
 			holder.content.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-                    MainActivity main = (MainActivity)context;
+				public void onClick(View v) {
+					MainActivity main = (MainActivity)context;
 					main.openEvent(events.get(position));
-                }
-            });
-			
+				}
+			});
+
 			holder.content.setOnLongClickListener(new OnLongClickListener() {
 				@Override
 				public boolean onLongClick(View p1) {

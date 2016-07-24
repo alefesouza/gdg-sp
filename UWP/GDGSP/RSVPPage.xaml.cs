@@ -50,8 +50,6 @@ namespace GDGSP
 
             ResponseSwitch.OffContent = "Não";
 
-            ResponseSwitch.IsOn = !_event.Response.Equals("no");
-
             if (_event.Response.Equals("yes") || _event.Yes_rsvp_count < _event.Rsvp_limit)
             {
                 ResponseSwitch.OnContent = "Sim";
@@ -60,6 +58,15 @@ namespace GDGSP
             {
                 ResponseSwitch.OnContent = "Lista de espera";
             }
+
+            ResponseSwitch.IsOn = !_event.Response.Equals("no");
+
+            QuestionsStack.Visibility = ResponseSwitch.IsOn ? Visibility.Visible : Visibility.Collapsed;
+
+            ResponseSwitch.Toggled += (s, ev) =>
+            {
+                QuestionsStack.Visibility = ResponseSwitch.IsOn ? Visibility.Visible : Visibility.Collapsed;
+            };
 
             for (int i = 0; i < _event.Survey_questions.Count; i++)
             {
@@ -89,11 +96,7 @@ namespace GDGSP
                 QuestionsStack.Children.Add(entry);
             }
 
-            Button button = new Button();
-            button.Content = "Enviar";
-            QuestionsStack.Children.Add(button);
-
-            button.Click += async (s, ev) =>
+            Send.Click += async (s, ev) =>
             {
                 try
                 {
@@ -109,7 +112,7 @@ namespace GDGSP
                     ObjectToSend ob = new ObjectToSend() { Response = ResponseSwitch.IsOn ? "yes" : "no", Answers = list };
 
                     var uri = new Uri(Other.Other.GetRSVPUrl(_event.Id));
-                    
+
                     var json = JsonConvert.SerializeObject(ob, Formatting.Indented, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
 
                     var postData = new List<KeyValuePair<string, string>>();
@@ -128,7 +131,7 @@ namespace GDGSP
 
                         string message = "";
 
-                        switch(result)
+                        switch (result)
                         {
                             case "yes":
                                 message = "RSVP realizado com sucesso";

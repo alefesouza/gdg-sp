@@ -45,60 +45,60 @@ import org.gdgsp.other.Other;
  * Fragment onde é exibido páginas web.
  */
 public class WebViewFragment extends Fragment {
-    private AppCompatActivity activity;
-    private View view;
+	private AppCompatActivity activity;
+	private View view;
 
 	private WebView webView;
 	private ProgressBar progress;
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        this.activity = (AppCompatActivity)getActivity();
-    }
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		this.activity = (AppCompatActivity)getActivity();
+	}
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-        super.onCreate(savedInstanceState);
-    }
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		setHasOptionsMenu(true);
+		super.onCreate(savedInstanceState);
+	}
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        view = inflater.inflate(R.layout.fragment_webview, container, false);
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		view = inflater.inflate(R.layout.fragment_webview, container, false);
 
-        webView = (WebView)view.findViewById(R.id.webview);
+		webView = (WebView)view.findViewById(R.id.webview);
 		progress = (ProgressBar)view.findViewById(R.id.progress);
 
-        webView.setWebViewClient(new webViewClient());
+		webView.setWebViewClient(new webViewClient());
 		webView.getSettings().setJavaScriptEnabled(true);
 
 		webView.loadUrl(getArguments().getString("url"));
 
 		webView.setOnKeyListener(new OnKeyListener() {
-				@SuppressWarnings("static-access")
-				public boolean onKey(View view, int keyCode, KeyEvent event) {
-					if (event.getAction() == event.ACTION_DOWN) {
-						if (keyCode == KeyEvent.KEYCODE_BACK) {
-							if (webView.canGoBack()) {
-								webView.goBack();
-							} else {
-								getActivity().finish();
-							}
-							return true;
+			@SuppressWarnings("static-access")
+			public boolean onKey(View view, int keyCode, KeyEvent event) {
+				if (event.getAction() == event.ACTION_DOWN) {
+					if (keyCode == KeyEvent.KEYCODE_BACK) {
+						if (webView.canGoBack()) {
+							webView.goBack();
+						} else {
+							getActivity().finish();
 						}
+						return true;
 					}
-					return true;
 				}
-			});
-			
+				return true;
+			}
+		});
+
 		return view;
 	}
 
-    public class webViewClient extends WebViewClient {
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+	public class webViewClient extends WebViewClient {
+		@Override
+		public boolean shouldOverrideUrlLoading(WebView view, String url) {
 			if(getArguments().getBoolean("islogin") && url.contains(getString(R.string.backend_url))) {
 				if(url.contains("refresh_token")) {
 					String token = Other.getQuery(url.replace("#", "?"), "refresh_token");
@@ -107,7 +107,7 @@ public class WebViewFragment extends Fragment {
 						SharedPreferences.Editor editor = preferences.edit();
 						editor.putString("refresh_token", token);
 						editor.commit();
-						
+
 						Intent intent = new Intent(activity, MainActivity.class);
 						intent.putExtra("fromlogin", true);
 						if(activity.getIntent().hasExtra("eventid")) {
@@ -118,61 +118,67 @@ public class WebViewFragment extends Fragment {
 					}
 				} else if(url.contains("error")) {
 					AlertDialog alertDialog = new AlertDialog.Builder(activity)
-						.setTitle(getString(R.string.login_error))
-						.setMessage(getString(R.string.login_error_sub))
-						.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface p1, int p2) {
-								webView.loadUrl(Other.getLoginUrl(activity));
-							}
-						})
-						.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface p1, int p2) {
-								activity.finish();
-							}
-						})
-						.create();
+							.setTitle(getString(R.string.login_error))
+							.setMessage(getString(R.string.login_error_sub))
+							.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface p1, int p2) {
+									webView.loadUrl(Other.getLoginUrl(activity));
+								}
+							})
+							.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface p1, int p2) {
+									activity.finish();
+								}
+							})
+							.create();
 
 					alertDialog.show();
 				} else if(url.contains("nonmember=none")) {
 					AlertDialog alertDialog = new AlertDialog.Builder(activity)
-						.setMessage(getString(R.string.login_nonmember).replace("{meetupid}", getString(R.string.meetup_id)))
-						.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface p1, int p2) {
-								getArguments().remove("islogin");
-								webView.loadUrl("http://meetup.com/" + getString(R.string.meetup_id));
-							}
-						})
-						.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface p1, int p2) {
-								activity.finish();
-							}
-						})
-						.create();
+							.setMessage(getString(R.string.login_nonmember).replace("{meetupid}", getString(R.string.meetup_id)))
+							.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface p1, int p2) {
+									getArguments().remove("islogin");
+									webView.loadUrl("http://meetup.com/" + getString(R.string.meetup_id));
+								}
+							})
+							.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface p1, int p2) {
+									activity.finish();
+								}
+							})
+							.create();
 
 					alertDialog.show();
 				} else if(url.contains("nonmember=pending")) {
 					AlertDialog alertDialog = new AlertDialog.Builder(activity)
-						.setMessage(getString(R.string.login_pending).replace("{meetupid}", getString(R.string.meetup_id)))
-						.setPositiveButton(getString(android.R.string.yes), new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface p1, int p2) {
-								activity.finish();
-							}
-						})
-						.create();
+							.setMessage(getString(R.string.login_pending).replace("{meetupid}", getString(R.string.meetup_id)))
+							.setPositiveButton(getString(android.R.string.yes), new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface p1, int p2) {
+									activity.finish();
+								}
+							})
+							.create();
 
 					alertDialog.show();
 				}
 			}
 
 			activity.supportInvalidateOptionsMenu();
-			view.loadUrl(url);
-            return super.shouldOverrideUrlLoading(view, url);
-        }
+
+			// Notei que a URL do Meetup que fazia dar erros ao fazer login com as redes sociais caia nessa condição
+			if(getArguments().getBoolean("islogin") && url.contains("meetup.com") && url.contains("response=") && url.contains("submit=")) {
+				view.loadUrl(Other.getLoginUrl(activity));
+			} else {
+				view.loadUrl(url);
+			}
+			return super.shouldOverrideUrlLoading(view, url);
+		}
 
 		@Override
 		public void onPageFinished(WebView view, String url) {
@@ -188,7 +194,7 @@ public class WebViewFragment extends Fragment {
 			}
 			super.onPageFinished(view, url);
 		}
-    }
+	}
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -200,17 +206,17 @@ public class WebViewFragment extends Fragment {
 
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.menu_share).setVisible(!getArguments().getBoolean("islogin", false));
-        menu.findItem(R.id.menu_open).setVisible(!getArguments().getBoolean("islogin", false));
+		menu.findItem(R.id.menu_share).setVisible(!getArguments().getBoolean("islogin", false));
+		menu.findItem(R.id.menu_open).setVisible(!getArguments().getBoolean("islogin", false));
 
 		menu.findItem(R.id.menu_forward).setEnabled(webView.canGoForward());
 
 		super.onPrepareOptionsMenu(menu);
 	}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
 			case R.id.menu_open:
 				Intent intent = new Intent(Intent.ACTION_VIEW);
 				intent.setData(Uri.parse(webView.getUrl()));
@@ -235,9 +241,9 @@ public class WebViewFragment extends Fragment {
 				webView.clearCache(true);
 				Other.showToast(activity, getString(R.string.cache2));
 				return true;
-            default:
-                return
-					super.onOptionsItemSelected(item);
-        }
-    }
+			default:
+				return
+						super.onOptionsItemSelected(item);
+		}
+	}
 }

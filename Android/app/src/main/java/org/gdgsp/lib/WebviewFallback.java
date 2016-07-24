@@ -28,9 +28,9 @@ public class WebviewFallback implements CustomTabActivityHelper.CustomTabFallbac
     @Override
     public void openUri(Activity activity, Uri uri) {
         Intent intent = new Intent(activity, FragmentActivity.class);
-		intent.putExtra("fragment", 2);
+        intent.putExtra("fragment", 2);
         intent.putExtra("url", uri.toString());
-		intent.putExtra("title", activity.getString(R.string.app_name));
+        intent.putExtra("title", activity.getString(R.string.app_name));
         activity.startActivity(intent);
     }
 }

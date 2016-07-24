@@ -56,21 +56,21 @@ public class SendNotificationFragment extends Fragment {
     private Button send;
     private int selectedPosition = 0;
 
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		this.activity = (AppCompatActivity)getActivity();
-	}
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.activity = (AppCompatActivity)getActivity();
+    }
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-	}
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, 	Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		view = inflater.inflate(R.layout.fragment_notification, container, false);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, 	Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        view = inflater.inflate(R.layout.fragment_notification, container, false);
 
         checkBox = (CheckBox)view.findViewById(R.id.checkbox_to_all);
         spinner = (Spinner)view.findViewById(R.id.spinner_events);
@@ -139,7 +139,7 @@ public class SendNotificationFragment extends Fragment {
                                     return;
                                 }
 
-                                if(response.matches("notification_send|invalid_user")) {
+                                if(response.matches("notification_send|invalid_user|try_again")) {
                                     String message = "";
 
                                     switch(response) {
@@ -147,7 +147,10 @@ public class SendNotificationFragment extends Fragment {
                                             message = getString(R.string.notification_send);
                                             break;
                                         case "invalid_user":
-                                            message = getString(R.string.invalid_user);
+                                            message = getString(R.string.notification_invalid_user);
+                                            break;
+                                        case "try_again":
+                                            message = getString(R.string.notification_try_again);
                                             break;
                                     }
 
@@ -160,6 +163,6 @@ public class SendNotificationFragment extends Fragment {
             }
         });
 
-		return view;
-	}
+        return view;
+    }
 }

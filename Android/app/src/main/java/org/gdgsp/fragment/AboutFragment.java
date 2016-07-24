@@ -51,26 +51,26 @@ public class AboutFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, 	Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		view = inflater.inflate(R.layout.fragment_about, container, false);
-		
+
 		String about_text = "<h3>GDG</h3>" +
-			"<p>O Google Developers Group é uma iniciativa de pessoas interessadas em construir com tecnologia e disseminar o conhecimento. Nossos eventos são direcionados para a comunidade de desenvolvedores, engenheiros, designers e empreendedores, organizados pelos nossos membros de forma voluntária e sem fins lucrativos. Encontre outros capítulos do GDG no Brasil no <a href=\"https://developers.google.com/groups/directory/Brazil\">Google Developers</a>.</p>" +
-			"<p><h3>Aplicativo</h3></p>" +
-			"<p>" + activity.getString(R.string.app_name) + " para Android versão: " + Other.getAppVersion(activity) + "</p>" +
-			"<p>Aplicativo desenvolvido por <a href=\"http://alefesouza.com\">Alefe Souza</a></p>" +
-			"<p>Desenvolvi o aplicativo do GDG-SP por sentir falta de notificações de novos eventos em tempo real no aplicativo oficial do meetup, e para facilitar como os sorteios são feitos. Desenvolvi várias versões desse aplicativo, todas em código aberto para ajudar pessoas que querem aprender a desenvolver para diversas plataformas, sendo elas nativamente para Android e Universal Windows Platform, e em Xamarin para iOS e Windows Phone, você pode ver o código exato dos aplicativos e o back-end em PHP no meu <a href=\"http://github.com/alefesouza/gdg-sp\">GitHub</a>, procurei deixar o código para ser facilmente adaptado para outros meetups, bastando editar apenas um arquivo em cada plataforma e mudar os ícones.</p>" +
-			"Nesse aplicativo foi utilizado:" +
-			"<br><br><a href=\"http://icons8.com\">Icons8</a>" +
-			"<br><a href=\"http://github.com/koush/ion\">Ion</a>" +
-			"<br><a href=\"http://onesignal.com\">OneSignal</a>" +
-			"<br><a href=\"http://github.com/vinc3m1/RoundedImageView\">Rounded Image View</a>" +
-			"<br><a href=\"http://github.com/google/gson\">Gson</a>" +
-			"<br><a href=\"http://developer.android.com/topic/libraries/support-library/index.html\">Android Support Libraries</a>" +
-			"<br><a href=\"http://developers.google.com/android/guides/overview\">Google Play Services</a>";
-		
+				"<p>O Google Developers Group é uma iniciativa de pessoas interessadas em construir com tecnologia e disseminar o conhecimento. Nossos eventos são direcionados para a comunidade de desenvolvedores, engenheiros, designers e empreendedores, organizados pelos nossos membros de forma voluntária e sem fins lucrativos. Encontre outros capítulos do GDG no Brasil no <a href=\"https://developers.google.com/groups/directory/Brazil\">Google Developers</a>.</p>" +
+				"<p><h3>Aplicativo</h3></p>" +
+				"<p>" + activity.getString(R.string.app_name) + " para Android versão: " + Other.getAppVersion(activity) + "</p>" +
+				"<p>Aplicativo desenvolvido por <a href=\"http://alefesouza.com\">Alefe Souza</a></p>" +
+				"<p>Desenvolvi o aplicativo do GDG-SP por sentir falta de notificações de novos eventos em tempo real no aplicativo oficial do meetup, e para facilitar como os sorteios são feitos. Desenvolvi várias versões desse aplicativo, todas em código aberto para ajudar pessoas que querem aprender a desenvolver para diversas plataformas, sendo elas nativamente para Android e Universal Windows Platform, e em Xamarin para iOS e Windows Phone, você pode ver o código exato dos aplicativos e o back-end em PHP no meu <a href=\"http://github.com/alefesouza/gdg-sp\">GitHub</a>, procurei deixar o código para ser facilmente adaptado para outros meetups, bastando editar apenas um arquivo em cada plataforma e mudar os ícones.</p>" +
+				"Nesse aplicativo foi utilizado:" +
+				"<br><br><a href=\"http://icons8.com\">Icons8</a>" +
+				"<br><a href=\"http://github.com/koush/ion\">Ion</a>" +
+				"<br><a href=\"http://onesignal.com\">OneSignal</a>" +
+				"<br><a href=\"http://github.com/vinc3m1/RoundedImageView\">Rounded Image View</a>" +
+				"<br><a href=\"http://github.com/google/gson\">Gson</a>" +
+				"<br><a href=\"http://developer.android.com/topic/libraries/support-library/index.html\">Android Support Libraries</a>" +
+				"<br><a href=\"http://developers.google.com/android/guides/overview\">Google Play Services</a>";
+
 		TextView about = (TextView)view.findViewById(R.id.about);
 		about.setMovementMethod(LinkMovementMethod.getInstance());
 		about.setText(Html.fromHtml(about_text));
-		
+
 		return view;
 	}
 }

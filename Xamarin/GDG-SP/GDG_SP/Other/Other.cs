@@ -59,15 +59,15 @@ namespace GDG_SP.Other
         /// <returns>A URL final para receber as respostas das pessoas sobre o evento.</returns>
         public static string GetRSVPSUrl(int id)
         {
-			return "http://" + AppResources.BackendUrl + "api/people.php" + finalUrl + "&eventid=" + id;
+            return "http://" + AppResources.BackendUrl + "api/people.php" + finalUrl + "&eventid=" + id;
         }
 
         /// <summary>
         /// Método que retorna a URL para fazer login.
         /// </summary>
         public static string GetLoginUrl()
-		{
-			return "http://" + AppResources.BackendUrl + "api/login.php" + finalUrl;
+        {
+            return "http://" + AppResources.BackendUrl + "api/login.php" + finalUrl;
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace GDG_SP.Other
             }
             else
             {
-				CrossShare.Current.OpenBrowser(url, null);
+                CrossShare.Current.OpenBrowser(url, null);
             }
         }
 
@@ -125,10 +125,10 @@ namespace GDG_SP.Other
         /// <param name="title">Título a ser exibido na tela de compartilhamento.</param>
         /// <param name="link">Link a ser compartilhado.</param>
 		public static async void ShareLink(string title, string link)
-		{
-			await CrossShare.Current.ShareLink(link, "", title);
-		}
-        
+        {
+            await CrossShare.Current.ShareLink(link, "", title);
+        }
+
         /// <summary>
         /// Método que retorna a URL do back-end, usado no GDG_SP.WinPhone para criar as live tiles, não conseguir acessar o AppResources diretamente no outro projeto.
         /// </summary>
@@ -175,7 +175,7 @@ namespace GDG_SP.Other
         {
             return CrossSettings.Current.GetValueOrDefault<string>(key, "");
         }
-        
+
         /// <summary>
         /// Método que retorna a um parâmetro de uma URL.
         /// </summary>

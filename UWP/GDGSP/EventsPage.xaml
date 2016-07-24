@@ -29,7 +29,7 @@ limitations under the License.
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
+
         <CommandBar Name="CB" x:Uid="CB" Background="{StaticResource TitleBarBackgroundThemeBrush}" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" Grid.Row="0" Grid.Column="0" HorizontalContentAlignment="Stretch">
             <CommandBar.Content>
                 <StackPanel>
@@ -56,7 +56,7 @@ limitations under the License.
 
         <RelativePanel Grid.Row="1">
             <ProgressRing Visibility="Collapsed" Name="ToKnow" IsActive="False" />
-            
+
             <ProgressRing IsActive="True" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Name="PRing"></ProgressRing>
 
             <ListView Name="ListEvents" xmlns:m="using:GDGSP.Models" Visibility="Collapsed" SelectionChanged="ListEvents_SelectionChanged">
@@ -83,7 +83,7 @@ limitations under the License.
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                
+
                                 <TextBlock Text="{Binding Start}" HorizontalAlignment="Left" TextWrapping="Wrap" />
                                 <TextBlock Text="{Binding Place}" HorizontalAlignment="Right" TextWrapping="Wrap" Grid.Column="1" />
                             </Grid>

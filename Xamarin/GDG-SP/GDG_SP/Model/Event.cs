@@ -24,8 +24,8 @@ namespace GDG_SP.Model
     public class Event
     {
         public int Id { get; set; }
-		public string Name { get; set; }
-		public string Image { get; set; }
+        public string Name { get; set; }
+        public string Image { get; set; }
         public string Description { get; set; }
         public string Link { get; set; }
         public string Who { get; set; }
@@ -33,10 +33,10 @@ namespace GDG_SP.Model
         public string Address { get; set; }
         public string City { get; set; }
         public double Lat { get; set; }
-		public double Lon { get; set; }
-		public string Start { get; set; }
-		public string End { get; set; }
-		public int Yes_rsvp_count { get; set; }
+        public double Lon { get; set; }
+        public string Start { get; set; }
+        public string End { get; set; }
+        public int Yes_rsvp_count { get; set; }
         public int Rsvp_limit { get; set; }
         public int Waitlist_count { get; set; }
         public string Response { get; set; }
