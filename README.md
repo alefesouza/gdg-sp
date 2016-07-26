@@ -12,9 +12,9 @@ Você pode baixar na:
 
 [Play Store](https://play.google.com/store/apps/details?id=org.gdgsp)
 
-[Windows Store](https://www.microsoft.com/store/apps/gdg-sp/9nblggh4xcj7)
+[App Store](https://itunes.apple.com/app/gdg-sp/id1135565491)
 
-Versão para iOS em aprovação na App Store.
+[Windows Store](https://www.microsoft.com/store/apps/gdg-sp/9nblggh4xcj7)
 
 Para desenvolver os aplicativos eu utilizei as IDEs:
 
