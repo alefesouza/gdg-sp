@@ -22,6 +22,10 @@ $events = json_decode($json);
 
 $event = $events[$_GET["tile"]];
 
+if($_GET["platform"] != "wp") {
+	$wp = "AndLogo";
+}
+
 if($event != null) {
   $name = $event->name;
 	$description = $event->description;
@@ -30,26 +34,23 @@ if($event != null) {
   $start = date("d/m/Y H:i", $event->time / 1000);
 	$end = date("H:i", ($event->time + $event->duration) / 1000);
 	$end = strpos($start, $end) !== false ? "" : " - $end";
-	$image = getImage($name, $description);
 	
   $tile = new SimpleXMLElement('<tile>
   <visual lang="pt-BR" version="2">
-  <binding template="TileSquare150x150PeekImageAndText01" fallback="TileSquarePeekImageAndText01">
-  <image id="1" src="'.$image.'" alt="alt text"/>
+  <binding template="TileSquare150x150Text03" fallback="TileSquareText03" branding="name'.$wp.'">
   <text id="1">'.$name.'</text>
   <text id="2">'.$place.'</text>
   <text id="3">'.date("d/m/Y", $event->time / 1000).'</text>
   <text id="4">'.date("H:i", $event->time / 1000).$end.'</text>
   </binding> 
-  <binding template="TileWide310x150PeekImage02" fallback="TileWidePeekImage02" branding="name'.$wp.'">
-  <image id="1" src="'.$image.'" alt="alt text"/>
+  <binding template="TileWide310x150Text05" fallback="TileWideText05" branding="name'.$wp.'">
   <text id="1">'.$name.'</text>
   <text id="2">'.$place.'</text>
   <text id="3">'.$event->venue->address_1.'</text>
   <text id="4">'.date("d/m/Y", $event->time / 1000).' ~ '.date("H:i", $event->time / 1000).$end.'</text>
   <text id="5"> </text>
   </binding>
-  <binding template="TileSquare310x310BlockAndText01">
+  <binding template="TileSquare310x310BlockAndText01" branding="name'.$wp.'">
   <text id="1">'.$name.'</text>
   <text id="2">'.$place.'</text>
   <text id="3">'.$event->venue->address_1.'</text>

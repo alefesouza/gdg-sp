@@ -15,11 +15,12 @@
  */
 
 using GDGSP.Models;
+using Newtonsoft.Json.Linq;
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
+using System.Net.Http;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
-using Windows.Storage;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Core;
@@ -99,7 +100,7 @@ namespace GDGSP
             progress.Visibility = Visibility.Visible;
         }
 
-        private async void webView1_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
+        private void webView1_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
         {
             string url = args.Uri.ToString();
             progress.IsIndeterminate = true;
@@ -116,69 +117,108 @@ namespace GDGSP
                 CBShare.Visibility = Visibility.Collapsed;
             }
 
-            if (url.Contains(Other.Other.backendUrl) && MainPage.mainPage.toLogin)
+            if (url.Contains(Other.Other.backendUrl) && MainPage.mainPage.toLogin && url.Contains("code="))
             {
-                if (url.Contains("refresh_token"))
-                {
-                    Debug.WriteLine(Other.Other.GetQuery(url, "refresh_token"));
-                    Other.Other.localSettings.Values["refresh_token"] = Other.Other.GetQuery(url, "refresh_token");
-                    MainPage.openEvent = openEvent;
-                    openEvent = 0;
-                    HomePage.homePage.eventopen.Visibility = Visibility.Collapsed;
-                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-                    Other.Other.CreateTile();
-                    MainPage.mainPage.toWebView = false;
-                    FrameGoBack();
-                }
-                else if (url.Contains("error"))
-                {
-                    MessageDialog md = new MessageDialog("Deseja tentar novamente?");
-                    md.Title = "Erro ao fazer login";
-
-                    md.Commands.Add(new UICommand("Sim", new UICommandInvokedHandler((c) => {
-                        (sender as WebView).Source = new Uri(Other.Other.GetLoginUrl());
-                    }))
-                    { Id = 0 });
-                    md.Commands.Add(new UICommand("Não", new UICommandInvokedHandler((c) => {
-                        FrameGoBack();
-                    }))
-                    { Id = 1 });
-
-                    await md.ShowAsync();
-                }
-                else if (url.Contains("nonmember=none"))
-                {
-                    MessageDialog md = new MessageDialog("Parece que você ainda não faz parte do " + Other.Other.resourceLoader.GetString("AppName") + ", deseja participar agora?");
-
-                    md.Commands.Add(new UICommand("Sim", new UICommandInvokedHandler((c) => {
-                        MainPage.mainPage.toLogin = false;
-
-                        (sender as WebView).Source = new Uri("http://meetup.com/" + Other.Other.resourceLoader.GetString("MeetupId"));
-                    }))
-                    { Id = 0 });
-                    md.Commands.Add(new UICommand("Não", new UICommandInvokedHandler((c) => {
-                        FrameGoBack();
-                    }))
-                    { Id = 1 });
-
-                    await md.ShowAsync();
-                }
-                else if (url.Contains("nonmember=pending"))
-                {
-                    MessageDialog md = new MessageDialog("Por favor, aguarde sua aprovação no " + Other.Other.resourceLoader.GetString("AppName") + " e tente novamente");
-
-                    md.Commands.Add(new UICommand("OK", new UICommandInvokedHandler((c) => {
-                        FrameGoBack();
-                    }))
-                    { Id = 0 });
-
-                    await md.ShowAsync();
-                }
+                GetCode(Other.Other.GetQuery(url, "code"));
             }
 
             progress1.IsActive = true;
 
             CBForward.IsEnabled = false;
+        }
+
+        private async void GetCode(string code)
+        {
+            var postData = new List<KeyValuePair<string, string>>();
+            postData.Add(new KeyValuePair<string, string>("code", code));
+
+            var client = new HttpClient();
+            client.MaxResponseContentBufferSize = 256000;
+            HttpResponseMessage response = await client.PostAsync(Other.Other.GetLoginUrl(), new FormUrlEncodedContent(postData));
+
+            if (response.IsSuccessStatusCode)
+            {
+                string jsonString = await response.Content.ReadAsStringAsync();
+                JObject json = JObject.Parse(jsonString);
+
+                if (!(bool)json["is_error"])
+                {
+                    string refresh_token = json["refresh_token"].ToString();
+                    string qr_code = json["qr_code"].ToString();
+
+                    Other.Other.localSettings.Values["refresh_token"] = refresh_token;
+                    Other.Other.localSettings.Values["qr_code"] = qr_code;
+                    MainPage.openEvent = openEvent;
+                    openEvent = 0;
+                    HomePage.homePage.eventopen.Visibility = Visibility.Collapsed;
+                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                    MainPage.mainPage.toWebView = false;
+                    FrameGoBack();
+                }
+                else
+                {
+                    string description = json["description"].ToString();
+
+                    if (description.Equals("error"))
+                    {
+                        loginError();
+                    }
+                    else if (description.Equals("none"))
+                    {
+                        MessageDialog md = new MessageDialog("Parece que você ainda não faz parte do " + Other.Other.resourceLoader.GetString("AppName") + ", deseja participar agora?");
+
+                        md.Commands.Add(new UICommand("Sim", new UICommandInvokedHandler((c) =>
+                        {
+                            MainPage.mainPage.toLogin = false;
+
+                            WV.Source = new Uri("http://meetup.com/" + Other.Other.resourceLoader.GetString("MeetupId"));
+                        }))
+                        { Id = 0 });
+                        md.Commands.Add(new UICommand("Não", new UICommandInvokedHandler((c) =>
+                        {
+                            FrameGoBack();
+                        }))
+                        { Id = 1 });
+
+                        await md.ShowAsync();
+                    }
+                    else if (description.Equals("pending"))
+                    {
+                        MessageDialog md = new MessageDialog("Por favor, aguarde sua aprovação no " + Other.Other.resourceLoader.GetString("AppName") + " e tente novamente");
+
+                        md.Commands.Add(new UICommand("OK", new UICommandInvokedHandler((c) =>
+                        {
+                            FrameGoBack();
+                        }))
+                        { Id = 0 });
+
+                        await md.ShowAsync();
+                    }
+                }
+            }
+            else
+            {
+                loginError();
+            }
+        }
+
+        private async void loginError()
+        {
+            MessageDialog md = new MessageDialog("Deseja tentar novamente?");
+            md.Title = "Erro ao fazer login";
+
+            md.Commands.Add(new UICommand("Sim", new UICommandInvokedHandler((c) =>
+            {
+                WV.Source = new Uri(Other.Other.GetLoginUrl());
+            }))
+            { Id = 0 });
+            md.Commands.Add(new UICommand("Não", new UICommandInvokedHandler((c) =>
+            {
+                FrameGoBack();
+            }))
+            { Id = 1 });
+
+            await md.ShowAsync();
         }
 
         private void FrameGoBack()

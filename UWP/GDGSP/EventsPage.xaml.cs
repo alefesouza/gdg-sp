@@ -240,7 +240,7 @@ namespace GDGSP
         {
             if (!Other.Other.localSettings.Values.ContainsKey("suggest_login"))
             {
-                MessageDialog md = new MessageDialog("Ao fazer login você:\n\n• Participa de sorteios exclusivos para quem usa o app.\n• Faz RSVP em eventos usando o aplicativo.\n• Vê a localização de eventos com localização oculta para não membros.\n• Recebe notificações sobre eventos que você marcou presença.\n\nDeseja fazer login agora?");
+                MessageDialog md = new MessageDialog("Ao fazer login você:\n\n• Participa de sorteios exclusivos para quem usa o app.\n• Faz RSVP e check-in em eventos usando o aplicativo.\n• Vê a localização de eventos com localização oculta para não membros.\n• Recebe notificações sobre eventos que você marcou presença.\n\nDeseja fazer login agora?");
                 md.Title = "Bem-vindo ao app do " + Other.Other.resourceLoader.GetString("AppName") + "!";
 
                 md.Commands.Add(new UICommand("Sim", new UICommandInvokedHandler((c) =>
@@ -284,6 +284,35 @@ namespace GDGSP
         private void OpenMeetup_Click(object sender, RoutedEventArgs e)
         {
             Other.Other.OpenSite("http://meetup.com/" + Other.Other.resourceLoader.GetString("MeetupId"));
+        }
+
+        private async void DoCheckin_Click(object sender, RoutedEventArgs e)
+        {
+            if (Other.Other.localSettings.Values.ContainsKey("qr_code"))
+            {
+                HomePage.homePage.mainframe.Navigate(typeof(CheckinPage));
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+            }
+			// Caso o usuário esteja com uma versão antiga do app
+            else if (Other.Other.localSettings.Values.ContainsKey("refresh_token"))
+            {
+                MainPage.mainPage.ToWebView(new Link() { Title = "Recebendo QR Code...", Value = Other.Other.GetLoginUrl() });
+            }
+            else
+            {
+                MessageDialog md = new MessageDialog("Deseja fazer login agora?");
+                md.Title = "Você precisa fazer login para fazer check-in";
+
+                md.Commands.Add(new UICommand("Sim", new UICommandInvokedHandler((c) =>
+                {
+                    MainPage.mainPage.settingsList.SelectedIndex = 1;
+                }))
+                { Id = 0 });
+                md.Commands.Add(new UICommand("Não", null)
+                { Id = 1 });
+
+                await md.ShowAsync();
+            }
         }
     }
 }

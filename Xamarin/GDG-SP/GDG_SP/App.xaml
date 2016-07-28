@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
 Copyright (C) 2016 Alefe Souza <http://alefesouza.com/>
 
@@ -21,7 +21,7 @@ limitations under the License.
     x:Class="GDG_SP.App">
   <Application.Resources>
     <ResourceDictionary>
-      <Style TargetType = "Label" >
+      <Style TargetType="Label">
         <Setter Property="FontSize" Value="16" />
       </Style>
     </ResourceDictionary>

@@ -31,7 +31,7 @@ Com o aplicativo, você pode:
 
 - Ver os eventos futuros.
 - Quem deu resposta aos eventos.
-- Fazer RSVP com sua conta do meetup.
+- Fazer RSVP e check-in com sua conta do meetup.
 - Realizar sorteios.
 - Ter acesso fácil aos links do GDG-SP.
 - Receber notificações de novos eventos.

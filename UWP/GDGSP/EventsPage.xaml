@@ -39,6 +39,7 @@ limitations under the License.
 
             <CommandBar.SecondaryCommands>
                 <AppBarButton Label="Atualizar" Name="Refresh" Click="Refresh_Click" />
+                <AppBarButton Label="Fazer check-in" Name="DoCheckin" Click="DoCheckin_Click" />
                 <AppBarButton Label="Abrir meetup" Name="OpenMeetup" Click="OpenMeetup_Click" />
             </CommandBar.SecondaryCommands>
         </CommandBar>

@@ -85,7 +85,7 @@ namespace GDG_SP
                     if (response.IsSuccessStatusCode)
                     {
                         string result = await response.Content.ReadAsStringAsync();
-
+                        
                         switch (result)
                         {
                             case "notification_send":

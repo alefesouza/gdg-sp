@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
 Copyright (C) 2016 Alefe Souza <http://alefesouza.com/>
 
@@ -42,7 +42,7 @@ limitations under the License.
         </Label.FontSize>
       </Label>
 
-      <Label>GDG-SP para Xamarin versão: 1.1.2</Label>
+      <Label>GDG-SP para Xamarin versão: 1.2</Label>
 
       <Label>Aplicativo desenvolvido por:</Label>
       <Label TextColor="Blue" x:Name="AlS">Alefe Souza</Label>

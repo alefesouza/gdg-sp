@@ -17,15 +17,12 @@
 
 include("../functions.php");
 
-session_start();
-
-// O "&code=" pode atrapalhar se ficar nessa variável
 $location = strtok("http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'],'?');
 
-if(isset($_GET["code"])) {
+if(isset($_POST["code"])) {
   $url = 'https://secure.meetup.com/oauth2/access';
   
-  $code = $_GET["code"];
+  $code = $_POST["code"];
   $query = "client_id=$meetup_client_key&client_secret=$meetup_secret_key&grant_type=authorization_code&redirect_uri=$location?meetupid=$meetupid&code=$code";
 
   $headers = array(
@@ -45,16 +42,16 @@ if(isset($_GET["code"])) {
   $result = curl_exec($ch);
   $json = json_decode($result);
   
-	$token = refreshMeetupToken($json->refresh_token);
+  $token = refreshMeetupToken($json->refresh_token);
 	
-	$ismember = @file_get_contents("https://api.meetup.com/$meetupid?access_token=$token&fields=self");
+  $ismember = @file_get_contents("https://api.meetup.com/$meetupid?access_token=$token&fields=self");
   $json2 = json_decode($ismember);
   
   $status = $json2->self->status;
   
 	if(strpos($http_response_header[0], "200") !== false) {
 		if($status != "active") {
-			 header("location:$location?nonmember=$status&meetupid=$meetupid");
+			echo json_encode(array("is_error" => true, "description" => $status));
 		} else {
 			$memberdata = @file_get_contents("https://api.meetup.com/$meetupid/members/self?access_token=$token");
 			$memberjson = json_decode($memberdata);
@@ -66,13 +63,15 @@ if(isset($_GET["code"])) {
 				$last_activity = date("Ymd", time());
 				mysqli_query($dbi, "INSERT INTO meetup_app_members (member_id, last_activity) VALUES ($memberid, $last_activity)");
 			}
-
-			header("location:$location?refresh_token=".$json->refresh_token);
+			
+			$qr = file_get_contents("https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=".$qrcode.$memberid);
+			
+			echo json_encode(array("is_error" => false, "refresh_token" => $json->refresh_token, "qr_code" => base64_encode($qr)));
 		}
 	} else {
-		header("location:$location?error=token&meetupid=$meetupid");
+		echo json_encode(array("is_error" => true, "description" => "error"));
 	}
-} else if(isset($_GET["refresh_token"]) || isset($_GET["error"]) || isset($_GET["nonmember"])) {
+} else if(isset($_GET["code"])) {
 } else {
   header("location:https://secure.meetup.com/oauth2/authorize?client_id=$meetup_client_key&response_type=code&redirect_uri=$location?meetupid=$meetupid&scope=rsvp+event_management");
 }

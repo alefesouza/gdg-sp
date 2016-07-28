@@ -86,6 +86,10 @@ public class FragmentActivity extends AppCompatActivity {
 				title = getString(R.string.send_notification);
 				fragment = new SendNotificationFragment();
 				break;
+			case 6:
+				title = getString(R.string.do_checkin);
+				fragment = new CheckinFragment();
+				break;
 		}
 
 		if(fragment != null) {

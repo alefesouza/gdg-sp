@@ -36,39 +36,35 @@ limitations under the License.
             </CommandBar.Content>
         </CommandBar>
 
-        <Grid Name="CBMobile" Visibility="Collapsed" x:Uid="CBMobile" Background="{StaticResource TitleBarBackgroundThemeBrush}" Grid.Row="0" Height="48" Padding="48 0 0 0">
-            <StackPanel>
-                <TextBlock Name="CBMobileTitle" x:Uid="CBMobileTitle" FontWeight="Bold" Margin="12,14" />
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Padding="10">
+                <CheckBox x:Name="ToAll" Content="Enviar para todos" IsChecked="True" />
+
+                <ComboBox x:Name="Events" Header="Pessoas no evento" Margin="0, 10, 0, 0" Visibility="Collapsed">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Width="Auto" Height="Auto">
+                                <TextBlock Text="{Binding Name}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <TextBlock Text="Título" Margin="0, 10, 0, 0" />
+                <TextBox x:Name="Title" />
+
+                <TextBlock Text="Link (opcional)" Margin="0, 10, 0, 0" />
+                <TextBox x:Name="Link" />
+
+                <TextBlock Text="Imagem (opcional)" Margin="0, 10, 0, 0" />
+                <TextBox x:Name="Image" />
+
+                <TextBlock Text="Mensagem" Margin="0, 10, 0, 0" />
+                <RichEditBox x:Name="Message" MinHeight="100" />
+
+                <Button x:Name="Send" Content="Enviar" Margin="0, 10, 0, 0" />
             </StackPanel>
-        </Grid>
-
-        <StackPanel Grid.Row="1" Padding="10">
-            <CheckBox x:Name="ToAll" Content="Enviar para todos" IsChecked="True" />
-
-            <ComboBox x:Name="Events" Header="Pessoas no evento" Margin="0, 10, 0, 0" Visibility="Collapsed">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal" Width="Auto" Height="Auto">
-                            <TextBlock Text="{Binding Name}"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
-
-            <TextBlock Text="Título" Margin="0, 10, 0, 0" />
-            <TextBox x:Name="Title" />
-
-            <TextBlock Text="Link (opcional)" Margin="0, 10, 0, 0" />
-            <TextBox x:Name="Link" />
-
-            <TextBlock Text="Imagem (opcional)" Margin="0, 10, 0, 0" />
-            <TextBox x:Name="Image" />
-
-            <TextBlock Text="Mensagem" Margin="0, 10, 0, 0" />
-            <RichEditBox x:Name="Message" MinHeight="100" />
-
-            <Button x:Name="Send" Content="Enviar" Margin="0, 10, 0, 0" />
-        </StackPanel>
+        </ScrollViewer>
 
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>

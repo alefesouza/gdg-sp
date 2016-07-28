@@ -20,13 +20,13 @@ namespace GDG_SP
     /// Objeto que representa uma pessoa retornada pelo JSON
     /// </summary>
 	public class Person
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Photo { get; set; }
+	{
+		public int Id { get; set; }
+		public string Name { get; set; }
+		public string Photo { get; set; }
         public string Intro { get; set; }
         public string Response { get; set; }
         public bool Has_app { get; set; }
-    }
+	}
 }
 

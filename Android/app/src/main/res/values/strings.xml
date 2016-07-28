@@ -47,8 +47,8 @@ limitations under the License.
     <string name="settings">Configurações</string>
     <string name="about">Sobre</string>
 
-    <string name="suggest_login_title">Bem-vindo ao app do {meetupid}!</string>
-    <string name="suggest_login_sub">Ao fazer login você:\n\n• Participa de sorteios exclusivos para quem usa o app.\n• Faz RSVP em eventos usando o aplicativo.\n• Vê a localização de meetups com localização oculta para não membros.\n• Recebe notificações sobre eventos que você marcou presença.\n\nDeseja fazer login agora?</string>
+    <string name="suggest_login_title">Bem-vindo ao app do {appname}!</string>
+    <string name="suggest_login_sub">Ao fazer login você:\n\n• Participa de sorteios exclusivos para quem usa o app.\n• Faz RSVP e check-in em eventos usando o aplicativo.\n• Vê a localização de meetups com localização oculta para não membros.\n• Recebe notificações sobre eventos que você marcou presença.\n\nDeseja fazer login agora?</string>
 
     <string name="yes">Sim</string>
     <string name="no">Não</string>
@@ -85,14 +85,18 @@ limitations under the License.
     <string name="login_success">Login realizado com sucesso</string>
     <string name="login_error">Erro ao fazer login</string>
     <string name="login_error_sub">Deseja tentar novamente?</string>
-    <string name="login_nonmember">Parece que você ainda não faz parte do {meetupid}, deseja participar agora?</string>
-    <string name="login_pending">Por favor, aguarde sua aprovação no {meetupid} e tente novamente</string>
+    <string name="login_nonmember">Parece que você ainda não faz parte do {appname}, deseja participar agora?</string>
+    <string name="login_pending">Por favor, aguarde sua aprovação no {appname} e tente novamente</string>
     <string name="refresh">Atualizar</string>
     <string name="open_meetup">Abrir meetup</string>
     <string name="share">Compartilhar</string>
     <string name="copylink">Copiar link</string>
     <string name="link_copyed">Link copiado para a área de transferência</string>
     <string name="openinbrowser">Abrir no navegador</string>
+
+    <string name="do_checkin">Fazer check-in</string>
+    <string name="getting_qrcode">Recebendo QR Code...</string>
+    <string name="checkin_need_login">Você precisa fazer login para fazer check-in</string>
 
     <string name="back">Voltar</string>
     <string name="forward">Avançar</string>

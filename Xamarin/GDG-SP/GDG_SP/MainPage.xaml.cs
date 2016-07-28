@@ -69,17 +69,21 @@ namespace GDG_SP
 
                 more = new ToolbarItem("Mais", "More.png", async () =>
                 {
-                    string action = await DisplayActionSheet("Menu", "Cancelar", null, "Atualizar", "Abrir meetup");
+                    string action = await DisplayActionSheet("Menu", "Cancelar", null, "Atualizar", "Fazer check-in", "Abrir meetup");
 
                     if (action != null)
                     {
-                        if (action.Equals("Atualizar"))
-                        {
-                            GetEvents(true);
-                        }
-                        else if (action.Equals("Abrir meetup"))
-                        {
-                            Other.Other.OpenSite("meetup.com/" + AppResources.MeetupId, this);
+						if (action.Equals("Atualizar"))
+						{
+							GetEvents(true);
+						}
+						else if (action.Equals("Fazer check-in"))
+						{
+							OpenCheckin();
+						}
+						else if (action.Equals("Abrir meetup"))
+						{
+							Other.Other.OpenSite("meetup.com/" + AppResources.MeetupId, this);
                         }
                     }
                 });
@@ -97,6 +101,11 @@ namespace GDG_SP
                 {
                     Other.Other.OpenSite("meetup.com/" + AppResources.MeetupId, this);
                 }));
+
+				ToolbarItems.Add(new ToolbarItem("Fazer check-in", null, () =>
+				{
+					OpenCheckin();
+				}, ToolbarItemOrder.Secondary));
             }
 
             TryAgain.Clicked += (s, e) =>
@@ -208,12 +217,12 @@ namespace GDG_SP
                 LinksPage.linksPage.profileName.Text = LinksPage.member.Name;
                 LinksPage.linksPage.profileIntro.Text = LinksPage.member.Intro;
 
-                if (Other.Other.GetSetting("one_signal").Equals(""))
+                if(Other.Other.GetSetting("one_signal").Equals(""))
                 {
                     Other.Other.AddSetting("one_signal", LinksPage.member.Id.ToString());
                 }
 
-                if ((bool)root["member"]["is_admin"])
+                if((bool)root["member"]["is_admin"])
                 {
                     if (!notificationAdded)
                     {
@@ -302,7 +311,7 @@ namespace GDG_SP
                         {
                             if (Other.Other.GetSetting("refresh_token").Length > 0)
                             {
-                                if (!_event.Rsvpable)
+                                if (_event.Rsvpable)
                                 {
                                     await Navigation.PushAsync(new RSVPPage(_event));
                                 }
@@ -333,7 +342,7 @@ namespace GDG_SP
 
                         more.Command = new Command(async () =>
                         {
-                            string action = await DisplayActionSheet("Menu", "Cancelar", null, "Atualizar", "Abrir meetup", "Abrir no navegador");
+                            string action = await DisplayActionSheet("Menu", "Cancelar", null, "Atualizar", "Fazer check-in", "Abrir meetup", "Abrir no navegador");
 
                             if (action != null)
                             {
@@ -341,6 +350,10 @@ namespace GDG_SP
                                 {
                                     GetEvents(true);
                                 }
+								else if (action.Equals("Fazer check-in"))
+								{
+									OpenCheckin();
+								}
                                 else if (action.Equals("Abrir meetup"))
                                 {
                                     Other.Other.OpenSite("meetup.com/" + AppResources.MeetupId, this);
@@ -388,6 +401,26 @@ namespace GDG_SP
             SuggestLogin();
         }
 
+		private async void OpenCheckin()
+		{
+			if (!Other.Other.GetSetting("qr_code").Equals(""))
+			{
+				await Navigation.PushAsync(new CheckinPage());
+			}
+			else if(!Other.Other.GetSetting("refresh_token").Equals(""))
+            {
+                await Navigation.PushAsync(new WebViewPage(Other.Other.GetLoginUrl(), true) { Title = "Recebendo QR Code..." });
+            }
+            else
+            {
+				var alert = await DisplayAlert("Você precisa fazer login para fazer check-in", "Deseja fazer login agora?", "Sim", "Não");
+				if (alert)
+				{
+					await Navigation.PushAsync(new WebViewPage(Other.Other.GetLoginUrl(), true) { Title = "Login" });
+				}
+			}
+		}
+
         private void TabletPost()
         {
             EventWebView.Navigating -= WView_Navigating;
@@ -403,7 +436,7 @@ namespace GDG_SP
         {
             if (Other.Other.GetSetting("suggest_login").Equals(""))
             {
-                var alert = await DisplayAlert("Bem-vindo ao app do " + AppResources.AppName + "!", "Ao fazer login você:\n\n• Participa de sorteios exclusivos para quem usa o app.\n• Faz RSVP em eventos usando o aplicativo.\n• Vê a localização de eventos com localização oculta para não membros.\n• Recebe notificações sobre eventos que você marcou presença.\n\nDeseja fazer login agora?", "Sim", "Não");
+                var alert = await DisplayAlert("Bem-vindo ao app do " + AppResources.AppName + "!", "Ao fazer login você:\n\n• Participa de sorteios exclusivos para quem usa o app.\n• Faz RSVP e check-in em eventos usando o app.\n• Vê a localização de eventos com localização oculta para não membros.\n• Recebe notificações sobre eventos que você marcou presença.\n\nDeseja fazer login agora?", "Sim", "Não");
                 if (alert)
                 {
                     await Navigation.PushAsync(new WebViewPage(Other.Other.GetLoginUrl(), true) { Title = "Login" });

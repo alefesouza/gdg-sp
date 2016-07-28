@@ -17,6 +17,7 @@
 package org.gdgsp.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.support.v4.app.Fragment;
@@ -37,10 +38,11 @@ import com.koushikdutta.ion.Ion;
 import java.util.ArrayList;
 import java.util.List;
 import org.gdgsp.R;
-import org.gdgsp.model.*;
+import org.gdgsp.activity.MainActivity;
+import org.gdgsp.model.Event;
+import org.gdgsp.model.ObjectToSend;
+import org.gdgsp.model.Question;
 import org.gdgsp.other.Other;
-import android.content.*;
-import org.gdgsp.activity.*;
 
 /**
  * Fragment onde o usuário realiza RSVP.

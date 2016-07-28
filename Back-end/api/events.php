@@ -82,18 +82,18 @@ foreach($events as $event) {
     "yes_rsvp_count" => (int)$yes_rsvp_count,
     "rsvp_limit" => (int)$event->rsvp_limit,
     "waitlist_count" => (int)$event->waitlist_count,
-		"response" => $event->self->rsvp->response,
-		"survey_questions" => $event->survey_questions,
-		"answers" => $event->self->rsvp->answers,
-		"rsvpable" => $event->rsvpable
-		);
+    "response" => $event->self->rsvp->response,
+    "survey_questions" => $event->survey_questions,
+    "answers" => $event->self->rsvp->answers,
+    "rsvpable" => $event->rsvpable
+	);
 	
-		// Parece que no Xamarin.iOS não da pra definir a imagem como largura pra tela toda com a altura acompanhando
-		if($_GET["platform"] == "ios" && $_GET["via"] == "xamarin") {
-			list($width, $height, $type, $attr) = getimagesize($image);
-			$newevents[count($newevents) - 1]["image_width"] = $width;
-			$newevents[count($newevents) - 1]["image_height"] = $height;
-		}
+	// Parece que no Xamarin.iOS não da pra definir a imagem como largura pra tela toda com a altura acompanhando
+	if($_GET["platform"] == "ios" && $_GET["via"] == "xamarin") {
+		list($width, $height, $type, $attr) = getimagesize($image);
+		$newevents[count($newevents) - 1]["image_width"] = $width;
+		$newevents[count($newevents) - 1]["image_height"] = $height;
+	}
 }
 
 $newjson = array("member" => array("id" => (int)$memberid, "name" => (string)$membername, "photo" => (string)$memberphoto, "intro" => (string)$memberintro, "is_admin" => (boolean)$isadmin), "header" => $header_image, "events" => $newevents);

@@ -22,6 +22,7 @@ header('Content-Type: text/html; charset=utf-8');
 
 // Caminho do arquivo atual
 $location = "http://".dirname($_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF']);
+$qrcode = "http://gdgsp.org/qrcode/";
 
 // Caso o cron de notificações passe por aqui, o $meetupid já terá valor
 if(!isset($meetupid)) {

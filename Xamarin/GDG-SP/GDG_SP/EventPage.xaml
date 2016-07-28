@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
 Copyright (C) 2016 Alefe Souza <http://alefesouza.com/>
 
@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="GDG_SP.EventPage">
-  <Grid>
-    <WebView x:Name="WView"></WebView>
-  </Grid>
+	<Grid>
+		<WebView x:Name="WView"></WebView>
+	</Grid>
 </ContentPage>

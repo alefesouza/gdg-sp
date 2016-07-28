@@ -48,7 +48,6 @@ import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.onesignal.OneSignal;
-
 import java.lang.reflect.Type;
 import java.util.List;
 import org.gdgsp.R;
@@ -97,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 		drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-				this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+			this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 		drawer.setDrawerListener(toggle);
 		toggle.syncState();
 
@@ -133,29 +132,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		}
 
 		findViewById(R.id.try_again).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View p1) {
-				errorScreen.setVisibility(View.GONE);
-				getEvents();
-			}
-		});
+				@Override
+				public void onClick(View p1) {
+					errorScreen.setVisibility(View.GONE);
+					getEvents();
+				}
+			});
 
 		navigationView.getHeaderView(0).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View p1) {
-				if(person == null) {
-					Intent intent = new Intent(MainActivity.this, FragmentActivity.class);
-					intent.putExtra("fragment", 2);
-					intent.putExtra("title", getString(R.string.login_do));
-					intent.putExtra("url", Other.getLoginUrl(MainActivity.this));
-					intent.putExtra("islogin", true);
-					startActivity(intent);
-				} else {
-					Other.openSite(MainActivity.this, "http://meetup.com/" + getString(R.string.meetup_id) + "/members/" + person.getId());
-					drawer.closeDrawer(GravityCompat.START);
+				@Override
+				public void onClick(View p1) {
+					if(person == null) {
+						Intent intent = new Intent(MainActivity.this, FragmentActivity.class);
+						intent.putExtra("fragment", 2);
+						intent.putExtra("title", getString(R.string.login_do));
+						intent.putExtra("url", Other.getLoginUrl(MainActivity.this));
+						intent.putExtra("islogin", true);
+						startActivity(intent);
+					} else {
+						Other.openSite(MainActivity.this, "http://meetup.com/" + getString(R.string.meetup_id) + "/members/" + person.getId());
+						drawer.closeDrawer(GravityCompat.START);
+					}
 				}
-			}
-		});
+			});
 
 		getEvents();
 	}
@@ -168,87 +167,87 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		progress.setVisibility(View.VISIBLE);
 
 		Ion.with(this)
-				.load(Other.getEventsUrl(this))
-				.setBodyParameter("refresh_token", Other.getRefreshToken(this))
-				.asJsonObject()
-				.setCallback(new FutureCallback<JsonObject>() {
-					@Override
-					public void onCompleted(Exception e, final JsonObject json) {
-						if(e != null) {
-							if(e instanceof JsonParseException) {
-								errorMessage.setText(getString(R.string.error_message));
-								errorScreen.setVisibility(View.VISIBLE);
-							} else {
-								errorMessage.setText(getString(R.string.connection_error));
-								errorScreen.setVisibility(View.VISIBLE);
-							}
-							progress.setVisibility(View.GONE);
-							return;
-						}
-
-						if(json.get("member").getAsJsonObject().get("id").getAsInt() > 0) {
-							JsonObject member = json.get("member").getAsJsonObject();
-
-							editor.putString("member_profile", member.toString()).commit();
-
-							Type datasetListType = new TypeToken<Person>() {}.getType();
-							person = gson.fromJson(json.get("member").getAsJsonObject().toString(), datasetListType);
-
-							profileName.setText(person.getName());
-							profileIntro.setText(person.getIntro());
-
-							Ion.with(MainActivity.this).load(person.getPhoto()).intoImageView(profilePhoto);
-
-							if(member.get("is_admin").getAsBoolean()) {
-								navigationView.getMenu().getItem(0).setVisible(true);
-							}
-
-							OneSignal.sendTag("member_id", String.valueOf(person.getId()));
+			.load(Other.getEventsUrl(this))
+			.setBodyParameter("refresh_token", Other.getRefreshToken(this))
+			.asJsonObject()
+			.setCallback(new FutureCallback<JsonObject>() {
+				@Override
+				public void onCompleted(Exception e, final JsonObject json) {
+					if(e != null) {
+						if(e instanceof JsonParseException) {
+							errorMessage.setText(getString(R.string.error_message));
+							errorScreen.setVisibility(View.VISIBLE);
 						} else {
-							// Se o id retornar 0 e o usuário tiver a configuração refresh_token significa que tem algum problema com o token dele, nesse caso apaga o token atual e pede login novamente
-							if(preferences.contains("refresh_token")) {
-								profileName.setText(getString(R.string.login_do));
-								profileIntro.setText("");
-								profilePhoto.setImageResource(R.drawable.ic_launcher);
-
-								person = null;
-
-								editor.remove("refresh_token").remove("member_profile").commit();
-							}
-						}
-
-						Type datasetListType = new TypeToken<List<Event>>() {}.getType();
-
-						listEvents = gson.fromJson(json.get("events").getAsJsonArray().toString(), datasetListType);
-
-						Ion.with(MainActivity.this).load(json.get("header").getAsString()).intoImageView((ImageView)navHeader.findViewById(R.id.cover_photo));
-
-						if(listEvents.size() > 0) {
-							cardAdapter = new CardAdapter(MainActivity.this, listEvents);
-							list.setAdapter(cardAdapter);
-
-							progress.setVisibility(View.GONE);
-
-							if(openEvent != 0) {
-								for(Event event : listEvents) {
-									if(event.getId() == openEvent) {
-										openEvent(event);
-										openEvent = 0;
-									}
-								}
-							} else if(Other.isTablet(MainActivity.this) && listEvents.size() > 0) {
-								openEvent(listEvents.get(0));
-							}
-
-							list.setVisibility(View.VISIBLE);
-						} else {
-							errorMessage.setText(getString(R.string.error_noevents));
+							errorMessage.setText(getString(R.string.connection_error));
 							errorScreen.setVisibility(View.VISIBLE);
 						}
+						progress.setVisibility(View.GONE);
+						return;
+					}
+
+					if(json.get("member").getAsJsonObject().get("id").getAsInt() > 0) {
+						JsonObject member = json.get("member").getAsJsonObject();
+
+						editor.putString("member_profile", member.toString()).commit();
+
+						Type datasetListType = new TypeToken<Person>() {}.getType();
+						person = gson.fromJson(json.get("member").getAsJsonObject().toString(), datasetListType);
+
+						profileName.setText(person.getName());
+						profileIntro.setText(person.getIntro());
+
+						Ion.with(MainActivity.this).load(person.getPhoto()).intoImageView(profilePhoto);
+
+						if(member.get("is_admin").getAsBoolean()) {
+							navigationView.getMenu().getItem(0).setVisible(true);
+						}
+						
+						OneSignal.sendTag("member_id", String.valueOf(person.getId()));
+					} else {
+						// Se o id retornar 0 e o usuário tiver a configuração refresh_token significa que tem algum problema com o token dele, nesse caso apaga o token atual e pede login novamente
+						if(preferences.contains("refresh_token")) {
+							profileName.setText(getString(R.string.login_do));
+							profileIntro.setText("");
+							profilePhoto.setImageResource(R.drawable.ic_launcher);
+
+							person = null;
+
+							editor.remove("refresh_token").remove("member_profile").commit();
+						}
+					}
+
+					Type datasetListType = new TypeToken<List<Event>>() {}.getType();
+
+					listEvents = gson.fromJson(json.get("events").getAsJsonArray().toString(), datasetListType);
+
+					Ion.with(MainActivity.this).load(json.get("header").getAsString()).intoImageView((ImageView)navHeader.findViewById(R.id.cover_photo));
+
+					if(listEvents.size() > 0) {
+						cardAdapter = new CardAdapter(MainActivity.this, listEvents);
+						list.setAdapter(cardAdapter);
 
 						progress.setVisibility(View.GONE);
+
+						if(openEvent != 0) {
+							for(Event event : listEvents) {
+								if(event.getId() == openEvent) {
+									openEvent(event);
+									openEvent = 0;
+								}
+							}
+						} else if(Other.isTablet(MainActivity.this) && listEvents.size() > 0) {
+							openEvent(listEvents.get(0));
+						}
+
+						list.setVisibility(View.VISIBLE);
+					} else {
+						errorMessage.setText(getString(R.string.error_noevents));
+						errorScreen.setVisibility(View.VISIBLE);
 					}
-				});
+
+					progress.setVisibility(View.GONE);
+				}
+			});
 		suggestLogin();
 	}
 
@@ -257,24 +256,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	 */
 	private void suggestLogin() {
 		if(!preferences.contains("suggest_login")) {
-			final AlertDialog alertDialog = new AlertDialog.Builder(this)
-					.setTitle(getString(R.string.suggest_login_title).replace("{meetupid}", getString(R.string.meetup_id)))
-					.setMessage(getString(R.string.suggest_login_sub))
-					.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface p1, int p2) {
-							Intent intent = new Intent(MainActivity.this, FragmentActivity.class);
-							intent.putExtra("fragment", 2);
-							intent.putExtra("title", getString(R.string.login_do));
-							intent.putExtra("url", Other.getLoginUrl(MainActivity.this));
-							intent.putExtra("islogin", true);
-							startActivity(intent);
+			AlertDialog alertDialog = new AlertDialog.Builder(this)
+				.setTitle(getString(R.string.suggest_login_title).replace("{appname}", getString(R.string.app_name)))
+				.setMessage(getString(R.string.suggest_login_sub))
+				.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface p1, int p2) {
+						Intent intent = new Intent(MainActivity.this, FragmentActivity.class);
+						intent.putExtra("fragment", 2);
+						intent.putExtra("title", getString(R.string.login_do));
+						intent.putExtra("url", Other.getLoginUrl(MainActivity.this));
+						intent.putExtra("islogin", true);
+						startActivity(intent);
 
-							p1.dismiss();
-						}
-					})
-					.setNegativeButton(getString(R.string.no), null)
-					.create();
+						p1.dismiss();
+					}
+				})
+				.setNegativeButton(getString(R.string.no), null)
+				.create();
 
 			alertDialog.show();
 
@@ -375,15 +374,53 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.menu_open_meetup:
-				Other.openMeetupApp(this, "http://meetup.com/" + getString(R.string.meetup_id));
-				return true;
 			case R.id.menu_refresh:
 				getEvents();
 				return true;
+			case R.id.menu_checkin:
+				if(preferences.contains("qr_code")) {
+					Intent checkin = new Intent(MainActivity.this, FragmentActivity.class);
+					checkin.putExtra("fragment", 6);
+					startActivity(checkin);
+				} else if(preferences.contains("refresh_token")) {
+					// Caso o usuário esteja com uma versão antiga do app
+					Intent intent = new Intent(MainActivity.this, FragmentActivity.class);
+					intent.putExtra("fragment", 2);
+					intent.putExtra("title", getString(R.string.getting_qrcode));
+					intent.putExtra("url", Other.getLoginUrl(MainActivity.this));
+					intent.putExtra("islogin", true);
+					startActivity(intent);
+
+					Other.showToast(this, getString(R.string.getting_qrcode));
+				} else {
+					AlertDialog alertDialog = new AlertDialog.Builder(this)
+						.setTitle(getString(R.string.checkin_need_login))
+						.setMessage(getString(R.string.rsvp_need_sub))
+						.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface p1, int p2) {
+								Intent intent = new Intent(MainActivity.this, FragmentActivity.class);
+								intent.putExtra("fragment", 2);
+								intent.putExtra("title", getString(R.string.login_do));
+								intent.putExtra("url", Other.getLoginUrl(MainActivity.this));
+								intent.putExtra("islogin", true);
+								startActivity(intent);
+
+								p1.dismiss();
+							}
+						})
+						.setNegativeButton(getString(R.string.no), null)
+						.create();
+
+					alertDialog.show();
+				}
+				return true;
+			case R.id.menu_open_meetup:
+				Other.openMeetupApp(this, "http://meetup.com/" + getString(R.string.meetup_id));
+				return true;
 			default:
 				return
-						super.onOptionsItemSelected(item);
+					super.onOptionsItemSelected(item);
 		}
 	}
 }

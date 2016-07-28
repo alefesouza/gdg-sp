@@ -22,6 +22,10 @@ limitations under the License.
         android:title="@string/refresh"
         app:showAsAction="never" />
     <item
+        android:id="@+id/menu_checkin"
+        android:title="@string/do_checkin"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/menu_open_meetup"
         android:title="@string/open_meetup"
         app:showAsAction="never" />

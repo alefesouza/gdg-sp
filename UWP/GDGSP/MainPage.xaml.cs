@@ -119,7 +119,7 @@ namespace GDGSP
         {
             info.Value = info.Value.StartsWith("http") ? info.Value : "http://" + info.Value;
 
-            if (info.Title.Equals("Login"))
+            if (info.Value.Equals(Other.Other.GetLoginUrl()))
             {
                 toLogin = true;
             }
@@ -278,7 +278,11 @@ namespace GDGSP
             }
             else
             {
-                if (HomePage.homePage.eventopen.Visibility == Visibility.Visible)
+                if (HomePage.homePage.mainframe.CanGoBack)
+                {
+                    HomePage.homePage.mainframe.GoBack();
+                }
+                else if (HomePage.homePage.eventopen.Visibility == Visibility.Visible)
                 {
                     // My canGoBack always return false, that's my programmer way https://github.com/alefesouza/alefe-ultimate-programmer/
                     if (HomePage.homePage.eventopen.CanGoBack)

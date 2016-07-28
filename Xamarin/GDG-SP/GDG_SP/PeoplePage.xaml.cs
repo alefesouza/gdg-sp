@@ -28,18 +28,18 @@ namespace GDG_SP
     /// Página que exibe as pessoas que deram alguma resposta ao evento.
     /// </summary>
     public partial class PeoplePage : ContentPage
-    {
-        ObservableCollection<Person> listPeople = new ObservableCollection<Person>();
+	{
+		ObservableCollection<Person> listPeople = new ObservableCollection<Person>();
         int id;
         bool peopleWithApp = false;
         ToolbarItem withApp;
 
         public PeoplePage(int id)
-        {
-            InitializeComponent();
+		{
+			InitializeComponent ();
             this.id = id;
             GetPeople();
-        }
+		}
 
         public PeoplePage(ObservableCollection<Person> content)
         {
@@ -53,11 +53,11 @@ namespace GDG_SP
         /// Método que solicita a lista de pessoas que deram alguma resposta ao evento e preenche a lista.
         /// </summary>
         public async void GetPeople()
-        {
-            string jsonString = "";
+		{
+			string jsonString = "";
 
-            try
-            {
+			try
+			{
                 if (!Other.Other.GetSetting("refresh_token").Equals(""))
                 {
                     var client = new HttpClient();
@@ -78,11 +78,11 @@ namespace GDG_SP
                     jsonString = await new HttpClient().GetStringAsync(new Uri(Other.Other.GetRSVPSUrl(id)));
                 }
             }
-            catch
-            {
+			catch
+			{
                 ShowMessage("Verifique sua conexão de internet");
-                return;
-            }
+				return;
+			}
 
             try
             {
@@ -96,8 +96,8 @@ namespace GDG_SP
 
             ListPeople.ItemsSource = listPeople.Where(P => P.Response.Equals("yes"));
 
-            Loading.IsVisible = false;
-
+			Loading.IsVisible = false;
+            
             ToolbarItem randomButton = new ToolbarItem("Sortear", Device.OnPlatform(null, null, "Assets/Images/Random.png"), () =>
             {
                 // Para sortear, primeiro o aplicativo pega a lista de todas as pessoas que foram
@@ -124,7 +124,7 @@ namespace GDG_SP
             });
 
             ToolbarItems.Add(randomButton);
-
+            
             if (Device.OS == TargetPlatform.iOS)
             {
                 var more = new ToolbarItem("Mais", "More.png", async () =>
