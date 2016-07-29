@@ -8,8 +8,8 @@ android {
         applicationId "org.gdgsp"
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 5
-        versionName "1.2"
+        versionCode 7
+        versionName "1.2.2"
         manifestPlaceholders = [manifestApplicationId: "${applicationId}",
                                 onesignal_app_id: "onesignal_app_id",
                                 onesignal_google_project_number: "onesignal_google_project_number"]
