@@ -4,7 +4,7 @@ GDG-SP
 Política de privacidade
 -----
 
-Algumas funções do aplicativo requerem conexão com a conta do Meetup do usuário, durante todo o processo de login, nenhum dado como login e senha é armazenado pelo aplicativo, pois ele apenas abre uma WebView qua carrega a página de login do Meetup, após isso, a API do Meetup retorna um token que é salvo pelo aplicativo e fica apenas no dispositivo, esse token é usado para retornar as informações do usuário após ele permitir acesso do aplicativo a conta dele.
+Algumas funções do aplicativo requerem conexão com a conta do Meetup do usuário, durante todo o processo de login, nenhum dado como login e senha é armazenado pelo aplicativo, pois ele apenas abre uma WebView que carrega a página de login do Meetup, após isso, a API do Meetup retorna um token que é salvo pelo aplicativo e fica apenas no dispositivo, esse token é usado para retornar as informações do usuário após ele permitir acesso do aplicativo a conta dele.
 
 Nesse processo o ID do Meetup do usuário é salvo em um banco de dados para poder realizar sorteios apenas para quem utiliza o aplicativo e enviar notificações direcionadas para quem vai a um determinado evento.
 
