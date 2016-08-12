@@ -21,6 +21,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;
 using Xamarin.Forms;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace GDG_SP
 {
@@ -100,7 +102,7 @@ namespace GDG_SP
             ProfileGrid.GestureRecognizers.Add(login);
         }
 
-        private void ListLinks_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+		private async void ListLinks_ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             if (e.SelectedItem == null) return;
 
@@ -108,9 +110,17 @@ namespace GDG_SP
 
             if(item.Value.Equals("send_notification"))
             {
-                Navigation.PushAsync(new SendNotificationPage());
+                await Navigation.PushAsync(new SendNotificationPage());
             }
-            else if(item.Title.Equals("Contato"))
+            else if (item.Value.Equals("raffle_manager"))
+			{
+				string[] events = MainPage.main.listEvents.Select(_event => _event.Name).ToArray();
+				string action = await DisplayActionSheet("Escolha o evento", "Cancelar", null, events);
+
+				ObservableCollection<Event> lEv = new ObservableCollection<Event>(MainPage.main.listEvents.Where(_event => _event.Name.Equals(action)));
+				await Navigation.PushAsync(new RaffleManagerPage(lEv[0].Id));
+			}
+			else if(item.Title.Equals("Contato"))
             {
 				Device.OpenUri(new Uri("mailto:" + AppResources.ContactMail));
             }

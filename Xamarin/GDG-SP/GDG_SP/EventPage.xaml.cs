@@ -26,6 +26,8 @@ namespace GDG_SP
     /// </summary>
     public partial class EventPage : ContentPage
     {
+		bool allow = false;
+
         public EventPage(Event _event)
         {
             InitializeComponent();
@@ -65,7 +67,7 @@ namespace GDG_SP
 
             ToolbarItems.Add(new ToolbarItem(_event.Who, Other.Other.GetImage("People"), () =>
                 {
-                    Navigation.PushAsync(new TabbedPeoplePage(_event.Id) { Title = _event.Who });
+                    Navigation.PushAsync(new TabbedPeoplePage(_event));
                 }));
 
             ToolbarItems.Add(new ToolbarItem("Compartilhar", Other.Other.GetImage("Share"), () =>
@@ -79,17 +81,25 @@ namespace GDG_SP
 
             WView.Navigating += (sender, e) =>
             {
-                if (e.Url.StartsWith("http://do_login"))
-                {
-                    Navigation.PushAsync(new WebViewPage(Other.Other.GetLoginUrl(), true, _event.Id) { Title = "Login" });
-                    e.Cancel = true;
-                }
-                else
-                {
-                    Other.Other.OpenSite(e.Url, this);
-                    e.Cancel = true;
-                }
+				if (allow)
+				{
+					if (e.Url.StartsWith("http://do_login"))
+					{
+						Navigation.PushAsync(new WebViewPage(Other.Other.GetLoginUrl(), true, _event.Id) { Title = "Login" });
+						e.Cancel = true;
+					}
+					else
+					{
+						Other.Other.OpenSite(e.Url, this);
+						e.Cancel = true;
+					}
+				}
             };
+
+			WView.Navigated += (sender, e) =>
+			{
+				allow = true;
+			};
         }
     }
 }

@@ -66,6 +66,7 @@ namespace GDG_SP
                 try
                 {
                     var postData = new List<KeyValuePair<string, string>>();
+					postData.Add(new KeyValuePair<string, string>("app_key", Other.Other.AppKey));
                     postData.Add(new KeyValuePair<string, string>("title", TextTitle.Text));
                     postData.Add(new KeyValuePair<string, string>("link", Link.Text));
                     postData.Add(new KeyValuePair<string, string>("image", Image.Text));

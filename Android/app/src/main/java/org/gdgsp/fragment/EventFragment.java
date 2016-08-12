@@ -181,8 +181,7 @@ public class EventFragment extends Fragment {
 				return true;
 			case R.id.menu_people:
 				Intent intent = new Intent(activity, PeopleActivity.class);
-				intent.putExtra("id", event.getId());
-				intent.putExtra("who", event.getWho());
+				intent.putExtra("event", event);
 				startActivity(intent);
 				return true;
 			case R.id.menu_copylink:

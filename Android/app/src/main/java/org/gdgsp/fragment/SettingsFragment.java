@@ -16,6 +16,7 @@
 
 package org.gdgsp.fragment;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -23,12 +24,15 @@ import android.os.Handler;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+
 import com.onesignal.OneSignal;
+
 import org.gdgsp.R;
 
 /**
  * PreferenceFragment das configurações do aplicativo.
  */
+@TargetApi(11)
 public class SettingsFragment extends PreferenceFragment {
 	private Activity activity;
 	private SharedPreferences preferences;

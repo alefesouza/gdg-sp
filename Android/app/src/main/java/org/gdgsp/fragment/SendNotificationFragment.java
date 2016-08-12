@@ -123,6 +123,7 @@ public class SendNotificationFragment extends Fragment {
 
                 Ion.with(getContext())
                         .load(Other.getNotificationUrl(activity))
+                        .setBodyParameter("app_key", Other.getAppKey())
                         .setBodyParameter("title", title.getText().toString())
                         .setBodyParameter("link", link.getText().toString())
                         .setBodyParameter("image", image.getText().toString())
@@ -148,6 +149,9 @@ public class SendNotificationFragment extends Fragment {
                                             break;
                                         case "invalid_user":
                                             message = getString(R.string.notification_invalid_user);
+                                            break;
+                                        case "invalid_key":
+                                            message = getString(R.string.invalid_key);
                                             break;
                                         case "try_again":
                                             message = getString(R.string.notification_try_again);

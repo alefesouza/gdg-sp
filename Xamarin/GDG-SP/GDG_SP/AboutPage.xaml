@@ -65,6 +65,7 @@ limitations under the License.
       <Label TextColor="Blue" x:Name="ImC">ImageCircle</Label>
       <Label TextColor="Blue" x:Name="PlS">Plugin.Settings</Label>
       <Label TextColor="Blue" x:Name="PlSh">Plugin.Share</Label>
+      <Label TextColor="Blue" x:Name="XLC">XLabs.Cryptography</Label>
     </StackLayout>
   </ScrollView>
 </ContentPage>

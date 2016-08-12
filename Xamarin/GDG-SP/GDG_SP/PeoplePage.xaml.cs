@@ -21,6 +21,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using Xamarin.Forms;
+using System.Threading.Tasks;
+using GDG_SP.Model;
 
 namespace GDG_SP
 {
@@ -30,14 +32,15 @@ namespace GDG_SP
     public partial class PeoplePage : ContentPage
 	{
 		ObservableCollection<Person> listPeople = new ObservableCollection<Person>();
-        int id;
-        bool peopleWithApp = false;
+		Event _event;
+		int count = 0;
+        bool peopleWithApp = false, timerBlock = true;
         ToolbarItem withApp;
 
-        public PeoplePage(int id)
+        public PeoplePage(Event _event)
 		{
 			InitializeComponent ();
-            this.id = id;
+			this._event = _event;
             GetPeople();
 		}
 
@@ -62,7 +65,7 @@ namespace GDG_SP
                 {
                     var client = new HttpClient();
                     client.MaxResponseContentBufferSize = 256000;
-                    HttpResponseMessage response = await client.PostAsync(Other.Other.GetRSVPSUrl(id), Other.Other.GetRefreshToken());
+					HttpResponseMessage response = await client.PostAsync(Other.Other.GetRSVPSUrl(_event.Id), Other.Other.GetRefreshToken());
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -75,7 +78,7 @@ namespace GDG_SP
                 }
                 else
                 {
-                    jsonString = await new HttpClient().GetStringAsync(new Uri(Other.Other.GetRSVPSUrl(id)));
+					jsonString = await new HttpClient().GetStringAsync(new Uri(Other.Other.GetRSVPSUrl(_event.Id)));
                 }
             }
 			catch
@@ -98,7 +101,7 @@ namespace GDG_SP
 
 			Loading.IsVisible = false;
             
-            ToolbarItem randomButton = new ToolbarItem("Sortear", Device.OnPlatform(null, null, "Assets/Images/Random.png"), () =>
+            ToolbarItem randomButton = new ToolbarItem("Sortear", Device.OnPlatform(null, null, "Assets/Images/Random.png"), async () =>
             {
                 // Para sortear, primeiro o aplicativo pega a lista de todas as pessoas que foram
                 ObservableCollection<Person> go;
@@ -119,7 +122,27 @@ namespace GDG_SP
                     int number = random.Next(go.Count);
                     // E dará scroll até esta posição na lista, exibindo o nome da pessoa.
                     ListPeople.ScrollTo(go[number], ScrollToPosition.Start, true);
-                    Other.Other.ShowMessage(go[number].Name, this);
+
+					string localDate = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy");
+					string dbDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+					if (LinksPage.member != null && go[number].Id == LinksPage.member.Id)
+					{
+						count = 0;
+						timerBlock = false;
+						StartTimer();
+						bool message = await DisplayAlert("", "Você!\n\nSorteado às " + localDate, "Enviar", "Cancelar");
+
+						if (message)
+						{
+							timerBlock = true;
+							await Navigation.PushAsync(new LoadingPage(dbDate, count, _event));
+						}
+					}
+					else
+					{
+						Other.Other.ShowMessage(go[number].Name, this);
+					}
                 }
             });
 
@@ -198,6 +221,18 @@ namespace GDG_SP
 
             ListPeople.IsVisible = true;
         }
+
+        /// <summary>
+        /// Gambiarra para contar os segundos na PCL.
+        /// </summary>
+		private async void StartTimer() {
+			if (!timerBlock)
+			{
+				await Task.Delay(1000);
+				count++;
+				StartTimer();
+			}
+		}
 
         private async void ShowMessage(string title)
         {

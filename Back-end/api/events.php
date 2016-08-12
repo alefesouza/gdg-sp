@@ -22,6 +22,8 @@ if($_POST["refresh_token"] != "") {
 	
 	$json = @file_get_contents("https://api.meetup.com/$meetupid/events?access_token=$token&fields=survey_questions,self,rsvpable");
 	
+	//$json = @file_get_contents("https://api.meetup.com/$meetupid/events?access_token=$token&fields=survey_questions,self,rsvpable&status=past");
+	
 	if(strpos($http_response_header[0], "200") !== false) {
 		$memberdata = file_get_contents("https://api.meetup.com/$meetupid/members/self?access_token=$token");
 		
@@ -48,6 +50,7 @@ if($_POST["refresh_token"] != "") {
 }
 
 $events = json_decode($json);
+//$events = array($events[count($events) - 5], $events[count($events) - 4], $events[count($events) - 3], $events[count($events) - 2]);
 
 $newevents = array();
 
@@ -103,6 +106,8 @@ if($_GET["via"] == "xamarin") {
 	$newjson["header_height"] = $height;
 }
 
+// Para testes
+//echo $newevents[0]["description"];
 echo json_encode($newjson);
 
 function getHtml($title, $description, $lat, $lon, $place, $address, $start, $end, $yes_rsvp_count, $who, $how_to_find_us) {

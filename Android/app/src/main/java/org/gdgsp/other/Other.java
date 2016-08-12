@@ -39,6 +39,7 @@ import android.view.View;
 import android.widget.Toast;
 import org.gdgsp.R;
 import org.gdgsp.lib.*;
+import java.security.*;
 
 /**
  * Aqui ficam métodos e atributos utilizados em várias classes do aplicativo.
@@ -50,10 +51,33 @@ public class Other extends Activity {
 	public static final int colorPrimary = 0xff008bf8;
 
 	/**
+	 * Retorna uma chave encriptada em MD5 para garantir que é o próprio aplicativo
+	 * e não uma versão modificada que está entrando em contato com o servidor,
+	 * isso é necessário para garantir que ninguém trapaceie nos sorteios.
+	 */
+	public static String getAppKey() {
+		String appKey = "";
+
+		try {
+			final MessageDigest digest = MessageDigest.getInstance("md5");
+			digest.update("".getBytes());
+			final byte[] bytes = digest.digest();
+			final StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < bytes.length; i++) {
+				sb.append(String.format("%02X", bytes[i]));
+			}
+			appKey = sb.toString().toLowerCase();
+		} catch (Exception exc) {
+		}
+		
+		return appKey;
+	}
+	
+	/**
 	 * String que tem que aparecer no final de todas as URLs no aplicativo.
 	 */
 	public static String getFinalUrl(Context context) {
-		return "appversion=" + getAppVersion(context) + "&platform=android&sdkint=" + getOSVersion();
+		return "meetupid=" + context.getString(R.string.meetup_id) + "&appversion=" + getAppVersion(context) + "&platform=android&sdkint=" + getOSVersion();
 	}
 
     /**
@@ -62,7 +86,7 @@ public class Other extends Activity {
      * @return A URL final para receber os eventos.
      */
     public static String getEventsUrl(Context context) {
-		return "http://" + context.getString(R.string.backend_url) + "api/events.php?meetupid=" + context.getString(R.string.meetup_id) + "&" + getFinalUrl(context);
+		return "http://" + context.getString(R.string.backend_url) + "api/events.php?" + getFinalUrl(context);
     }
 
     /**
@@ -72,7 +96,7 @@ public class Other extends Activity {
      * @return A URL final para fazer RSVP no evento que o usuário quer ir.
      */
 	public static String getRSVPUrl(Context context, int id) {
-        return "http://" + context.getString(R.string.backend_url) + "api/rsvp.php?meetupid=" + context.getString(R.string.meetup_id) + "&eventid=" + id + "&" + getFinalUrl(context);
+        return "http://" + context.getString(R.string.backend_url) + "api/rsvp.php?" + getFinalUrl(context) + "&eventid=" + id + "&" + getFinalUrl(context);
     }
 
     /**
@@ -82,21 +106,28 @@ public class Other extends Activity {
      * @return A URL final para receber as respostas das pessoas sobre o evento.
      */
     public static String getRSVPSUrl(Context context, int id) {
-        return "http://" + context.getString(R.string.backend_url) + "api/people.php?meetupid=" + context.getString(R.string.meetup_id) + "&eventid=" + id + "&" + getFinalUrl(context);
+        return "http://" + context.getString(R.string.backend_url) + "api/people.php?" + getFinalUrl(context) + "&eventid=" + id + "&" + getFinalUrl(context);
     }
 
     /**
      * Método que retorna a URL para fazer login.
      */
 	public static String getLoginUrl(Context context) {
-		return "http://" + context.getString(R.string.backend_url) + "api/login.php?meetupid=" + context.getString(R.string.meetup_id);
+		return "http://" + context.getString(R.string.backend_url) + "api/login.php?" + getFinalUrl(context);
 	}
 
 	/**
 	 * Método que retorna a URL para o administrador enviar notificação.
 	 */
 	public static String getNotificationUrl(Context context) {
-		return "http://" + context.getString(R.string.backend_url) + "notifications/send.php?meetupid=" + context.getString(R.string.meetup_id);
+		return "http://" + context.getString(R.string.backend_url) + "notifications/send.php?" + getFinalUrl(context);
+	}
+
+	/**
+	 * Método que retorna a URL para administrar os sorteios.
+	 */
+	public static String getRaffleUrl(Context context, int eventid) {
+		return "http://" + context.getString(R.string.backend_url) + "api/raffle.php?" + getFinalUrl(context) + "&eventid=" + eventid;
 	}
 
     /**

@@ -26,6 +26,7 @@ limitations under the License.
 
     <string name="meetup">Meetup</string>
     <string name="send_notification">Enviar notificação</string>
+    <string name="raffle_manager">Gerenciar sorteios</string>
     <string name="site">Site</string>
     <string name="old_meetups">Meetups antigos</string>
     <string name="facebook">Facebook</string>
@@ -52,6 +53,7 @@ limitations under the License.
 
     <string name="yes">Sim</string>
     <string name="no">Não</string>
+    <string name="cancel">Cancelar</string>
 
     <string name="send_to_all">Enviar para todos</string>
     <string name="title">Título</string>
@@ -68,6 +70,10 @@ limitations under the License.
     <string name="raffle">SORTEAR</string>
     <string name="raffle_person">Pessoa sorteada</string>
     <string name="with_app">Pessoas com o app</string>
+
+    <string name="sending">Enviando...</string>
+    <string name="raffle_success">Seu sorteio foi enviado, boa sorte!</string>
+    <string name="invalid_key">Chave do aplicativo inválida</string>
 
     <string name="rsvp_need">Você precisa fazer login para fazer rsvp</string>
     <string name="rsvp_need_sub">Deseja fazer login agora?</string>

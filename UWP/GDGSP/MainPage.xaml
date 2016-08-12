@@ -66,6 +66,15 @@ limitations under the License.
                                 <TextBlock Text="Enviar notificação" Margin="18 0 0 0" VerticalAlignment="Center" />
                             </StackPanel>
                         </ListBoxItem>
+                        <ListBoxItem x:Name="RaffleManager" Visibility="Collapsed">
+                            <ToolTipService.ToolTip>
+                                <TextBlock Text="Gerenciar sorteios"></TextBlock>
+                            </ToolTipService.ToolTip>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE821;" FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="4" />
+                                <TextBlock Text="Gerenciar sorteios" Margin="18 0 0 0" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </ListBoxItem>
                     </ListBox>
                     <ListBox ItemsSource="{x:Bind LeftViewModel.Items}" Name="ListLeftPanel" xmlns:m="using:GDGSP.Models" SelectionChanged="ListLeftPanel_SelectionChanged" BorderThickness="0 1 0 0" BorderBrush="#545454" Grid.Row="2">
                         <ListBox.ItemTemplate>

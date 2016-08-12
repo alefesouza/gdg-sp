@@ -42,6 +42,7 @@ namespace GDG_SP
             ImC.GestureRecognizers.Add(recognizer);
             PlS.GestureRecognizers.Add(recognizer);
             PlSh.GestureRecognizers.Add(recognizer);
+			XLC.GestureRecognizers.Add(recognizer);
         }
 
         private void Login_Tapped(object sender, EventArgs e)
@@ -84,6 +85,10 @@ namespace GDG_SP
             {
                 url = "https://github.com/jguertl/SharePlugin";
             }
+			else if (sender == XLC)
+			{
+				url = "https://github.com/XLabs/Xamarin-Forms-Labs/tree/master/src/Cryptography/XLabs.Cryptography";
+			}
 
             Other.Other.OpenSite(url, this);
         }

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using GDG_SP.Model;
 using GDG_SP.Resx;
 using Xamarin.Forms;
 
@@ -26,11 +27,13 @@ namespace GDG_SP
     {
         public static TabbedPeoplePage page;
 
-        public TabbedPeoplePage(int id)
+		public TabbedPeoplePage(Event _event)
         {
             page = this;
 
-            Children.Add(new PeoplePage(id));
+			Title = _event.Who;
+
+            Children.Add(new PeoplePage(_event));
         }
     }
 }

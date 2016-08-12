@@ -61,7 +61,7 @@ if(isset($_POST["code"])) {
 
 			if(mysqli_num_rows($query) == 0) {
 				$last_activity = date("Ymd", time());
-				mysqli_query($dbi, "INSERT INTO meetup_app_members (member_id, last_activity) VALUES ($memberid, $last_activity)");
+				mysqli_query($dbi, "INSERT INTO meetup_app_members (member_id, meetup_id, last_activity) VALUES ($memberid, '$meetupid', $last_activity)");
 			}
 			
 			$qr = file_get_contents("https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=".$qrcode.$memberid);

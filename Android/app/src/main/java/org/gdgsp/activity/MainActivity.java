@@ -57,6 +57,9 @@ import org.gdgsp.fragment.EventFragment;
 import org.gdgsp.model.Event;
 import org.gdgsp.model.Person;
 import org.gdgsp.other.Other;
+import android.view.*;
+import android.content.*;
+import android.widget.*;
 
 /**
  * Activity principal do aplicativo, contém o navigation drawer e a lista de eventos.
@@ -203,6 +206,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             if(member.get("is_admin").getAsBoolean()) {
                                 navigationView.getMenu().getItem(0).setVisible(true);
+                                navigationView.getMenu().getItem(1).setVisible(true);
                             }
 
                             OneSignal.sendTag("member_id", String.valueOf(person.getId()));
@@ -324,6 +328,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Intent notification = new Intent(MainActivity.this, FragmentActivity.class);
                 notification.putExtra("fragment", 5);
                 startActivity(notification);
+                break;
+            case R.id.nav_raffle:
+                if(listEvents.size() > 0) {
+                    String[] events = new String[listEvents.size()];
+
+                    for (int i = 0; i < listEvents.size(); i++) {
+                        events[i] = listEvents.get(i).getName();
+                    }
+
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+                    LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    View convertView = inflater.inflate(R.layout.list_pressed, null);
+                    alertDialog.setView(convertView);
+                    alertDialog.setTitle("Escolha o evento");
+
+                    alertDialog.setItems(events, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int item) {
+                            Intent raffleManager = new Intent(MainActivity.this, FragmentActivity.class);
+                            raffleManager.putExtra("fragment", 7);
+                            raffleManager.putExtra("eventid", listEvents.get(item).getId());
+                            startActivity(raffleManager);
+                        }
+                    });
+
+                    alertDialog.create();
+                    alertDialog.show();
+                } else {
+                    Toast.makeText(this, "Não há eventos", Toast.LENGTH_SHORT);
+                }
                 break;
             case R.id.nav_site:
                 Other.openSite(this, getString(R.string.site_url));

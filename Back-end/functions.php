@@ -30,6 +30,7 @@ if(!isset($meetupid)) {
 }
 $platform = $_GET["platform"];
 
+$app_key = md5("");
 $mapbox_token = "mapbox_token";
 
 if($dbi == null) {
@@ -51,7 +52,10 @@ $one_signal_restkey = $dados["onesignal_restkey"];
 $wns_sid = urlencode($dados["wns_sid"]);
 $wns_client_secret = urlencode($dados["wns_clientsecret"]);
 
-$last_event = $dados["last_event"];
+$twitter_key = $dados["twitter_key"];
+$twitter_secret = $dados["twitter_secret"];
+$twitter_search = $dados["twitter_search"];
+
 $header_image = $dados["header_image"];
 
 // Caso o array meetupids do cron.php tenha mais de um item, não redeclarar as funções

@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using Xamarin.Forms;
+using XLabs.Cryptography;
 
 namespace GDG_SP.Other
 {
@@ -29,6 +30,11 @@ namespace GDG_SP.Other
     /// </summary>
     public class Other
     {
+		/// <summary>
+		/// Chave do aplicativo usada para garantir que é a versão oficial e não uma modificação que está entrando em contato com o servidor, é necessário para garantir que ninguém trapaceie nos sorteios.
+		/// </summary>
+		public static string AppKey = MD5.GetMd5String("");
+
         /// <summary>
         /// String que tem que aparecer no final de todas as URLs no aplicativo.
         /// </summary>
@@ -92,6 +98,15 @@ namespace GDG_SP.Other
         {
             return "http://" + AppResources.BackendUrl + "notifications/send.php" + GetFinalUrl();
         }
+
+		/// <summary>
+		/// Método que retorna a URL para o administrar os sorteios.
+		/// </summary>
+		/// <param name="id">ID do evento caso seja um usuário enviando.</param>
+		public static string GetRaffleUrl(int id)
+		{
+			return "http://" + AppResources.BackendUrl + "api/raffle.php" + GetFinalUrl() + "&eventid=" + id;
+		}
 
         /// <summary>
         /// Método que retorna o refresh token armazenado nas configurações para fazer um post junto com uma URL.

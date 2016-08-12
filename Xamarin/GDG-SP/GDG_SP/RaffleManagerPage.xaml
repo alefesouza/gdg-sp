@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+Copyright (C) 2016 Alefe Souza <http://alefesouza.com/>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="GDG_SP.RaffleManagerPage"
+             xmlns:controls="clr-namespace:ImageCircle.Forms.Plugin.Abstractions;assembly=ImageCircle.Forms.Plugin.Abstractions">
+  <Grid>
+    <ListView x:Name="ListPeople" HasUnevenRows="True" HorizontalOptions="FillAndExpand" ItemSelected="ListPerson_ItemSelected" IsVisible="False">
+      <ListView.ItemTemplate>
+        <DataTemplate>
+          <ViewCell>
+            <StackLayout Padding="10">
+              <Grid Padding="5">
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="75" />
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <StackLayout>
+                  <controls:CircleImage Aspect="AspectFill" Source="{Binding Photo}" WidthRequest="75" HeightRequest="75" />
+                </StackLayout>
+
+                <StackLayout Grid.Row="0" Grid.Column="1" Margin="10, 0, 0, 0">
+                  <Label x:Name="ProfileName" Text="{Binding Name}" FontSize="18" />
+                  <Label Text="{Binding Raffle_date}" FontSize="14" />
+                  <Label Text="{Binding Post_date}" FontSize="14" />
+                  <Label Text="{Binding Seconds}" FontSize="14" />
+                </StackLayout>
+              </Grid>
+            </StackLayout>
+          </ViewCell>
+        </DataTemplate>
+      </ListView.ItemTemplate>
+    </ListView>
+
+    <ActivityIndicator IsRunning="True" HorizontalOptions="CenterAndExpand" x:Name="Loading" />
+  </Grid>
+</ContentPage>

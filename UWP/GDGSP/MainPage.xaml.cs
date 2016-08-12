@@ -38,7 +38,7 @@ namespace GDGSP
         public Frame mainFrame;
         public TextBlock profileName, profileIntro;
         public ImageBrush profilePhoto;
-        public ListBoxItem sendNotification;
+        public ListBoxItem sendNotification, raffleManager;
 
         ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
         public static MainPage mainPage;
@@ -71,6 +71,7 @@ namespace GDGSP
             profileIntro = ProfileIntro;
 
             sendNotification = SendNotification;
+            raffleManager = RaffleManager;
 
             if (localSettings.Values.ContainsKey("member_profile"))
             {
@@ -188,6 +189,17 @@ namespace GDGSP
                 if (e.AddedItems[0] == SendNotification)
                 {
                     HomePage.homePage.mainframe.Navigate(typeof(SendNotificationPage));
+                }
+                else if (e.AddedItems[0] == RaffleManager)
+                {
+                    if (EventsPage.actualEvent == null)
+                    {
+                        Other.Other.ShowMessage("Selecione um evento");
+                    }
+                    else
+                    {
+                        HomePage.homePage.mainframe.Navigate(typeof(RaffleManagerPage));
+                    }
                 }
                 else
                 {

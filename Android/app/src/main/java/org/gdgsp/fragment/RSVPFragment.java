@@ -79,7 +79,11 @@ public class RSVPFragment extends Fragment {
 
 		final LinearLayout content = (LinearLayout)view.findViewById(R.id.content);
 
-		final boolean checked = event.getResponse() != null && !event.getResponse().equals("no");
+		if(event.getResponse() == null) {
+            event.setResponse("no");
+		}
+
+		final boolean checked = !event.getResponse().equals("no");
 		final boolean isWaitlist = event.getYes_rsvp_count() == event.getRsvp_limit() && !event.getResponse().equals("yes");
 
 		content.setVisibility(checked ? View.VISIBLE : View.GONE);

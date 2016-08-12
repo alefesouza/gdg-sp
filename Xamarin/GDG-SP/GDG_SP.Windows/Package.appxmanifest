@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
-  <Identity Name="44070AlefeSouza.GDG-SP" Publisher="CN=E37D7763-C739-47C8-8305-1D5CE1D806FB" Version="1.0.2.3" />
+  <Identity Name="44070AlefeSouza.GDG-SP" Publisher="CN=E37D7763-C739-47C8-8305-1D5CE1D806FB" Version="1.0.3.1" />
   <Properties>
     <DisplayName>GDG-SP</DisplayName>
     <PublisherDisplayName>Alefe Souza</PublisherDisplayName>

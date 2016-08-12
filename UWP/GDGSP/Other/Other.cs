@@ -17,13 +17,17 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Resources;
 using Windows.Data.Json;
 using Windows.Foundation.Metadata;
 using Windows.Networking.Connectivity;
 using Windows.Networking.PushNotifications;
+using Windows.Security.Cryptography;
+using Windows.Security.Cryptography.Core;
 using Windows.Storage;
+using Windows.Storage.Streams;
 using Windows.System;
 using Windows.System.Profile;
 using Windows.UI.Notifications;
@@ -57,6 +61,21 @@ namespace GDGSP.Other
         /// Checa se o sistema suporta jump list
         /// </summary>
         public static bool jumpListPresent = ApiInformation.IsTypePresent("Windows.UI.StartScreen.JumpList");
+
+        /// <summary>
+        /// Retorna uma chave encriptada em MD5 para garantir que é o próprio aplicativo
+        /// e não uma versão modificada que está entrando em contato com o servidor,
+        /// isso é necessário para garantir que ninguém trapaceie nos sorteios.
+        /// </summary>
+        public static string GetAppKey()
+        {
+            string strMsg = "";
+            var alg = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithmNames.Md5);
+            IBuffer buff = CryptographicBuffer.ConvertStringToBinary(strMsg, BinaryStringEncoding.Utf8);
+            var hashed = alg.HashData(buff);
+            var res = CryptographicBuffer.EncodeToHexString(hashed);
+            return res;
+        }
 
         /// <summary>
         /// Métodos que retorna a URL de receber os eventos.
@@ -101,6 +120,15 @@ namespace GDGSP.Other
         public static string GetNotificationUrl()
         {
             return "http://" + backendUrl + "notifications/send.php" + finalUrl;
+        }
+
+        /// <summary>
+        /// Método que retorna a URL para o administrar os sorteios.
+        /// </summary>
+        /// <param name="id">ID do evento caso seja um usuário enviando.</param>
+        public static string GetRaffleUrl(int id)
+        {
+            return "http://" + backendUrl + "api/raffle.php" + finalUrl + "&eventid=" + id;
         }
 
         /// <summary>

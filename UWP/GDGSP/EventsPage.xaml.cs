@@ -42,6 +42,7 @@ namespace GDGSP
         TextBlock title;
         public static EventsPage events;
         public ObservableCollection<Event> listEvents = null;
+        public static Event actualEvent = null;
 
         public EventsPage()
         {
@@ -179,6 +180,7 @@ namespace GDGSP
                 if ((bool)root["member"]["is_admin"])
                 {
                     MainPage.mainPage.sendNotification.Visibility = Visibility.Visible;
+                    MainPage.mainPage.raffleManager.Visibility = Visibility.Visible;
                 }
             }
             else
@@ -216,6 +218,8 @@ namespace GDGSP
                 }
                 else if (HomePage.homePage.eventopen.Visibility == Visibility.Collapsed && toKnow.IsActive)
                 {
+                    actualEvent = listEvents[0];
+
                     HomePage.homePage.eventopen.Navigate(typeof(EventPage), listEvents[0]);
 
                     SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
@@ -268,6 +272,8 @@ namespace GDGSP
 
                 Event a = e.AddedItems[0] as Event;
                 HomePage.homePage.eventopen.Navigate(typeof(EventPage), a);
+
+                actualEvent = a;
 
                 SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
                 HomePage.homePage.eventopen.Visibility = Visibility.Visible;

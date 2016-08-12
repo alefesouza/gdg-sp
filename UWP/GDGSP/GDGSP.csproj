@@ -124,11 +124,15 @@
     <Compile Include="Models\Event.cs" />
     <Compile Include="Models\Link.cs" />
     <Compile Include="Models\Person.cs" />
+    <Compile Include="Models\Raffle.cs" />
     <Compile Include="Other\Other.cs" />
     <Compile Include="PeoplePage.xaml.cs">
       <DependentUpon>PeoplePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RaffleManagerPage.xaml.cs">
+      <DependentUpon>RaffleManagerPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="RSVPPage.xaml.cs">
       <DependentUpon>RSVPPage.xaml</DependentUpon>
     </Compile>
@@ -233,6 +237,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="PeoplePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RaffleManagerPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

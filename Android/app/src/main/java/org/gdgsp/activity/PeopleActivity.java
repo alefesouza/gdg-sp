@@ -39,6 +39,7 @@ import org.gdgsp.adapter.PeopleTabAdapter;
 import org.gdgsp.fragment.PeopleFragment;
 import org.gdgsp.model.Person;
 import org.gdgsp.other.Other;
+import org.gdgsp.model.*;
 
 /**
  * Activity onde é exibida as pessoas que deram alguma resposta ao evento, pode ter até três PeopleFragment.
@@ -51,18 +52,21 @@ public class PeopleActivity extends AppCompatActivity {
 	private PeopleTabAdapter adapter;
 	private List<Person> listPeople;
 	private String jsonPeople = null;
+	private Event event;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_people);
 
+		event = (Event)getIntent().getSerializableExtra("event");
+		
 		toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		getSupportActionBar().setTitle(getIntent().getStringExtra("who"));
+		getSupportActionBar().setTitle(event.getWho());
 
 		viewPager = (ViewPager) findViewById(R.id.viewpager);
 		adapter = new PeopleTabAdapter(getSupportFragmentManager());
@@ -87,8 +91,8 @@ public class PeopleActivity extends AppCompatActivity {
 		Gson gson = new Gson();
 
 		Type datasetListType = new TypeToken<List<Person>>() {}.getType();
-		jsonPeople = json.toString();
-		listPeople = gson.fromJson(json.toString(), datasetListType);
+		jsonPeople = json;
+		listPeople = gson.fromJson(json, datasetListType);
 
 		progress.setVisibility(View.GONE);
 		tabLayout.setVisibility(View.VISIBLE);
@@ -135,7 +139,7 @@ public class PeopleActivity extends AppCompatActivity {
 	 */
 	private void getPeople() {
 		Ion.with (this)
-				.load(Other.getRSVPSUrl(this, getIntent().getIntExtra("id", 0)))
+				.load(Other.getRSVPSUrl(this, event.getId()))
 				.setBodyParameter("refresh_token", Other.getRefreshToken(this))
 				.asJsonArray()
 				.setCallback(new FutureCallback<JsonArray>() {

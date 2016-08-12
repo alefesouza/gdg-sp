@@ -248,6 +248,7 @@ namespace GDG_SP
                     if (!notificationAdded)
                     {
                         LinksPage.linksPage.listLinks.Insert(0, new Link() { Title = "Enviar notificação", Icon = Device.OnPlatform("SendNotification.png", "ic_send.png", "Assets/Images/SendNotification.png"), Value = "send_notification" });
+						LinksPage.linksPage.listLinks.Insert(1, new Link() { Title = "Gerenciar sorteios", Icon = Device.OnPlatform("Raffle.png", "ic_raffle.png", "Assets/Images/Raffle.png"), Value = "raffle_manager" });
                         notificationAdded = true;
                     }
                 }
@@ -359,7 +360,7 @@ namespace GDG_SP
 
                         ToolbarItems.Add(new ToolbarItem(_event.Who, Other.Other.GetImage("People"), () =>
                         {
-                            Navigation.PushAsync(new TabbedPeoplePage(_event.Id) { Title = _event.Who });
+                            Navigation.PushAsync(new TabbedPeoplePage(_event));
                         }));
 
                         ToolbarItems.Add(new ToolbarItem("Compartilhar", Other.Other.GetImage("Share"), () =>
@@ -459,6 +460,20 @@ namespace GDG_SP
             EventWebView.Navigating += WView_Navigating;
         }
 
+		private void WView_Navigating(object sender, WebNavigatingEventArgs e)
+		{
+			if (e.Url.StartsWith("http://do_login"))
+			{
+				Navigation.PushAsync(new WebViewPage(Other.Other.GetLoginUrl(), true) { Title = "Login" });
+				e.Cancel = true;
+			}
+			else if (e.Url.StartsWith("http"))
+			{
+				Other.Other.OpenSite(e.Url, this);
+				e.Cancel = true;
+			}
+		}
+
         private async void SuggestLogin()
         {
             if (Other.Other.GetSetting("suggest_login").Equals(""))
@@ -469,20 +484,6 @@ namespace GDG_SP
                     await Navigation.PushAsync(new WebViewPage(Other.Other.GetLoginUrl(), true) { Title = "Login" });
                 }
                 Other.Other.AddSetting("suggest_login", "true");
-            }
-        }
-
-        private void WView_Navigating(object sender, WebNavigatingEventArgs e)
-        {
-            if (e.Url.StartsWith("http://do_login"))
-            {
-                Navigation.PushAsync(new WebViewPage(Other.Other.GetLoginUrl(), true) { Title = "Login" });
-                e.Cancel = true;
-            }
-            else if (e.Url.StartsWith("http"))
-            {
-                Other.Other.OpenSite(e.Url, this);
-                e.Cancel = true;
             }
         }
 

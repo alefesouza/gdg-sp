@@ -25,167 +25,165 @@ using static GDG_SP.Model.Event;
 
 namespace GDG_SP
 {
-	/// <summary>
-	/// Página do aplicativo para o usuário fazer RSVP em um evento.
-	/// </summary>
-	public partial class RSVPPage : ContentPage
-	{
-		/// <summary>
-		/// Lista de Entry para poder pegar o texto de todas as Entry criadas para responder as perguntas.
-		/// </summary>
-		List<Entry> entries = new List<Entry>();
+    /// <summary>
+    /// Página do aplicativo para o usuário fazer RSVP em um evento.
+    /// </summary>
+    public partial class RSVPPage : ContentPage
+    {
+        /// <summary>
+        /// Lista de Entry para poder pegar o texto de todas as Entry criadas para responder as perguntas.
+        /// </summary>
+        List<Entry> entries = new List<Entry>();
 
-		public RSVPPage(Event _event)
-		{
-			InitializeComponent();
+        public RSVPPage(Event _event)
+        {
+            InitializeComponent();
 
-			Title = "RSVP";
+            Title = "RSVP";
 
-			if (_event.Response != null)
-			{
-				ResponseSwitch.IsToggled = !_event.Response.Equals("no");
+            if (_event.Response == null)
+            {
+                _event.Response = "no";
+            }
 
-				switch (_event.Response)
-				{
-					case "yes":
-						State.Text = "Sim";
-						break;
-					case "waitlist":
-						State.Text = "Lista de espera";
-						break;
-					default:
-						State.Text = "Não";
-						break;
-				}
-			}
-			else
-			{
-				State.Text = "Não";
-			}
+            ResponseSwitch.IsToggled = !_event.Response.Equals("no");
 
-			QuestionsStack.IsVisible = ResponseSwitch.IsToggled;
+            switch (_event.Response)
+            {
+                case "yes":
+                    State.Text = "Sim";
+                    break;
+                case "waitlist":
+                    State.Text = "Lista de espera";
+                    break;
+                default:
+                    State.Text = "Não";
+                    break;
+            }
 
-			ResponseSwitch.Toggled += (s, e) =>
-			{
-				if (e.Value)
-				{
-					if (_event.Yes_rsvp_count == _event.Rsvp_limit && !_event.Response.Equals("yes"))
-					{
-						State.Text = "Lista de espera";
-					}
-					else
-					{
-						State.Text = "Sim";
-					}
-				}
-				else
-				{
-					State.Text = "Não";
-				}
+            QuestionsStack.IsVisible = ResponseSwitch.IsToggled;
 
-				QuestionsStack.IsVisible = e.Value;
-			};
+            ResponseSwitch.Toggled += (s, e) =>
+            {
+                if (e.Value)
+                {
+                    if (_event.Yes_rsvp_count == _event.Rsvp_limit && !_event.Response.Equals("yes"))
+                    {
+                        State.Text = "Lista de espera";
+                    }
+                    else
+                    {
+                        State.Text = "Sim";
+                    }
+                }
+                else
+                {
+                    State.Text = "Não";
+                }
 
-			for (int i = 0; i < _event.Survey_questions.Count; i++)
-			{
-				Label label = new Label();
-				label.Text = _event.Survey_questions[i].Question;
-				Entry entry = new Entry();
+                QuestionsStack.IsVisible = e.Value;
+            };
 
-				entry.TextChanged += (sender, args) =>
-				{
-					string _text = entry.Text;
-					if (_text.Length > 250)
-					{
-						_text = _text.Remove(_text.Length - 1);
-						entry.Text = _text;
-					}
-				};
+            for (int i = 0; i < _event.Survey_questions.Count; i++)
+            {
+                Label label = new Label();
+                label.Text = _event.Survey_questions[i].Question;
+                Entry entry = new Entry();
 
-				if (_event.Answers != null)
-				{
-					entry.Text = _event.Answers[i].Answer;
-				}
+                entry.TextChanged += (sender, args) =>
+                {
+                    string _text = entry.Text;
+                    if (_text.Length > 250)
+                    {
+                        _text = _text.Remove(_text.Length - 1);
+                        entry.Text = _text;
+                    }
+                };
 
-				entries.Add(entry);
+                if (_event.Answers != null)
+                {
+                    entry.Text = _event.Answers[i].Answer;
+                }
 
-				QuestionsStack.Children.Add(label);
-				QuestionsStack.Children.Add(entry);
-			}
+                entries.Add(entry);
 
-			Send.Clicked += async (s, e) =>
-			{
-				try
-				{
-					(s as Button).IsEnabled = false;
+                QuestionsStack.Children.Add(label);
+                QuestionsStack.Children.Add(entry);
+            }
 
-					List<Questions> list = new List<Questions>();
+            Send.Clicked += async (s, e) =>
+            {
+                try
+                {
+                    (s as Button).IsEnabled = false;
 
-					for (int i = 0; i < entries.Count; i++)
-					{
-						Questions q = _event.Survey_questions[i];
-						q.Answer = entries[i].Text;
-						list.Add(q);
-					}
+                    List<Questions> list = new List<Questions>();
 
-					ObjectToSend ob = new ObjectToSend() { Response = ResponseSwitch.IsToggled ? "yes" : "no", Answers = list };
+                    for (int i = 0; i < entries.Count; i++)
+                    {
+                        Questions q = _event.Survey_questions[i];
+                        q.Answer = entries[i].Text;
+                        list.Add(q);
+                    }
 
-					var uri = new Uri(Other.Other.GetRSVPUrl(_event.Id));
+                    ObjectToSend ob = new ObjectToSend() { Response = ResponseSwitch.IsToggled ? "yes" : "no", Answers = list };
 
-					var json = JsonConvert.SerializeObject(ob, Formatting.Indented, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+                    var uri = new Uri(Other.Other.GetRSVPUrl(_event.Id));
 
-					var postData = new List<KeyValuePair<string, string>>();
-					postData.Add(new KeyValuePair<string, string>("json", json));
-					postData.Add(new KeyValuePair<string, string>("refresh_token", Other.Other.GetSetting("refresh_token")));
+                    var json = JsonConvert.SerializeObject(ob, Formatting.Indented, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
 
-					var content = new FormUrlEncodedContent(postData);
+                    var postData = new List<KeyValuePair<string, string>>();
+                    postData.Add(new KeyValuePair<string, string>("json", json));
+                    postData.Add(new KeyValuePair<string, string>("refresh_token", Other.Other.GetSetting("refresh_token")));
 
-					var client = new HttpClient();
-					client.MaxResponseContentBufferSize = 256000;
-					HttpResponseMessage response = await client.PostAsync(uri, content);
+                    var content = new FormUrlEncodedContent(postData);
 
-					if (response.IsSuccessStatusCode)
-					{
-						string result = await response.Content.ReadAsStringAsync();
+                    var client = new HttpClient();
+                    client.MaxResponseContentBufferSize = 256000;
+                    HttpResponseMessage response = await client.PostAsync(uri, content);
 
-						string message = "";
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string result = await response.Content.ReadAsStringAsync();
 
-						switch (result)
-						{
-							case "yes":
-								message = "RSVP realizado com sucesso";
-								break;
-							case "waitlist":
-								message = "Você foi para a lista de espera";
-								break;
-							case "no":
-								message = "Você marcou que não irá";
-								break;
-						}
+                        string message = "";
 
-						await DisplayAlert("", message, "OK");
+                        switch (result)
+                        {
+                            case "yes":
+                                message = "RSVP realizado com sucesso";
+                                break;
+                            case "waitlist":
+                                message = "Você foi para a lista de espera";
+                                break;
+                            case "no":
+                                message = "Você marcou que não irá";
+                                break;
+                        }
 
-						MainPage.openEvent = _event.Id;
-						MainPage.main.GetEvents();
-					}
-					else
-					{
-						(s as Button).IsEnabled = true;
-						Other.Other.ShowMessage("Houve um erro ao enviar os dados, tente novamente", this);
-					}
-				}
-				catch
-				{
-					(s as Button).IsEnabled = true;
-					Other.Other.ShowMessage("Houve um erro ao enviar os dados, tente novamente", this);
-				}
-			};
-		}
+                        await DisplayAlert("", message, "OK");
 
-		private class ObjectToSend
-		{
-			public string Response { get; set; }
-			public List<Questions> Answers { get; set; }
-		}
-	}
+                        MainPage.openEvent = _event.Id;
+                        MainPage.main.GetEvents();
+                    }
+                    else
+                    {
+                        (s as Button).IsEnabled = true;
+                        Other.Other.ShowMessage("Houve um erro ao enviar os dados, tente novamente", this);
+                    }
+                }
+                catch
+                {
+                    (s as Button).IsEnabled = true;
+                    Other.Other.ShowMessage("Houve um erro ao enviar os dados, tente novamente", this);
+                }
+            };
+        }
+
+        private class ObjectToSend
+        {
+            public string Response { get; set; }
+            public List<Questions> Answers { get; set; }
+        }
+    }
 }

@@ -48,6 +48,11 @@ namespace GDGSP
         {
             Event _event = e.Parameter as Event;
 
+            if(_event.Response == null)
+            {
+                _event.Response = "no";
+            }
+
             ResponseSwitch.OffContent = "Não";
 
             if (_event.Response.Equals("yes") || _event.Yes_rsvp_count < _event.Rsvp_limit)

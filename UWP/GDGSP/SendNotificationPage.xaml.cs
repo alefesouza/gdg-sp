@@ -63,6 +63,7 @@ namespace GDGSP
                 try
                 {
                     var postData = new List<KeyValuePair<string, string>>();
+                    postData.Add(new KeyValuePair<string, string>("app_key", Other.Other.GetAppKey()));
                     postData.Add(new KeyValuePair<string, string>("title", Title.Text));
                     postData.Add(new KeyValuePair<string, string>("link", Link.Text));
                     postData.Add(new KeyValuePair<string, string>("image", Image.Text));

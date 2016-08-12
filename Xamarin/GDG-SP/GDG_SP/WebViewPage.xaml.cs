@@ -173,7 +173,7 @@ namespace GDG_SP
 
 					if (description.Equals("error"))
 					{
-                        loginError();
+                        LoginError();
 					}
 					else if (description.Equals("none"))
 					{
@@ -213,11 +213,11 @@ namespace GDG_SP
 			}
 			else
 			{
-                loginError();
+                LoginError();
 			}
 		}
 
-        private async void loginError()
+        private async void LoginError()
         {
             bool alert = await DisplayAlert("Erro ao fazer login", "Deseja tentar novamente?", "Sim", "Não");
 

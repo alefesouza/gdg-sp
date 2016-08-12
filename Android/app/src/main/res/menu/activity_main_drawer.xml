@@ -23,6 +23,11 @@ limitations under the License.
 			android:icon="@drawable/ic_send"
 			android:title="@string/send_notification"
 			android:visible="false" />
+		<item
+			android:id="@+id/nav_raffle"
+			android:icon="@drawable/ic_raffle"
+			android:title="@string/raffle_manager"
+			android:visible="false" />
 	</group>
 
 	<group android:checkableBehavior="none">

@@ -90,6 +90,10 @@ public class FragmentActivity extends AppCompatActivity {
 				title = getString(R.string.do_checkin);
 				fragment = new CheckinFragment();
 				break;
+			case 7:
+				title = getString(R.string.raffle_manager);
+				fragment = new RaffleManagerFragment();
+				break;
 		}
 
 		if(fragment != null) {

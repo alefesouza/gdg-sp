@@ -19,30 +19,34 @@
 
 include("../functions.php");
 
-$token = refreshMeetupToken($_POST["refresh_token"]);
+if($_POST["app_key"] == $app_key) {
+	$token = refreshMeetupToken($_POST["refresh_token"]);
 
-$memberdata = @file_get_contents("https://api.meetup.com/members/self?access_token=$token");
-$member = json_decode($memberdata);
+	$memberdata = @file_get_contents("https://api.meetup.com/members/self?access_token=$token");
+	$member = json_decode($memberdata);
 
-$memberid = $member->id;
+	$memberid = $member->id;
 
-if(strpos($http_response_header[0], "200") !== false) {
-	if(checkIsAdmin($memberid, $token)) {
-		echo "notification_send";
-		
-		include("wns/wns.php");
+	if(strpos($http_response_header[0], "200") !== false) {
+		if(checkIsAdmin($memberid, $token)) {
+			echo "notification_send";
 
-		$title = $_POST["title"];
-		$message = $_POST["message"];
-		$image = $_POST["image"];
-		$link = $_POST["link"];
-		$eventid = isset($_POST["eventid"]) || $_POST["eventid"] == "" ? $_POST["eventid"] : "";
-		
-		sendMessageOneSignal2($title, $message, $image, $link, $eventid);
-		notify_wns_users2($title, $message, $image, $link, $eventid);
+			include("wns/wns.php");
+
+			$title = $_POST["title"];
+			$message = $_POST["message"];
+			$image = $_POST["image"];
+			$link = $_POST["link"];
+			$eventid = isset($_POST["eventid"]) || $_POST["eventid"] == "" ? $_POST["eventid"] : "";
+
+			sendMessageOneSignal2($title, $message, $image, $link, $eventid);
+			notify_wns_users2($title, $message, $image, $link, $eventid);
+		} else {
+			echo "invalid_user";
+		}
 	} else {
-		echo "invalid_user";
+		echo "try_again";
 	}
 } else {
-	echo "try_again";
+	echo "invalid_key";
 } ?>

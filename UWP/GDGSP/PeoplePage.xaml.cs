@@ -17,9 +17,11 @@
 using GDGSP.Models;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Windows.UI;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
@@ -36,8 +38,9 @@ namespace GDGSP
     {
         Event _event;
         ObservableCollection<Person> listPeople = new ObservableCollection<Person>();
-        bool peopleWithApp;
+        bool peopleWithApp, timerBlock;
         TextBlock title;
+        int count;
 
         public PeoplePage()
         {
@@ -140,11 +143,13 @@ namespace GDGSP
             MessageDialog md = new MessageDialog("Deseja tentar novamente?");
             md.Title = title;
 
-            md.Commands.Add(new UICommand("Sim", new UICommandInvokedHandler((c) => {
+            md.Commands.Add(new UICommand("Sim", new UICommandInvokedHandler((c) =>
+            {
                 GetPeople();
             }))
             { Id = 0 });
-            md.Commands.Add(new UICommand("Não", new UICommandInvokedHandler((c) => {
+            md.Commands.Add(new UICommand("Não", new UICommandInvokedHandler((c) =>
+            {
                 HomePage.homePage.eventopen.GoBack();
             }))
             { Id = 1 });
@@ -164,7 +169,7 @@ namespace GDGSP
             }
         }
 
-        private void CBRandom_Click(object sender, RoutedEventArgs e)
+        private async void CBRandom_Click(object sender, RoutedEventArgs e)
         {
             // Para sortear, primeiro o aplicativo pega a lista de todas as pessoas que foram
             ObservableCollection<Person> go;
@@ -185,7 +190,96 @@ namespace GDGSP
                 int number = random.Next(go.Count);
                 // E dará scroll até esta posição na lista, exibindo o nome da pessoa.
                 ListPeople.ScrollIntoView(go[number], ScrollIntoViewAlignment.Leading);
-                Other.Other.ShowMessage(go[number].Name);
+
+                string localDate = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy");
+                string dbDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+                if (MainPage.mainPage.member != null && go[number].Id == MainPage.mainPage.member.Id)
+                {
+                    count = 0;
+                    timerBlock = false;
+                    StartTimer();
+
+                    MessageDialog md = new MessageDialog("Você!\n\nSorteado às " + localDate);
+
+                    md.Commands.Add(new UICommand("Enviar", new UICommandInvokedHandler((c) => {
+                        timerBlock = true;
+                        SendRaffle(dbDate, count, _event);
+                    }))
+                    { Id = 0 });
+                    md.Commands.Add(new UICommand("Cancelar", null)
+                    { Id = 1 });
+
+                    await md.ShowAsync();
+                }
+                else
+                {
+                    Other.Other.ShowMessage(go[number].Name);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gambiarra para contar os segundos, reaproveitando código do Xamarin por preguiça de pesquisar algo pro UWP...
+        /// </summary>
+		private async void StartTimer()
+        {
+            if (!timerBlock)
+            {
+                await Task.Delay(1000);
+                count++;
+                StartTimer();
+            }
+        }
+
+        public async void SendRaffle(string raffle_date, int seconds, Event _event)
+        {
+            var postData = new List<KeyValuePair<string, string>>();
+            postData.Add(new KeyValuePair<string, string>("app_key", Other.Other.GetAppKey()));
+            postData.Add(new KeyValuePair<string, string>("raffle_date", raffle_date));
+            postData.Add(new KeyValuePair<string, string>("seconds", seconds.ToString()));
+            postData.Add(new KeyValuePair<string, string>("refresh_token", Other.Other.localSettings.Values["refresh_token"].ToString()));
+
+            var client = new HttpClient();
+            client.MaxResponseContentBufferSize = 256000;
+            HttpResponseMessage response = await client.PostAsync(Other.Other.GetRaffleUrl(_event.Id), new FormUrlEncodedContent(postData));
+
+            if (response.IsSuccessStatusCode)
+            {
+                string result = await response.Content.ReadAsStringAsync();
+                string message;
+
+                switch (result)
+                {
+                    case "success":
+                        message = "Seu sorteio foi enviado, boa sorte!";
+                        break;
+                    case "invalid_user":
+                        message = "Usuário inválido";
+                        break;
+                    case "invalid_key":
+                        message = "Chave do aplicativo inválida";
+                        break;
+                    default:
+                        message = "Houve um erro";
+                        break;
+                }
+
+                Other.Other.ShowMessage(message);
+            }
+            else
+            {
+                MessageDialog md = new MessageDialog("Deseja tentar novamente?");
+                md.Title = "Houve um erro ao enviar os dados";
+
+                md.Commands.Add(new UICommand("Sim", new UICommandInvokedHandler((c) => {
+                    SendRaffle(raffle_date, seconds, _event);
+                }))
+                { Id = 0 });
+                md.Commands.Add(new UICommand("Não", null)
+                { Id = 1 });
+
+                await md.ShowAsync();
             }
         }
 

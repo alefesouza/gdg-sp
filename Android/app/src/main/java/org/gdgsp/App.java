@@ -18,7 +18,6 @@ package org.gdgsp;
 
 import android.app.Application;
 import com.onesignal.OneSignal;
-
 import org.gdgsp.notification.NotificationHandler;
 
 public class App extends Application {

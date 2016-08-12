@@ -118,6 +118,7 @@
     <Content Include="Assets\BadgeLogo.scale-150.png" />
     <Content Include="Assets\BadgeLogo.scale-200.png" />
     <Content Include="Assets\BadgeLogo.scale-400.png" />
+    <Content Include="Assets\Images\Delete.png" />
     <Content Include="Assets\Images\Facebook.png" />
     <Content Include="Assets\Images\Google.png" />
     <Content Include="Assets\Images\Instagram.png" />
@@ -125,6 +126,7 @@
     <Content Include="Assets\Images\More.png" />
     <Content Include="Assets\Images\OpenMeetup.png" />
     <Content Include="Assets\Images\People.png" />
+    <Content Include="Assets\Images\Raffle.png" />
     <Content Include="Assets\Images\Random.png" />
     <Content Include="Assets\Images\Refresh.png" />
     <Content Include="Assets\Images\Rsvp.png" />
