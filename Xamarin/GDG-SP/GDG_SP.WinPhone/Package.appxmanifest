@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="44070AlefeSouza.GDG-SP" Publisher="CN=E37D7763-C739-47C8-8305-1D5CE1D806FB" Version="1.0.2.0" />
+  <Identity Name="44070AlefeSouza.GDG-SP" Publisher="CN=E37D7763-C739-47C8-8305-1D5CE1D806FB" Version="1.0.2.3" />
   <mp:PhoneIdentity PhoneProductId="8fa15d80-6404-40df-bf41-7a44d6f55705" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>GDG-SP</DisplayName>

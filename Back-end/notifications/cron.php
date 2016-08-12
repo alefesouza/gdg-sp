@@ -24,54 +24,50 @@ Caso a API tenha um dado diferente do banco de dados, o arquivo enviará uma not
 // Supondo que estivesse suportando mais de um meetup, só incrementar esse array
 $meetupids = array("GDG-SP");
 
+include("../connect_db.php");
+include("wns/wns.php");
+
 foreach($meetupids as $meetupid) {
   include("../functions.php");
-  include("wns/wns.php");
 
   $json = file_get_contents("http://api.meetup.com/$meetupid/events");
 
   $events = json_decode($json);
+  
+  $query = mysqli_query($dbi, "SELECT event_id FROM meetup_last_events WHERE meetup_id='$meetupid'");
 
-  // O evento com maior id é o último anunciado, isso é PHP, não reclame dessa gambiarra huehaheu
-  $lastid = 0;
+  while($row = mysqli_fetch_array($query)) {
+    $last_events[] = $row["event_id"];
+  }
+
   for($i = 0; $i < count($events); $i++) {
-    if($events[$i]->id > $lastid) {
-      $lastid = $events[$i]->id;
-      $lastevent = $i;
+    if(!in_array($events[$i]->id, $last_events)) {
+      $event = $events[$i];
     }
   }
-  
-  $event = $events[$lastevent];
 
   // Se o evento for diferente de null
   if($event != null) {
-    // E o ID dele for maior que o que estava no banco de dados, significa que é um novo evento, então enviará a notificação
-    if($event->id > $last_event) {
-      $id = $event->id;
-      $name = $event->name;
-      $description = $event->description;
-      $place = $event->venue->name;
-      $start = date("d/m/Y H:i", $event->time / 1000);
+    $id = $event->id;
+    $name = $event->name;
+    $description = $event->description;
+    $place = $event->venue->name;
+    $start = date("d/m/Y H:i", $event->time / 1000);
 
-      $message = $start;
-      if($place != "") {
-        $message .= " ".$place;
-      }
-
-      // Após isso atualiza o banco de dados com esse ID sendo o último anunciado, quando surgir um evento com ID maior que esse vai refazer tudo isso
-      mysqli_query($dbi, "UPDATE meetups SET last_event=$id WHERE meetupid='$meetupid'");
-      
-      sendMessageOneSignal(count($events), $name, $message, getImage($name, $description), $id);
-      
-      // Já checa se tem algum token expirado na tabela dos usuários do Windows 10 e apaga
-      $checkExpire = date("Ymd", time());
-      mysqli_query($dbi, "DELETE FROM meetup_wns_users WHERE expire < $checkExpire");
-
-      notify_wns_users(count($events), $name, $message, getImage($name, $description), $id);
+    $message = $start;
+    if($place != "") {
+      $message .= " ".$place;
     }
-    
-    // Para testes
-    //mysqli_query($dbi, "UPDATE meetups SET last_event=0 WHERE meetupid='$meetupid'");
+  
+    mysqli_query($dbi, "INSERT INTO meetup_last_events (meetup_id, event_id) VALUES ('$meetupid', $id)");
+
+    sendMessageOneSignal(count($events), $name, $message, getImage($name, $description), $id);
+
+    // Já checa se tem algum token expirado na tabela dos usuários do Windows 10 e apaga
+    $checkExpire = date("Ymd", time());
+    mysqli_query($dbi, "DELETE FROM meetup_wns_users WHERE expire < $checkExpire");
+
+    notify_wns_users(count($events), $name, $message, getImage($name, $description), $id);
   }
 }
 ?>

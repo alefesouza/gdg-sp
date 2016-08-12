@@ -37,7 +37,7 @@ if($_POST["refresh_token"] != "") {
 		$last_activity = date("Ymd", time());
 		mysqli_query($dbi, "UPDATE meetup_app_members SET last_activity=$last_activity WHERE member_id=$memberid");
 		
-		if($platform == "windows" && $_POST["ChannelUri"] != "") {
+		if(($platform == "windows" || $platform == "windows81") && $_POST["ChannelUri"] != "") {
 			mysqli_query($dbi, "UPDATE meetup_wns_users SET member_id=$memberid WHERE device='".$_POST["ChannelUri"]."'");
 		}
 	} else {
@@ -88,8 +88,7 @@ foreach($events as $event) {
     "rsvpable" => $event->rsvpable
 	);
 	
-	// Parece que no Xamarin.iOS não da pra definir a imagem como largura pra tela toda com a altura acompanhando
-	if($_GET["platform"] == "ios" && $_GET["via"] == "xamarin") {
+	if($_GET["via"] == "xamarin") {
 		list($width, $height, $type, $attr) = getimagesize($image);
 		$newevents[count($newevents) - 1]["image_width"] = $width;
 		$newevents[count($newevents) - 1]["image_height"] = $height;
@@ -98,7 +97,7 @@ foreach($events as $event) {
 
 $newjson = array("member" => array("id" => (int)$memberid, "name" => (string)$membername, "photo" => (string)$memberphoto, "intro" => (string)$memberintro, "is_admin" => (boolean)$isadmin), "header" => $header_image, "events" => $newevents);
 
-if($_GET["platform"] == "ios" && $_GET["via"] == "xamarin") {
+if($_GET["via"] == "xamarin") {
 	list($width, $height, $type, $attr) = getimagesize($header_image);
 	$newjson["header_width"] = $width;
 	$newjson["header_height"] = $height;
@@ -111,7 +110,7 @@ function getHtml($title, $description, $lat, $lon, $place, $address, $start, $en
   global $platform;
 	global $mapbox_token;
   
-	if($platform == "windows" || $platform == "wp") {
+	if($platform == "windows" || $platform == "windows81" || $platform == "wp") {
 		$geotag = "bingmaps:?cp=$lat~$lon&lvl=10&where=".urlencode("$place, $address");
 	} else if($platform == "ios") {
 		$geotag = "maps://maps.apple.com/?ll=$lat,$lon&q=".urlencode("$place, $address");

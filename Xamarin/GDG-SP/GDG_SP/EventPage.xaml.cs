@@ -32,19 +32,15 @@ namespace GDG_SP
 
             Title = Device.OnPlatform("", null, AppResources.AppName);
 
-            string directory = "";
-
             if (Device.OS == TargetPlatform.Windows)
             {
-                directory = "Assets/Images/";
-
                 ToolbarItems.Add(new ToolbarItem("Copiar link", null, async () =>
                 {
                     await CrossShare.Current.SetClipboardText(_event.Link);
                 }, ToolbarItemOrder.Secondary));
             }
 
-            ToolbarItems.Add(new ToolbarItem("RSVP", directory + "Rsvp.png", async () =>
+            ToolbarItems.Add(new ToolbarItem("RSVP", Other.Other.GetImage("Rsvp"), async () =>
             {
                 if (Other.Other.GetSetting("refresh_token").Length > 0)
                 {
@@ -67,12 +63,12 @@ namespace GDG_SP
                 }
             }));
 
-            ToolbarItems.Add(new ToolbarItem(_event.Who, directory + "People.png", () =>
+            ToolbarItems.Add(new ToolbarItem(_event.Who, Other.Other.GetImage("People"), () =>
                 {
                     Navigation.PushAsync(new TabbedPeoplePage(_event.Id) { Title = _event.Who });
                 }));
 
-            ToolbarItems.Add(new ToolbarItem("Compartilhar", directory + "Share.png", () =>
+            ToolbarItems.Add(new ToolbarItem("Compartilhar", Other.Other.GetImage("Share"), () =>
             {
                 Other.Other.ShareLink(_event.Name, _event.Link);
             }));
@@ -88,7 +84,7 @@ namespace GDG_SP
                     Navigation.PushAsync(new WebViewPage(Other.Other.GetLoginUrl(), true, _event.Id) { Title = "Login" });
                     e.Cancel = true;
                 }
-                else if (e.Url.StartsWith("http"))
+                else
                 {
                     Other.Other.OpenSite(e.Url, this);
                     e.Cancel = true;

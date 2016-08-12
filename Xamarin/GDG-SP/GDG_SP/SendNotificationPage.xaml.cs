@@ -55,7 +55,7 @@ namespace GDG_SP
             }
             else
             {
-                ToAllStack.IsVisible = false;
+                ToAllGrid.IsVisible = false;
                 StackPicker.IsVisible = false;
             }
 

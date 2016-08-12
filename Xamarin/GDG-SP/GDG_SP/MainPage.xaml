@@ -57,14 +57,7 @@ limitations under the License.
               <StackLayout Padding="10">
                 <Label Text="{Binding Name}" FontSize="22" FontAttributes="Bold" />
                 <ContentView>
-                  <OnPlatform x:TypeArguments="View">
-                    <OnPlatform.iOS>
-                      <Image Source="{Binding Image}" HorizontalOptions="FillAndExpand" Aspect="AspectFill" HeightRequest="{Binding HeightRequest}" />
-                    </OnPlatform.iOS>
-                    <OnPlatform.WinPhone>
-                      <Image Source="{Binding Image}" HorizontalOptions="FillAndExpand" Aspect="AspectFill" />
-                    </OnPlatform.WinPhone>
-                  </OnPlatform>
+                  <Image Source="{Binding Image}" HorizontalOptions="FillAndExpand" Aspect="AspectFill" HeightRequest="{Binding HeightRequest}" />
                 </ContentView>
 
                 <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">

@@ -58,25 +58,31 @@ namespace GDG_SP
             }
             else
             {
-                ProfileImage.Source = ImageSource.FromFile(Device.OnPlatform("Icon-72.png", null, "Assets/Square71x71Logo.scale-140.png"));
+                string image = "";
+
+                image = Device.OnPlatform("Icon-72.png", "ic_launcher.png", "Assets/Square71x71Logo.scale-140.png");
+
+                if(Device.Idiom == TargetIdiom.Desktop)
+                {
+                    image = "Assets/Square71x71Logo.scale-150.png";
+                }
+                else if((Device.Idiom == TargetIdiom.Tablet && Device.OS == TargetPlatform.Windows))
+                {
+                    image = "Assets/Square70x70Logo.scale-100.png";
+                }
+
+                ProfileImage.Source = ImageSource.FromFile(image);
                 ProfileName.Text = "Fazer login";
             }
-
-            string directory = "";
-
-            if (Device.OS == TargetPlatform.Windows)
-            {
-                directory = "Assets/Images/";
-            }
-
-            listLinks.Add(new Link() { Title = "Site", Icon = directory + "Site.png", Value = AppResources.SiteUrl });
-			listLinks.Add(new Link() { Title = "Meetups antigos", Icon = directory + "YouTube.png", Value = AppResources.OldMeetupsUrl });
-            listLinks.Add(new Link() { Title = "Facebook", Icon = directory + "Facebook.png", Value = AppResources.FacebookUrl });
-            listLinks.Add(new Link() { Title = "Google+", Icon = directory + "Google.png", Value = AppResources.GooglePlusUrl });
-            listLinks.Add(new Link() { Title = "Instagram", Icon = directory + "Instagram.png", Value = AppResources.InstagramUrl });
-            listLinks.Add(new Link() { Title = "Twitter", Icon = directory + "Twitter.png", Value = AppResources.TwitterUrl });
-            listLinks.Add(new Link() { Title = "YouTube", Icon = directory + "YouTube.png", Value = AppResources.YouTubeUrl });
-            listLinks.Add(new Link() { Title = "Contato", Icon = directory + "Mail.png", Value = AppResources.ContactMail });
+            
+            listLinks.Add(new Link() { Title = "Site", Icon = Other.Other.GetImage("Site"), Value = AppResources.SiteUrl });
+			listLinks.Add(new Link() { Title = "Meetups antigos", Icon = Other.Other.GetImage("YouTube"), Value = AppResources.OldMeetupsUrl });
+            listLinks.Add(new Link() { Title = "Facebook", Icon = Other.Other.GetImage("Facebook"), Value = AppResources.FacebookUrl });
+            listLinks.Add(new Link() { Title = "Google+", Icon = Other.Other.GetImage("Google"), Value = AppResources.GooglePlusUrl });
+            listLinks.Add(new Link() { Title = "Instagram", Icon = Other.Other.GetImage("Instagram"), Value = AppResources.InstagramUrl });
+            listLinks.Add(new Link() { Title = "Twitter", Icon = Other.Other.GetImage("Twitter"), Value = AppResources.TwitterUrl });
+            listLinks.Add(new Link() { Title = "YouTube", Icon = Other.Other.GetImage("YouTube"), Value = AppResources.YouTubeUrl });
+            listLinks.Add(new Link() { Title = "Contato", Icon = Other.Other.GetImage("Mail"), Value = AppResources.ContactMail });
 
             ListLinks.ItemsSource = listLinks;
 

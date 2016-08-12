@@ -27,7 +27,7 @@ if($_POST["refresh_token"] != "") {
 	$json = file_get_contents("http://api.meetup.com/$meetupid/events/$eventid/rsvps");
 }
 
-$query = mysqli_query($dbi, "SELECT member_id FROM meetup_app_members");
+$query = mysqli_query($dbi, "SELECT member_id FROM meetup_app_members WHERE meetup_id='$meetupid'");
 
 while($row = mysqli_fetch_array($query)) {
 	$members_with_app[] = $row["member_id"];

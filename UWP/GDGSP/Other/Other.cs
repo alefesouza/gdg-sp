@@ -321,8 +321,9 @@ namespace GDGSP.Other
                 pairs.Add("check_uri", "true");
                 Windows.Web.Http.HttpFormUrlEncodedContent formContent = new Windows.Web.Http.HttpFormUrlEncodedContent(pairs);
                 Windows.Web.Http.HttpClient client = new Windows.Web.Http.HttpClient();
-                Windows.Web.Http.HttpResponseMessage response = await client.PostAsync(new Uri("http://" + backendUrl + "notifications/wns/wns.php?meetupid=" + resourceLoader.GetString("MeetupId"), UriKind.Absolute), formContent);
-                JsonObject json = JsonObject.Parse(response.Content.ToString());
+                Windows.Web.Http.HttpResponseMessage response = await client.PostAsync(new Uri("http://" + backendUrl + "notifications/wns/wns.php" + finalUrl, UriKind.Absolute), formContent);
+                string result = await response.Content.ReadAsStringAsync();
+                JsonObject json = JsonObject.Parse(result);
                 bool uri_exists = json.GetNamedBoolean("uri_exists");
                 if (!uri_exists)
                 {

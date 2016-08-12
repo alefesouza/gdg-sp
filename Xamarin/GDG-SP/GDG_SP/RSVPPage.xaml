@@ -21,10 +21,15 @@ limitations under the License.
   <ScrollView>
     <StackLayout Padding="10">
       <Label Text="Você irá?"></Label>
-      <StackLayout Orientation="Horizontal">
-        <Switch x:Name="ResponseSwitch"></Switch>
-        <Label x:Name="State" VerticalOptions="CenterAndExpand"></Label>
-      </StackLayout>
+      <Grid x:Name="ToAllGrid">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Switch x:Name="ResponseSwitch" />
+        <Label x:Name="State" VerticalOptions="CenterAndExpand" Grid.Column="1" />
+      </Grid>
       
       <StackLayout x:Name="QuestionsStack">
       </StackLayout>

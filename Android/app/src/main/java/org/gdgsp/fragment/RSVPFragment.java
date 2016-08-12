@@ -19,6 +19,8 @@ package org.gdgsp.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.support.v4.app.Fragment;
 import android.text.InputFilter;
@@ -28,7 +30,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
@@ -51,7 +52,7 @@ public class RSVPFragment extends Fragment {
 	private Activity activity;
 	private View view;
 	private Event event;
-	private Switch responseSwitch;
+	private SwitchCompat responseSwitch;
 	private TextView responseText;
 	private List<EditText> entries = new ArrayList<EditText>();
 
@@ -72,7 +73,7 @@ public class RSVPFragment extends Fragment {
 		view = inflater.inflate(R.layout.fragment_rsvp, container, false);
 
 		event = (Event)getActivity().getIntent().getSerializableExtra("event");
-		responseSwitch = (Switch)view.findViewById(R.id.response_switch);
+		responseSwitch = (SwitchCompat) view.findViewById(R.id.response_switch);
 
 		responseText = (TextView)view.findViewById(R.id.response_text);
 
@@ -104,7 +105,7 @@ public class RSVPFragment extends Fragment {
 			TextView textView = new TextView(activity);
 			textView.setText(question.getQuestion());
 
-			EditText editText = new EditText(activity);
+			EditText editText = new AppCompatEditText(activity);
 			editText.setSingleLine(true);
 			editText.setMaxLines(1);
 			InputFilter[] FilterArray = new InputFilter[1];

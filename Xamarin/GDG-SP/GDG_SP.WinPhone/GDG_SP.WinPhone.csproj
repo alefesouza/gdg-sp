@@ -93,6 +93,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Dependencies_WinPhone.cs" />
     <Compile Include="WindowsRuntimeResourceManager.cs" />
   </ItemGroup>
   <ItemGroup>

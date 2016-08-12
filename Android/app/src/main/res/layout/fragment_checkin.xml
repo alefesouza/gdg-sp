@@ -35,11 +35,12 @@ limitations under the License.
 
 			<TextView
 				android:text="Use esse QR Code para fazer check-in ao chegar em um evento"
-				android:layout_width="match_parent"
+				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:textColor="#000000"
 				android:textSize="16sp"
 				android:textAlignment="center"
+				android:layout_gravity="center"
 			/>
 		
 			<ImageView
@@ -52,11 +53,12 @@ limitations under the License.
 
 			<TextView
 				android:id="@+id/name"
-				android:layout_width="match_parent"
+				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:textColor="#000000"
 				android:textSize="16sp"
 				android:textAlignment="center"
+				android:layout_gravity="center"
 			/>
 		</LinearLayout>
 	</android.support.v7.widget.CardView>

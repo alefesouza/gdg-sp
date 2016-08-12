@@ -48,7 +48,6 @@ namespace GDG_SP
 
             main = this;
 
-            // As vezes faço testes do iPad com um Xamarin.UWP
             if (Device.Idiom == TargetIdiom.Desktop)
             {
                 Device.StartTimer(TimeSpan.FromMilliseconds(50), () =>
@@ -59,45 +58,53 @@ namespace GDG_SP
                 });
             }
 
-            if (Device.OS == TargetPlatform.iOS)
+            if (Device.Idiom == TargetIdiom.Tablet || Device.Idiom == TargetIdiom.Desktop)
             {
-                // Não sei por que fica uma margem na lateral direita no iPhone, mesmo tirando o WebView continuou, parece algo do TabedPage, por isso para parece igual eu coloquei outra margem na esquerda
-                if (Device.Idiom == TargetIdiom.Phone)
-                {
-                    MainGrid.Padding = new Thickness(7, 0, 0, 0);
-                }
+                imageWidth = 350;
+            }
 
-                more = new ToolbarItem("Mais", "More.png", async () =>
-                {
-                    string action = await DisplayActionSheet("Menu", "Cancelar", null, "Atualizar", "Fazer check-in", "Abrir meetup");
+            if (Device.Idiom == TargetIdiom.Phone)
+            {
+                MainGrid.Children.Remove(EventWebView);
+                MainGrid.ColumnDefinitions.Remove(Column2);
+            }
 
-                    if (action != null)
+            if (Device.OS == TargetPlatform.iOS || Device.Idiom == TargetIdiom.Tablet || Device.Idiom == TargetIdiom.Desktop)
+            {
+                more = new ToolbarItem("Mais", Other.Other.GetImage("More"), async () =>
+                {
+                    if (!tabletMenu)
                     {
-						if (action.Equals("Atualizar"))
-						{
-							GetEvents(true);
-						}
-						else if (action.Equals("Fazer check-in"))
-						{
-							OpenCheckin();
-						}
-						else if (action.Equals("Abrir meetup"))
-						{
-							Other.Other.OpenSite("meetup.com/" + AppResources.MeetupId, this);
+                        string action = await DisplayActionSheet("Menu", "Cancelar", null, "Atualizar", "Fazer check-in", "Abrir meetup");
+
+                        if (action != null)
+                        {
+                            if (action.Equals("Atualizar"))
+                            {
+                                GetEvents(true);
+                            }
+                            else if (action.Equals("Fazer check-in"))
+                            {
+                                OpenCheckin();
+                            }
+                            else if (action.Equals("Abrir meetup"))
+                            {
+                                Other.Other.OpenSite("meetup.com/" + AppResources.MeetupId, this);
+                            }
                         }
                     }
                 });
 
                 ToolbarItems.Add(more);
             }
-            else
+            else if(Device.OS == TargetPlatform.WinPhone)
             {
-                ToolbarItems.Add(new ToolbarItem("Atualizar", "Assets/Images/Refresh.png", () =>
+                ToolbarItems.Add(new ToolbarItem("Atualizar", Other.Other.GetImage("Refresh"), () =>
                 {
                     GetEvents(true);
                 }));
 
-                ToolbarItems.Add(new ToolbarItem("Meetup", "Assets/Images/OpenMeetup.png", () =>
+                ToolbarItems.Add(new ToolbarItem("Abrir meetup", Other.Other.GetImage("OpenMeetup"), () =>
                 {
                     Other.Other.OpenSite("meetup.com/" + AppResources.MeetupId, this);
                 }));
@@ -106,6 +113,23 @@ namespace GDG_SP
 				{
 					OpenCheckin();
 				}, ToolbarItemOrder.Secondary));
+            }
+            else
+            {
+                ToolbarItems.Add(new ToolbarItem("Atualizar", null, () =>
+                {
+                    GetEvents(true);
+                }, ToolbarItemOrder.Secondary));
+
+                ToolbarItems.Add(new ToolbarItem("Fazer check-in", null, () =>
+                {
+                    OpenCheckin();
+                }, ToolbarItemOrder.Secondary));
+
+                ToolbarItems.Add(new ToolbarItem("Abrir meetup", null, () =>
+                {
+                    Other.Other.OpenSite("meetup.com/" + AppResources.MeetupId, this);
+                }, ToolbarItemOrder.Secondary));
             }
 
             TryAgain.Clicked += (s, e) =>
@@ -150,7 +174,7 @@ namespace GDG_SP
                 {
                     var client = new HttpClient();
                     client.MaxResponseContentBufferSize = 256000;
-                    HttpResponseMessage response = await client.PostAsync(Other.Other.GetEventsUrl() + "&time=" + time++, Other.Other.GetRefreshToken());
+                    HttpResponseMessage response = await client.PostAsync(Other.Other.GetEventsUrl() + "&time=" + time++, Other.Other.GetRefreshToken(true));
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -208,6 +232,8 @@ namespace GDG_SP
 
             HeaderImage.Source = ImageSource.FromUri(new Uri(root["header"].ToString()));
 
+            DependencyService.Get<IDependencies>().SendOneSignalTag("app_version", DependencyService.Get<IDependencies>().GetAppVersion());
+
             if ((int)root["member"]["id"] != 0)
             {
                 LinksPage.member = JsonConvert.DeserializeObject<Person>(root["member"].ToString());
@@ -217,19 +243,16 @@ namespace GDG_SP
                 LinksPage.linksPage.profileName.Text = LinksPage.member.Name;
                 LinksPage.linksPage.profileIntro.Text = LinksPage.member.Intro;
 
-                if(Other.Other.GetSetting("one_signal").Equals(""))
-                {
-                    Other.Other.AddSetting("one_signal", LinksPage.member.Id.ToString());
-                }
-
                 if((bool)root["member"]["is_admin"])
                 {
                     if (!notificationAdded)
                     {
-                        LinksPage.linksPage.listLinks.Insert(0, new Link() { Title = "Enviar notificação", Icon = Device.OnPlatform("SendNotification.png", null, "Assets/Images/SendNotification.png"), Value = "send_notification" });
+                        LinksPage.linksPage.listLinks.Insert(0, new Link() { Title = "Enviar notificação", Icon = Device.OnPlatform("SendNotification.png", "ic_send.png", "Assets/Images/SendNotification.png"), Value = "send_notification" });
                         notificationAdded = true;
                     }
                 }
+
+				DependencyService.Get<IDependencies>().SendOneSignalTag("member_id", LinksPage.member.Id.ToString());
             }
             else
             {
@@ -238,13 +261,27 @@ namespace GDG_SP
                     Other.Other.AddSetting("refresh_token", "");
                     Other.Other.AddSetting("member_profile", "");
                     LinksPage.member = null;
-                    LinksPage.linksPage.profileImage.Source = ImageSource.FromFile(Device.OnPlatform("Icon-72.png", null, "Assets/Square71x71Logo.scale-140.png"));
+
+                    string image = "";
+
+                    image = Device.OnPlatform("Icon-72.png", "ic_launcher.png", "Assets/Square71x71Logo.scale-140.png");
+
+                    if (Device.Idiom == TargetIdiom.Desktop)
+                    {
+                        image = "Assets/Square71x71Logo.scale-150.png";
+                    }
+                    else if ((Device.Idiom == TargetIdiom.Tablet && Device.OS == TargetPlatform.Windows))
+                    {
+                        image = "Assets/Square70x70Logo.scale-100.png";
+                    }
+
+                    LinksPage.linksPage.profileImage.Source = ImageSource.FromFile(image);
                     LinksPage.linksPage.profileName.Text = "Fazer login";
                     LinksPage.linksPage.profileIntro.Text = "Fazer login";
                 }
             }
 
-            // Notei que a primeira vez que abre no iOS ocorre um bug no tamanho da lista, e arrumar se atualizar, como não tenho muito tempo para mexer em um Mac/simulador de iOS então vou deixar assim mesmo
+            // Notei que a primeira vez que abre no iOS ocorre um bug no tamanho da lista, e corrige se atualizar, como não tenho muito tempo para mexer em um Mac/simulador de iOS então vou deixar assim mesmo
             if (Device.OS == TargetPlatform.iOS)
             {
                 if (Other.Other.GetSetting("isfirst").Equals(""))
@@ -256,8 +293,6 @@ namespace GDG_SP
 
             if (listEvents.Count > 0)
             {
-                if (Device.OS == TargetPlatform.iOS)
-                {
                     if (imageWidth > 0)
                     {
                         for (int i = 0; i < listEvents.Count; i++)
@@ -265,17 +300,16 @@ namespace GDG_SP
                             listEvents[i].HeightRequest = Other.Other.GetHeightImage(imageWidth - 20, listEvents[i].Image_width, listEvents[i].Image_height);
                         }
                     }
-                }
 
-                if (Device.OS == TargetPlatform.iOS)
-                {
                     HeaderImage.SizeChanged += (s, e) =>
                     {
                         ForceLayout();
+
                         if (imageWidth == 0)
                         {
                             imageWidth = HeaderImage.Width;
                         }
+
                         HeaderImage.HeightRequest = Other.Other.GetHeightImage(imageWidth, (double)root["header_width"], (double)root["header_height"]);
 
                         if (imageWidth > 0)
@@ -289,25 +323,18 @@ namespace GDG_SP
                         ListEvents.ItemsSource = listEvents;
                         ForceLayout();
                     };
-                }
 
                 ListEvents.ItemsSource = listEvents;
 
-                if ((Device.Idiom == TargetIdiom.Desktop || Device.Idiom == TargetIdiom.Tablet) && !refresh)
+                if ((Device.Idiom == TargetIdiom.Desktop || Device.Idiom == TargetIdiom.Tablet || Device.Idiom == TargetIdiom.Desktop) && !refresh)
                 {
-                    string directory = "";
                     _event = listEvents[0];
 
                     if (!tabletMenu)
                     {
-
-                        if (Device.OS == TargetPlatform.Windows)
-                        {
-                            directory = "Assets/Images/";
-                        }
                         ToolbarItems.Remove(more);
 
-                        ToolbarItems.Add(new ToolbarItem("RSVP", directory + "Rsvp.png", async () =>
+                        ToolbarItems.Add(new ToolbarItem("RSVP", Other.Other.GetImage("Rsvp"), async () =>
                         {
                             if (Other.Other.GetSetting("refresh_token").Length > 0)
                             {
@@ -330,12 +357,12 @@ namespace GDG_SP
                             }
                         }));
 
-                        ToolbarItems.Add(new ToolbarItem(_event.Who, directory + "People.png", () =>
+                        ToolbarItems.Add(new ToolbarItem(_event.Who, Other.Other.GetImage("People"), () =>
                         {
                             Navigation.PushAsync(new TabbedPeoplePage(_event.Id) { Title = _event.Who });
                         }));
 
-                        ToolbarItems.Add(new ToolbarItem("Compartilhar", directory + "Share.png", () =>
+                        ToolbarItems.Add(new ToolbarItem("Compartilhar", Other.Other.GetImage("Share"), () =>
                         {
                             Other.Other.ShareLink(_event.Name, _event.Link);
                         }));
@@ -350,10 +377,10 @@ namespace GDG_SP
                                 {
                                     GetEvents(true);
                                 }
-								else if (action.Equals("Fazer check-in"))
-								{
-									OpenCheckin();
-								}
+                                else if (action.Equals("Fazer check-in"))
+                                {
+                                    OpenCheckin();
+                                }
                                 else if (action.Equals("Abrir meetup"))
                                 {
                                     Other.Other.OpenSite("meetup.com/" + AppResources.MeetupId, this);

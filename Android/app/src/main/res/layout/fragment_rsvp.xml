@@ -35,24 +35,25 @@ limitations under the License.
 				android:layout_height="wrap_content"
 				android:text="@string/do_you_go" />
 
-			<LinearLayout
+			<TableLayout
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="16dp"
-				android:layout_marginBottom="16dp"
-				android:gravity="center_vertical"
-				android:orientation="horizontal">
-				<Switch
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:id="@+id/response_switch" />
+				android:layout_marginBottom="16dp">
+				<TableRow>
+					<android.support.v7.widget.SwitchCompat
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/response_switch" />
 
-				<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="match_parent"
-					android:layout_marginTop="5dp"
-					android:id="@+id/response_text" />
-			</LinearLayout>
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginLeft="5dp"
+						android:layout_gravity="center_vertical"
+						android:id="@+id/response_text" />
+				</TableRow>
+			</TableLayout>
 
 			<LinearLayout
 				android:layout_width="match_parent"

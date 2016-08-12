@@ -57,7 +57,7 @@ public class AboutFragment extends Fragment {
 				"<p><h3>Aplicativo</h3></p>" +
 				"<p>" + activity.getString(R.string.app_name) + " para Android versão: " + Other.getAppVersion(activity) + "</p>" +
 				"<p>Aplicativo desenvolvido por <a href=\"http://alefesouza.com\">Alefe Souza</a></p>" +
-				"<p>Desenvolvi o aplicativo do GDG-SP por sentir falta de notificações de novos eventos em tempo real no aplicativo oficial do meetup, e para facilitar como os sorteios são feitos. Desenvolvi várias versões desse aplicativo, todas em código aberto para ajudar pessoas que querem aprender a desenvolver para diversas plataformas, sendo elas nativamente para Android e Universal Windows Platform, e em Xamarin para iOS e Windows Phone, você pode ver o código exato dos aplicativos e o back-end em PHP no meu <a href=\"http://github.com/alefesouza/gdg-sp\">GitHub</a>, procurei deixar o código para ser facilmente adaptado para outros meetups, bastando editar apenas um arquivo em cada plataforma e mudar os ícones.</p>" +
+				"<p>Esse aplicativo foi desenvolvido em código aberto para Android, Universal Windows Platform e Xamarin.Forms, você pode ver o código exato dos aplicativos e o back-end em PHP no meu <a href=\"http://github.com/alefesouza/gdg-sp\">GitHub</a>, procurei deixar o código para ser facilmente adaptado para outros meetups, deixando informações de como fazer isso em cada projeto.</p>" +
 				"Nesse aplicativo foi utilizado:" +
 				"<br><br><a href=\"http://icons8.com\">Icons8</a>" +
 				"<br><a href=\"http://github.com/koush/ion\">Ion</a>" +

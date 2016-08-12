@@ -20,10 +20,15 @@ limitations under the License.
              x:Class="GDG_SP.SendNotificationPage">
   <ScrollView>
     <StackLayout Padding="10">
-      <StackLayout Orientation="Horizontal" x:Name="ToAllStack">
+      <Grid x:Name="ToAllGrid">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        
         <Switch x:Name="ToAll" IsToggled="True" />
-        <Label Text="Enviar para todos" />
-      </StackLayout>
+        <Label Text="Enviar para todos" Grid.Column="1" VerticalOptions="Center" />
+      </Grid>
 
       <StackLayout x:Name="StackPicker" IsVisible="False">
         <Label Text="Pessoas no evento" Margin="0, 10, 0, 0" />

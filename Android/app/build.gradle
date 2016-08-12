@@ -6,10 +6,10 @@ android {
 
     defaultConfig {
         applicationId "org.gdgsp"
-        minSdkVersion 17
+        minSdkVersion 10
         targetSdkVersion 23
-        versionCode 7
-        versionName "1.2.2"
+        versionCode 8
+        versionName "1.2.3"
         manifestPlaceholders = [manifestApplicationId: "${applicationId}",
                                 onesignal_app_id: "onesignal_app_id",
                                 onesignal_google_project_number: "onesignal_google_project_number"]

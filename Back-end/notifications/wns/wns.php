@@ -92,7 +92,10 @@ function register_wns()
 			$expire = date('Ymd', strtotime("+31 days"));
 	    if($channel == '')
 		{
-			mysqli_query($dbi, "insert into meetup_wns_users (device, meetupid, expire) values ('$ChannelUri', '$meetupid', $expire)") or die ("ERROR: ".mysqli_error($dbi));
+			$platform = $_GET["platform"];
+			$appversion = $_GET["appversion"];
+			
+			mysqli_query($dbi, "insert into meetup_wns_users (device, meetupid, expire, platform, app_version) values ('$ChannelUri', '$meetupid', $expire, '$platform', '$appversion')") or die ("ERROR: ".mysqli_error($dbi));
 		}
 		else
 		{

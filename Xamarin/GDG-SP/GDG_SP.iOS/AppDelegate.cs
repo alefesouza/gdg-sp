@@ -25,6 +25,8 @@ namespace GDG_SP.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             global::Xamarin.Forms.Forms.Init();
+			Xamarin.Forms.DependencyService.Register<Dependencies_iOS>();
+
             ImageCircleRenderer.Init();
             UIApplication.SharedApplication.SetStatusBarStyle(UIStatusBarStyle.LightContent, false);
 

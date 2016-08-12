@@ -17,11 +17,6 @@ namespace GDG_SP.iOS
             // you can specify it here.
 
             UIApplication.Main(args, null, "AppDelegate");
-
-            if (!Other.Other.GetSetting("one_signal").Equals(""))
-            {
-                OneSignal.SendTag("meetup_id", Other.Other.GetSetting("one_signal"));
-            }
         }
     }
 }

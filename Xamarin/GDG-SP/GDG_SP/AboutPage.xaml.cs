@@ -28,6 +28,8 @@ namespace GDG_SP
         {
             InitializeComponent();
 
+            AppVersion.Text = DependencyService.Get<IDependencies>().GetAppVersion();
+
             // Como o Xamarin não possui uma RichTextBlock como o UWP nativo ou Html.fromHtml como no Android, decidi adicionar um TapGestureRecognizer em cada link nessa página
             var recognizer = new TapGestureRecognizer();
             recognizer.Tapped += Login_Tapped;

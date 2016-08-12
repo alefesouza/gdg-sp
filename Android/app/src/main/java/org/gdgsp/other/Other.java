@@ -45,14 +45,16 @@ import org.gdgsp.lib.*;
  */
 public class Other extends Activity {
     /**
-     * String que tem que aparecer no final de todas as URLs no aplicativo.
-     */
-	public static final String finalUrl = "appversion=platform=android&sdkint=" + getOSVersion();
-
-    /**
      * Cor primária do aplicativo, usada como cor da toolbar da Custom Tab.
      */
 	public static final int colorPrimary = 0xff008bf8;
+
+	/**
+	 * String que tem que aparecer no final de todas as URLs no aplicativo.
+	 */
+	public static String getFinalUrl(Context context) {
+		return "appversion=" + getAppVersion(context) + "&platform=android&sdkint=" + getOSVersion();
+	}
 
     /**
      * Métodos que retorna a URL de receber os eventos.
@@ -60,7 +62,7 @@ public class Other extends Activity {
      * @return A URL final para receber os eventos.
      */
     public static String getEventsUrl(Context context) {
-		return "http://" + context.getString(R.string.backend_url) + "api/events.php?meetupid=" + context.getString(R.string.meetup_id) + "&" + finalUrl;
+		return "http://" + context.getString(R.string.backend_url) + "api/events.php?meetupid=" + context.getString(R.string.meetup_id) + "&" + getFinalUrl(context);
     }
 
     /**
@@ -70,7 +72,7 @@ public class Other extends Activity {
      * @return A URL final para fazer RSVP no evento que o usuário quer ir.
      */
 	public static String getRSVPUrl(Context context, int id) {
-        return "http://" + context.getString(R.string.backend_url) + "api/rsvp.php?meetupid=" + context.getString(R.string.meetup_id) + "&eventid=" + id + "&" + finalUrl;
+        return "http://" + context.getString(R.string.backend_url) + "api/rsvp.php?meetupid=" + context.getString(R.string.meetup_id) + "&eventid=" + id + "&" + getFinalUrl(context);
     }
 
     /**
@@ -80,7 +82,7 @@ public class Other extends Activity {
      * @return A URL final para receber as respostas das pessoas sobre o evento.
      */
     public static String getRSVPSUrl(Context context, int id) {
-        return "http://" + context.getString(R.string.backend_url) + "api/people.php?meetupid=" + context.getString(R.string.meetup_id) + "&eventid=" + id + "&" + finalUrl;
+        return "http://" + context.getString(R.string.backend_url) + "api/people.php?meetupid=" + context.getString(R.string.meetup_id) + "&eventid=" + id + "&" + getFinalUrl(context);
     }
 
     /**
@@ -217,9 +219,14 @@ public class Other extends Activity {
 							context.startActivity(chooserIntent);
 							break;
 						case 1:
-							ClipboardManager clipboardManager = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
-							ClipData clipData = ClipData.newPlainText(url, url);
-							clipboardManager.setPrimaryClip(clipData);
+                            if(Build.VERSION.SDK_INT <= 10) {
+                                android.text.ClipboardManager clipboard = (android.text.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                                clipboard.setText(url);
+                            } else {
+                                ClipboardManager clipboardManager = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clipData = ClipData.newPlainText(url, url);
+                                clipboardManager.setPrimaryClip(clipData);
+                            }
 							showToast(context, context.getString(R.string.link_copyed));
 							break;
 						case 2:

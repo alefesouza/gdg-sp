@@ -18,6 +18,7 @@ using GDG_SP.Resx;
 using Plugin.Settings;
 using Plugin.Share;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using Xamarin.Forms;
 
@@ -31,7 +32,21 @@ namespace GDG_SP.Other
         /// <summary>
         /// String que tem que aparecer no final de todas as URLs no aplicativo.
         /// </summary>
-		public static string finalUrl = "?meetupid=" + AppResources.MeetupId + "&platform=" + Device.OnPlatform("ios", null, "wp") + "&via=xamarin";
+		public static string GetFinalUrl()
+        {
+            string platform = Device.OnPlatform("ios", "android", "wp");
+
+            if (Device.Idiom == TargetIdiom.Desktop)
+            {
+                platform = "windows";
+            }
+            else if (Device.Idiom == TargetIdiom.Tablet && Device.OS == TargetPlatform.Windows)
+            {
+                platform = "windows81";
+            }
+
+            return "?meetupid=" + AppResources.MeetupId + "&appversion=" + DependencyService.Get<IDependencies>().GetAppVersion() + "&systemversion=" + DependencyService.Get<IDependencies>().GetOSVersion() + "&platform=" + platform + "&via=xamarin";
+        }
 
         /// <summary>
         /// Métodos que retorna a URL de receber os eventos.
@@ -39,7 +54,7 @@ namespace GDG_SP.Other
         /// <returns>A URL final para receber os eventos.</returns>
         public static string GetEventsUrl()
         {
-            return "http://" + AppResources.BackendUrl + "api/events.php" + finalUrl;
+            return "http://" + AppResources.BackendUrl + "api/events.php" + GetFinalUrl();
         }
 
         /// <summary>
@@ -49,7 +64,7 @@ namespace GDG_SP.Other
         /// <returns>A URL final para fazer RSVP no evento que o usuário quer ir.</returns>
         public static string GetRSVPUrl(int id)
         {
-            return "http://" + AppResources.BackendUrl + "api/rsvp.php" + finalUrl + "&eventid=" + id;
+            return "http://" + AppResources.BackendUrl + "api/rsvp.php" + GetFinalUrl() + "&eventid=" + id;
         }
 
         /// <summary>
@@ -59,7 +74,7 @@ namespace GDG_SP.Other
         /// <returns>A URL final para receber as respostas das pessoas sobre o evento.</returns>
         public static string GetRSVPSUrl(int id)
         {
-			return "http://" + AppResources.BackendUrl + "api/people.php" + finalUrl + "&eventid=" + id;
+			return "http://" + AppResources.BackendUrl + "api/people.php" + GetFinalUrl() + "&eventid=" + id;
         }
 
         /// <summary>
@@ -67,7 +82,7 @@ namespace GDG_SP.Other
         /// </summary>
         public static string GetLoginUrl()
 		{
-			return "http://" + AppResources.BackendUrl + "api/login.php" + finalUrl;
+			return "http://" + AppResources.BackendUrl + "api/login.php" + GetFinalUrl();
         }
 
         /// <summary>
@@ -75,17 +90,22 @@ namespace GDG_SP.Other
         /// </summary>
         public static string GetNotificationUrl()
         {
-            return "http://" + AppResources.BackendUrl + "notifications/send.php" + finalUrl;
+            return "http://" + AppResources.BackendUrl + "notifications/send.php" + GetFinalUrl();
         }
 
         /// <summary>
         /// Método que retorna o refresh token armazenado nas configurações para fazer um post junto com uma URL.
         /// </summary>
         /// <returns>FormUrlEncodedContent configurado para post do refresh token no servidor.</returns>
-        public static FormUrlEncodedContent GetRefreshToken()
+        public static FormUrlEncodedContent GetRefreshToken(bool withChannel = false)
         {
             var postData = new List<KeyValuePair<string, string>>();
             postData.Add(new KeyValuePair<string, string>("refresh_token", GetSetting("refresh_token")));
+
+            if ((Device.Idiom == TargetIdiom.Desktop || (Device.Idiom == TargetIdiom.Tablet && Device.OS == TargetPlatform.Windows)) && withChannel)
+            {
+                postData.Add(new KeyValuePair<string, string>("ChannelUri", GetSetting("ChannelUri")));
+            }
 
             return new FormUrlEncodedContent(postData);
         }
@@ -210,6 +230,21 @@ namespace GDG_SP.Other
             double targetHeight = targetWidth / ratio;
 
             return targetHeight;
+        }
+
+        public static string GetImage(string name)
+        {
+            switch(Device.OS)
+            {
+                case TargetPlatform.Android:
+                    name = "ic_" + name.ToLower();
+                    break;
+                case TargetPlatform.Windows:
+                    name = "Assets/Images/" + name;
+                    break;
+            }
+            string directory = name + ".png";
+            return directory;
         }
     }
 }

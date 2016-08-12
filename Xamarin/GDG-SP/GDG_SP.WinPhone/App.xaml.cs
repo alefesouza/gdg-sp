@@ -71,6 +71,8 @@ namespace GDG_SP.WinPhone
                 rootFrame.CacheSize = 1;
 
                 Xamarin.Forms.Forms.Init(e);
+                Xamarin.Forms.DependencyService.Register<Dependencies_WinPhone>();
+
                 ImageCircleRenderer.Init();
                 WindowsRuntimeResourceManager.PatchResourceManagersInAssembly(typeof(Resx.AppResources));
 
@@ -83,7 +85,7 @@ namespace GDG_SP.WinPhone
 
                 for (int i = 0; i < 5; i++)
                 {
-                    uris.Add(new Uri("http://" + Other.Other.GetBackendUrl() + "notifications/tiles/tile.php" + Other.Other.finalUrl + "&tile=" + i));
+                    uris.Add(new Uri("http://" + Other.Other.GetBackendUrl() + "notifications/tiles/tile.php" + Other.Other.GetFinalUrl() + "&tile=" + i));
                 }
 
                 TileUpdater LiveTileUpdater = TileUpdateManager.CreateTileUpdaterForApplication();
@@ -93,7 +95,7 @@ namespace GDG_SP.WinPhone
 
                 BadgeUpdater BadgeUpdater = BadgeUpdateManager.CreateBadgeUpdaterForApplication();
                 BadgeUpdater.Clear();
-                BadgeUpdater.StartPeriodicUpdate(new Uri("http://" + Other.Other.GetBackendUrl() + "notifications/tiles/badge.php" + Other.Other.finalUrl), PeriodicUpdateRecurrence.Daily);
+                BadgeUpdater.StartPeriodicUpdate(new Uri("http://" + Other.Other.GetBackendUrl() + "notifications/tiles/badge.php" + Other.Other.GetFinalUrl()), PeriodicUpdateRecurrence.Daily);
 
                 string colorPrimary = Other.Other.GetColorPrimary();
 

@@ -8,4 +8,4 @@ Algumas funções do aplicativo requerem conexão com a conta do Meetup do usuá
 
 Nesse processo o ID do Meetup do usuário é salvo em um banco de dados para poder realizar sorteios apenas para quem utiliza o aplicativo e enviar notificações direcionadas para quem vai a um determinado evento.
 
-Você pode acompanhar como tudo isso funciona navegando nesse repositório do GitHub, a única coisa que aqui que se difere do código-fonte dos aplicativos nas lojas são as keys utilizadas para funcionamento do One Signal, pois divulgar isso permitiria que qualquer um enviasse notificações, e no back-end, as credenciais para conexão com o meu banco de dados.
+Você pode acompanhar como tudo isso funciona navegando nesse repositório do GitHub, a única coisa que aqui que se difere do código-fonte dos aplicativos nas lojas são as keys utilizadas para funcionamento do One Signal, pois divulgar isso atrapalharia nas estatísticas do aplicativo, e no back-end, as credenciais para conexão com o meu banco de dados.

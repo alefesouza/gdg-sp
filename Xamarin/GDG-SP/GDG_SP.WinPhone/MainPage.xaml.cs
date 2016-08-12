@@ -30,11 +30,6 @@ namespace GDG_SP.WinPhone
             this.NavigationCacheMode = NavigationCacheMode.Required;
 
             LoadApplication(new GDG_SP.App());
-
-            if (!Other.Other.GetSetting("one_signal").Equals(""))
-            {
-                OneSignal.SendTag("meetup_id", Other.Other.GetSetting("one_signal"));
-            }
         }
 
         /// <summary>

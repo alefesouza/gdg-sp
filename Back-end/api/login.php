@@ -42,9 +42,9 @@ if(isset($_POST["code"])) {
   $result = curl_exec($ch);
   $json = json_decode($result);
   
-  $token = refreshMeetupToken($json->refresh_token);
+	$token = refreshMeetupToken($json->refresh_token);
 	
-  $ismember = @file_get_contents("https://api.meetup.com/$meetupid?access_token=$token&fields=self");
+	$ismember = @file_get_contents("https://api.meetup.com/$meetupid?access_token=$token&fields=self");
   $json2 = json_decode($ismember);
   
   $status = $json2->self->status;

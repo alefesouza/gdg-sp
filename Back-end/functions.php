@@ -32,7 +32,9 @@ $platform = $_GET["platform"];
 
 $mapbox_token = "mapbox_token";
 
-include("connect_db.php");
+if($dbi == null) {
+	include("connect_db.php");
+}
 
 $query = mysqli_query($dbi, "SELECT * FROM meetups WHERE meetupid='$meetupid'");
 $dados = mysqli_fetch_array($query);
@@ -72,7 +74,7 @@ if(!function_exists('getImage')) {
 
 		$trilhas = array(
 			array(
-				"name" => "html5 study group",
+				"name" => "html5 study group html5sg",
 				"image" => "html5_study_group.jpg"
 			),
 			array(
@@ -217,7 +219,7 @@ if(!function_exists('getImage')) {
 				$ids[] = $person->member->id;
 			}
 			
-			$query = mysqli_query($dbi, "SELECT member_id FROM meetup_app_members");
+			$query = mysqli_query($dbi, "SELECT member_id FROM meetup_app_members WHERE meetup_id='$meetupid'");
 
 			while($row = mysqli_fetch_array($query)) {
 				$members_with_app[] = $row["member_id"];

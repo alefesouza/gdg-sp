@@ -1,7 +1,11 @@
 GDG-SP
 =====
 
-Código do aplicativo do GDG-SP para iOS e Windows Phone via Xamarin.
+Código do aplicativo do GDG-SP para Xamarin.Forms.
+
+Apenas as versões para iOS, Windows Phone e Windows 8.1 estão publicadas, porém aqui também há versões para Android e UWP (plataformas que eu domino nativamente logo poderia produzir um aplicativo melhor) para caso alguém queira usar em alguma palestra sobre Xamarin.
+
+Os 5 aplicativos nesse projeto compartilham praticamente o mesmo código, no código das plataformas eu apenas editei para receber informações básicas, como versão do aplicativo e sistema operacional, e o funcionamento das notificações, para usar o OneSignal no Android, iOS e Windows Phone, e notificações nativas no Windows 8.1 e UWP, também editei todos os Windows para usar Live Tiles.
 
 Caso você queira adaptá-lo para outro Meetup:
 

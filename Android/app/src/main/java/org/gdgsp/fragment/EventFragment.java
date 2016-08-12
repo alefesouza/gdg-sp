@@ -24,6 +24,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -185,9 +186,14 @@ public class EventFragment extends Fragment {
 				startActivity(intent);
 				return true;
 			case R.id.menu_copylink:
-				final ClipboardManager clipboardManager = (ClipboardManager)activity.getSystemService(Context.CLIPBOARD_SERVICE);
-				final ClipData clipData = ClipData.newPlainText(event.getLink(), event.getLink());
-				clipboardManager.setPrimaryClip(clipData);
+				if(Build.VERSION.SDK_INT <= 10) {
+					android.text.ClipboardManager clipboard = (android.text.ClipboardManager)activity.getSystemService(Context.CLIPBOARD_SERVICE);
+					clipboard.setText(event.getLink());
+				} else {
+					ClipboardManager clipboardManager = (ClipboardManager)activity.getSystemService(Context.CLIPBOARD_SERVICE);
+					ClipData clipData = ClipData.newPlainText(event.getLink(), event.getLink());
+					clipboardManager.setPrimaryClip(clipData);
+				}
 				Other.showToast(activity, getString(R.string.link_copyed));
 				return true;
 			case R.id.menu_openinbrowser:

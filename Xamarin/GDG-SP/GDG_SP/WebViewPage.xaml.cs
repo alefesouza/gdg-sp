@@ -38,7 +38,7 @@ namespace GDG_SP
 
             if (!isLogin)
             {
-                ToolbarItems.Add(new ToolbarItem("Compartilhar", Device.OnPlatform("Share.png", "", "Assets/Images/Share.png"), () =>
+                ToolbarItems.Add(new ToolbarItem("Compartilhar", Other.Other.GetImage("Share"), () =>
                 {
                     CrossShare.Current.ShareLink((WView.Source as UrlWebViewSource).Url, "", AppResources.AppName);
                 }));

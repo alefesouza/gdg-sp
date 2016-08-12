@@ -3,10 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="org.gdgsp">
 
+    <uses-sdk tools:overrideLibrary="android.support.customtabs" />
+
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-		tools:replace="theme"
         android:name=".App"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
