@@ -256,13 +256,21 @@ if(!function_exists('getImage')) {
 		return $response;
 	}
 	
-	function checkIsAdmin($memberid, $token) {
+	function checkIsAdmin($memberid, $token = "") {
 		global $meetupid;
 		
-		$getorganizers = @file_get_contents("https://api.meetup.com/$meetupid?access_token=$token");
+		if($token != "") {
+			$getorganizers = @file_get_contents("https://api.meetup.com/$meetupid?access_token=$token");
+		} else {
+			$getorganizers = @file_get_contents("https://api.meetup.com/$meetupid");
+		}
 		$organizersids[] = json_decode($getorganizers)->organizer->id;
 
-		$getcoorganizers = @file_get_contents("https://api.meetup.com/$meetupid/members?access_token=$token&filter=stepup_eligible");
+		if($token != "") {
+			$getcoorganizers = @file_get_contents("https://api.meetup.com/$meetupid/members?access_token=$token&filter=stepup_eligible");
+		} else {
+			$getcoorganizers = @file_get_contents("https://api.meetup.com/$meetupid/members?filter=stepup_eligible");
+		}
 		$coorganizers = json_decode($getcoorganizers);
 
 		foreach($coorganizers as $coorganizer) {

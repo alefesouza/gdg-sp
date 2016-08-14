@@ -27,7 +27,7 @@ mysqli_query($dbi, "CREATE TABLE IF NOT EXISTS meetups (id int auto_increment pr
 
 //mysqli_query($dbi, "INSERT INTO meetups (meetupid, meetupapi_client, meetupapi_secret, onesignal_appid, onesignal_restkey, wns_sid, wns_clientsecret, cover_image, last_event) VALUES ('GDG-SP', 'meetupapi_client', 'meetupapi_secret', 'onesignal_appid', 'onesignal_restkey', 'wns_sid', 'wns_clientsecret', 'twitter_key', 'twitter_secret', 'twitter_search', 'http:// cover_image')") or die("ERROR: ".mysqli_error($dbi));
 
-mysqli_query($dbi, "CREATE TABLE IF NOT EXISTS meetup_app_members (id int auto_increment primary key, meetup_id varchar(50), member_id int, last_activity int, faults int)") or die("ERROR: ".mysqli_error($dbi));
+mysqli_query($dbi, "CREATE TABLE IF NOT EXISTS meetup_app_members (id int auto_increment primary key, meetup_id varchar(50), member_id int, member_name varchar(255), has_app boolean, last_activity datetime, faults int)") or die("ERROR: ".mysqli_error($dbi));
 
 mysqli_query($dbi, "CREATE TABLE IF NOT EXISTS meetup_last_events (id int auto_increment primary key, meetup_id varchar(50), event_id int)") or die("ERROR: ".mysqli_error($dbi));
 

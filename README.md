@@ -6,7 +6,7 @@ O Google Developers Group é uma iniciativa de pessoas interessadas em construir
 O que há nesse repositório
 -----
 
-Nesse repositório há versões do aplicativo do GDG-SP que desenvolvi para Android (Java nativo), Universal Windows Platform (C# nativo) e em Xamarin.Forms para iOS, Windows Phone e Windows 8.1, também há o código que desenvolvi para o back-end, em PHP.
+Nesse repositório há versões do aplicativo do GDG-SP que desenvolvi para Android (Java nativo), Universal Windows Platform (C# nativo) e em Xamarin.Forms para iOS, Windows Phone e Windows 8.1, também há o código que desenvolvi para o back-end, em PHP, e o código do programa de check-in, desenvolvido em C# para .NET Framework 4.5.
 
 Você pode baixar na:
 

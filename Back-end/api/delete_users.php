@@ -16,8 +16,8 @@
  */
 
 /*
-Cron job de remoção de usuários que desinstalaram o aplicativo
-Esse cron job verifica usuários que desinstalaram o aplicativo usando a API do One Signal e remove eles do banco de dados para não aparecerem na seção "Pessoas com o app" dos aplicativos.
+Cron job de atualização de usuários que desinstalaram o aplicativo
+Esse cron job verifica usuários que desinstalaram o aplicativo usando a API do One Signal e atualiza eles no banco de dados para não aparecerem na seção "Pessoas com o app" dos aplicativos.
 */
 
 $meetupids = array("GDG-SP");
@@ -32,7 +32,7 @@ foreach($meetupids as $meetupid) {
       $memberid = $player->tags->member_id;
       
       if($player->tags->member_id != "") {
-			  $query = mysqli_query($dbi, "DELETE FROM meetup_app_members WHERE member_id=$memberid");
+			  $query = mysqli_query($dbi, "UPDATE meetup_app_members SET has_app=0 WHERE member_id=$memberid");
       }
     }
   }

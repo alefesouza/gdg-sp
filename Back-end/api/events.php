@@ -36,8 +36,7 @@ if($_POST["refresh_token"] != "") {
 		
 		$isadmin = checkIsAdmin($memberid, $token);
 		
-		$last_activity = date("Ymd", time());
-		mysqli_query($dbi, "UPDATE meetup_app_members SET last_activity=$last_activity WHERE member_id=$memberid");
+		mysqli_query($dbi, "UPDATE meetup_app_members SET last_activity=now() WHERE member_id=$memberid");
 		
 		if(($platform == "windows" || $platform == "windows81") && $_POST["ChannelUri"] != "") {
 			mysqli_query($dbi, "UPDATE meetup_wns_users SET member_id=$memberid WHERE device='".$_POST["ChannelUri"]."'");
@@ -133,8 +132,17 @@ function getHtml($title, $description, $lat, $lon, $place, $address, $start, $en
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<link rel="stylesheet" href="'.$location.'/css/style.css" />
 	<link rel="stylesheet" href="'.$location.'/css/leaflet-0.7.7.css" />
-  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700,700italic,400italic" rel="stylesheet" type="text/css">
-</head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700,700italic,400italic" rel="stylesheet" type="text/css">';
+	
+	if($platform == "android") {
+		$html .= '<style>
+		body {
+			padding-bottom: 70px;
+		}
+		</style>';
+	}
+	
+$html .= '</head>
 <body>
   <h2 class="margin">'.$title.'</h2>
   <table class="margin"><tr><td>'.$date.'</td><td>'.$yes_rsvp_count.' '.$who.' vão</td></table>';

@@ -1,0 +1,95 @@
+﻿<!--
+Copyright (C) 2016 Alefe Souza <http://alefesouza.com/>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<Window x:Class="GDGSPCheckIn.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GDGSPCheckIn"
+        mc:Ignorable="d" Icon="Assets/Icon.ico" Height="350" Width="525">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="Meetup API Key" Margin="0, 15, 0, 0" />
+            <TextBox Grid.Column="1" x:Name="APIKey" Margin="15, 15, 15, 0" />
+            <Button Grid.Column="2" x:Name="OK" Content="OK" Click="OK_Click" Margin="0, 15, 0, 0" />
+
+            <StackPanel x:Name="StackList" Visibility="Collapsed" Grid.Row="2" Grid.ColumnSpan="3" Margin="0, 15, 0, 0">
+                <TextBlock Text="Escolha o evento:" />
+                <ListView x:Name="ListEvents" Margin="0, 5, 0, 0">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <WrapPanel>
+                                <TextBlock Text="{Binding Name}" />
+                            </WrapPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+
+            <StackPanel x:Name="GetData" Grid.Row="3" Grid.ColumnSpan="3" Visibility="Collapsed" Margin="0, 15, 0, 0">
+                <ProgressBar IsIndeterminate="True" />
+                <TextBlock x:Name="Info" TextAlignment="Center" />
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            
+            <TextBlock Grid.ColumnSpan="2" Margin="0, 0, 0, 15">
+                <Hyperlink NavigateUri="https://secure.meetup.com/meetup_api/key/" RequestNavigate="Hyperlink_RequestNavigate">
+                    Clique aqui
+                </Hyperlink>
+                para receber sua API Key do Meetup
+            </TextBlock>
+
+            <Button Grid.Row="1" Grid.ColumnSpan="2" x:Name="UseLocal" Content="Usar base de dados local" Click="UseLocal_Click" Margin="0, 15, 0, 15" />
+            
+            <Button x:Name="ShowRelatories" Content="Exibir relatórios" Click="ShowRelatories_Click" Grid.Row="2" />
+            <Button Grid.Column="1" x:Name="ShowAllUsers" Content="Exibir todos os usuários" Click="ShowAllUsers_Click" Grid.Row="2" />
+
+            <Button Grid.Row="3" Grid.ColumnSpan="2" x:Name="Save" Content="Salvar" Click="Save_Click" Visibility="Collapsed" Margin="0, 15, 0, 0" />
+        </Grid>
+    </Grid>
+</Window>

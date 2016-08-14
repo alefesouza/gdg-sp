@@ -56,12 +56,14 @@ if(isset($_POST["code"])) {
 			$memberdata = @file_get_contents("https://api.meetup.com/$meetupid/members/self?access_token=$token");
 			$memberjson = json_decode($memberdata);
 			$memberid = $memberjson->id;
+      $membername = mysqli_real_escape_string($dbi, $member->name);
 
 			$query = mysqli_query($dbi, "SELECT * FROM meetup_app_members WHERE member_id=$memberid");
-
+			
 			if(mysqli_num_rows($query) == 0) {
-				$last_activity = date("Ymd", time());
-				mysqli_query($dbi, "INSERT INTO meetup_app_members (member_id, meetup_id, last_activity) VALUES ($memberid, '$meetupid', $last_activity)");
+				mysqli_query($dbi, "INSERT INTO meetup_app_members (meetup_id, member_id, member_name, has_app, last_activity) VALUES ('$meetupid', $memberid, '$membername', 1, now())");
+			} else {
+				mysqli_query($dbi, "UPDATE meetup_app_members SET has_app=1, last_activity=now() WHERE member_id=$memberid AND meetup_id='$meetupid'");
 			}
 			
 			$qr = file_get_contents("https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=".$qrcode.$memberid);
