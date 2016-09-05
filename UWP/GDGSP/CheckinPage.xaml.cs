@@ -47,9 +47,9 @@ namespace GDGSP
                 CheckInQrCode.Source = image;
             }
 
-            if (MainPage.mainPage.member != null)
+            if (MainPage.Instance.member != null)
             {
-                MemberName.Text = MainPage.mainPage.member.Name;
+                MemberName.Text = MainPage.Instance.member.Name;
             }
         }
     }

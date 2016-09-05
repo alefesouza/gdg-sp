@@ -48,6 +48,14 @@ limitations under the License.
     <string name="settings">Configurações</string>
     <string name="about">Sobre</string>
 
+    <string name="no_events">Não há eventos</string>
+    <string name="choose_event">Escolha o evento</string>
+    <string name="choose_event_type">Escolha o tipo de evento</string>
+
+    <string name="comming">Futuros</string>
+    <string name="before">Anteriores</string>
+    <string name="hashtag">#GDGSP</string>
+
     <string name="suggest_login_title">Bem-vindo ao app do {appname}!</string>
     <string name="suggest_login_sub">Ao fazer login você:\n\n• Participa de sorteios exclusivos para quem usa o app.\n• Faz RSVP e check-in em eventos usando o aplicativo.\n• Vê a localização de meetups com localização oculta para não membros.\n• Recebe notificações sobre eventos que você marcou presença.\n\nDeseja fazer login agora?</string>
 
@@ -69,6 +77,8 @@ limitations under the License.
     <string name="people_dont_go">Não vão</string>
     <string name="raffle">SORTEAR</string>
     <string name="raffle_person">Pessoa sorteada</string>
+    <string name="raffle_no_people">Não há pessoas sorteadas nesse evento</string>
+    <string name="raffle_invalid">Usuário ou chave do aplicativo inválida</string>
     <string name="with_app">Pessoas com o app</string>
 
     <string name="sending">Enviando...</string>
@@ -111,6 +121,8 @@ limitations under the License.
 
     <string name="error_message">Houve um erro ao receber os eventos</string>
     <string name="error_noevents">Não há eventos futuros</string>
+	<string name="events_no_more">Não há mais eventos</string>
+	<string name="tweets_no_more">Não há mais tweets nos últimos 7 dias</string>
     <string name="connection_error">Verifique sua conexão de internet</string>
     <string name="try_again">Tentar novamente</string>
 

@@ -37,6 +37,8 @@ limitations under the License.
                 </StackPanel>
             </CommandBar.Content>
 
+            <AppBarButton Label="Atualizar" Name="TweetsRefresh" Click="TweetsRefresh_Click" Icon="Refresh" />
+
             <CommandBar.SecondaryCommands>
                 <AppBarButton Label="Atualizar" Name="Refresh" Click="Refresh_Click" />
                 <AppBarButton Label="Fazer check-in" Name="DoCheckin" Click="DoCheckin_Click" />
@@ -55,49 +57,174 @@ limitations under the License.
             </StackPanel>
         </Grid>
 
-        <RelativePanel Grid.Row="1">
-            <ProgressRing Visibility="Collapsed" Name="ToKnow" IsActive="False" />
+        <Pivot x:Name="ListsPivot" Grid.Row="1">
+            <PivotItem Header="Futuros">
+                <RelativePanel>
+                    <ProgressRing Visibility="Collapsed" Name="ToKnow" IsActive="False" />
 
-            <ProgressRing IsActive="True" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Name="PRing"></ProgressRing>
+                    <ProgressRing IsActive="True" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Name="PRing"></ProgressRing>
 
-            <ListView Name="ListEvents" xmlns:m="using:GDGSP.Models" Visibility="Collapsed" SelectionChanged="ListEvents_SelectionChanged">
-                <ListView.Header>
-                    <Image Name="HeaderImage"></Image>
-                </ListView.Header>
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="m:Event">
-                        <Grid Margin="5" Background="White">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+                    <ListView Name="ListEvents" xmlns:m="using:GDGSP.Models" Visibility="Collapsed" SelectionChanged="ListEvents_SelectionChanged">
+                        <ListView.Header>
+                            <Image Name="HeaderImage"></Image>
+                        </ListView.Header>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="m:Event">
+                                <Grid Margin="5" Background="White">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
 
-                            <TextBlock Text="{Binding Name}" Foreground="Black" Margin="10" FontSize="22" TextWrapping="Wrap" Grid.Row="0" />
-                            <Image Source="{Binding Image}" Grid.Row="1" />
-                            <Grid x:Uid="CardFooter" Padding="15" Grid.Row="3">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Name}" Foreground="Black" Margin="10" FontSize="22" TextWrapping="Wrap" Grid.Row="0" />
+                                    <Image Source="{Binding Image}" Grid.Row="1" />
+                                    <Grid x:Uid="CardFooter" Padding="15" Grid.Row="3">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
 
-                                <TextBlock Text="{Binding Start}" HorizontalAlignment="Left" TextWrapping="Wrap" />
-                                <TextBlock Text="{Binding Place}" HorizontalAlignment="Right" TextWrapping="Wrap" Grid.Column="1" />
-                            </Grid>
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                                        <TextBlock Text="{Binding Start}" HorizontalAlignment="Left" TextWrapping="Wrap" />
+                                        <TextBlock Text="{Binding Place}" HorizontalAlignment="Right" TextWrapping="Wrap" Grid.Column="1" />
+                                    </Grid>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
 
-            <StackPanel RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True" x:Name="ErrorScreen" Visibility="Collapsed">
-                <TextBlock x:Name="ErrorMessage" />
-                <Button x:Name="TryAgain" Content="Tentar novamente" HorizontalAlignment="Center" Margin="0, 10, 0, 0" />
-            </StackPanel>
-        </RelativePanel>
+                    <StackPanel RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True" x:Name="ErrorScreen" Visibility="Collapsed">
+                        <TextBlock x:Name="ErrorMessage" />
+                        <Button x:Name="TryAgain" Click="TryAgain_Click" Content="Tentar novamente" HorizontalAlignment="Center" Margin="0, 10, 0, 0" />
+                    </StackPanel>
+                </RelativePanel>
+            </PivotItem>
+            <PivotItem Header="Anteriores">
+                <RelativePanel>
+                    <ProgressRing IsActive="True" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Name="PastPRing"></ProgressRing>
+
+                    <ScrollViewer ViewChanged="ScrollViewer_ViewChanged" Name="PastScroll" Visibility="Collapsed">
+                        <StackPanel>
+                            <ListView Name="ListPastEvents" xmlns:m="using:GDGSP.Models" SelectionChanged="ListEvents_SelectionChanged">
+                                <ListView.Header>
+                                    <Image Name="PastHeaderImage"></Image>
+                                </ListView.Header>
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="m:Event">
+                                        <Grid Margin="5" Background="White">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="*" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Text="{Binding Name}" Foreground="Black" Margin="10" FontSize="22" TextWrapping="Wrap" Grid.Row="0" />
+                                            <Image Source="{Binding Image}" Grid.Row="1" />
+                                            <Grid x:Uid="CardFooter" Padding="15" Grid.Row="3">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <TextBlock Text="{Binding Start}" HorizontalAlignment="Left" TextWrapping="Wrap" />
+                                                <TextBlock Text="{Binding Place}" HorizontalAlignment="Right" TextWrapping="Wrap" Grid.Column="1" />
+                                            </Grid>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                                <ListView.Footer>
+                                    <StackPanel HorizontalAlignment="Center" Padding="10">
+                                        <Button x:Name="PastTryAgainFooter" Content="Tentar novamente" Visibility="Collapsed" />
+                                        <TextBlock x:Name="PastMessage" Text="Não há mais eventos" Visibility="Collapsed" />
+                                        <ProgressRing x:Name="PastLoading" IsActive="True" />
+                                    </StackPanel>
+                                </ListView.Footer>
+                            </ListView>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <StackPanel RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True" x:Name="PastErrorScreen" Visibility="Collapsed">
+                        <TextBlock x:Name="PastErrorMessage" />
+                        <Button x:Name="PastTryAgain" Click="TryAgain_Click" Content="Tentar novamente" HorizontalAlignment="Center" Margin="0, 10, 0, 0" />
+                    </StackPanel>
+                </RelativePanel>
+            </PivotItem>
+            <PivotItem Header="#GDG-SP">
+                <RelativePanel>
+                    <ProgressRing IsActive="True" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Name="TweetsPRing"></ProgressRing>
+
+                    <ScrollViewer ViewChanged="ScrollViewer_ViewChanged" Name="TweetsScroll" Visibility="Collapsed">
+                        <StackPanel>
+                            <ListView Name="ListTweets" xmlns:m="using:GDGSP.Models" SelectionChanged="ListEvents_SelectionChanged">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="m:Tweet">
+                                        <Grid Margin="5" Padding="10" Background="White" HorizontalAlignment="Stretch">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Ellipse Width="75" Height="75" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Top">
+                                                <Ellipse.Fill>
+                                                    <ImageBrush ImageSource="{Binding Photo}" />
+                                                </Ellipse.Fill>
+                                            </Ellipse>
+
+                                            <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1" Margin="10, 0, 0, 0">
+                                                <TextBlock Text="{Binding User_name}" FontSize="18" Foreground="Black" />
+                                                <TextBlock Text="{Binding Screen_name}" FontSize="16" Foreground="Gray" />
+                                                <TextBlock Text="{Binding Date}" FontSize="16" Foreground="Gray" />
+                                            </StackPanel>
+
+                                            <TextBlock Text="{Binding Text}" Foreground="Black" Margin="10, 5, 0, 0" TextWrapping="Wrap" Grid.Row="1" Grid.Column="1" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                                <ListView.Footer>
+                                    <StackPanel HorizontalAlignment="Center" Padding="10">
+                                        <Button x:Name="TweetsTryAgainFooter" Content="Tentar novamente" Visibility="Collapsed" />
+                                        <TextBlock x:Name="TweetsMessage" Text="Não há mais tweets nos últimos 7 dias" Visibility="Collapsed" />
+                                        <ProgressRing x:Name="TweetsLoading" IsActive="True" />
+                                    </StackPanel>
+                                </ListView.Footer>
+                            </ListView>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <StackPanel RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True" x:Name="TweetsErrorScreen" Visibility="Collapsed">
+                        <TextBlock x:Name="TweetsErrorMessage" />
+                        <Button x:Name="TweetsTryAgain" Content="Tentar novamente" HorizontalAlignment="Center" Margin="0, 10, 0, 0" />
+                    </StackPanel>
+                </RelativePanel>
+            </PivotItem>
+        </Pivot>
 
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>

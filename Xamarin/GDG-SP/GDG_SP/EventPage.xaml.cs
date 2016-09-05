@@ -28,7 +28,7 @@ namespace GDG_SP
     {
 		bool allow = false;
 
-        public EventPage(Event _event)
+        public EventPage(Event _event, bool past = false)
         {
             InitializeComponent();
 
@@ -42,28 +42,31 @@ namespace GDG_SP
                 }, ToolbarItemOrder.Secondary));
             }
 
-            ToolbarItems.Add(new ToolbarItem("RSVP", Other.Other.GetImage("Rsvp"), async () =>
-            {
-                if (Other.Other.GetSetting("refresh_token").Length > 0)
-                {
-                    if (_event.Rsvpable)
-                    {
-                        await Navigation.PushAsync(new RSVPPage(_event));
-                    }
-                    else
-                    {
-                        await DisplayAlert("", "Não é possível fazer RSVP nesse evento", "OK");
-                    }
-                }
-                else
-                {
-                    bool alert = await DisplayAlert("RSVP", "Você precisa fazer login para fazer RSVP, deseja fazer login agora?", "Sim", "Não");
-                    if (alert)
-                    {
-                        await Navigation.PushAsync(new WebViewPage(Other.Other.GetLoginUrl(), true, _event.Id) { Title = "Login" });
-                    }
-                }
-            }));
+			if (!past)
+			{
+				ToolbarItems.Add(new ToolbarItem("RSVP", Other.Other.GetImage("Rsvp"), async () =>
+				{
+					if (Other.Other.GetSetting("refresh_token").Length > 0)
+					{
+						if (_event.Rsvpable)
+						{
+							await Navigation.PushAsync(new RSVPPage(_event));
+						}
+						else
+						{
+							await DisplayAlert("", "Não é possível fazer RSVP nesse evento", "OK");
+						}
+					}
+					else
+					{
+						bool alert = await DisplayAlert("RSVP", "Você precisa fazer login para fazer RSVP, deseja fazer login agora?", "Sim", "Não");
+						if (alert)
+						{
+							await Navigation.PushAsync(new WebViewPage(Other.Other.GetLoginUrl(), true, _event.Id) { Title = "Login" });
+						}
+					}
+				}));
+			}
 
             ToolbarItems.Add(new ToolbarItem(_event.Who, Other.Other.GetImage("People"), () =>
                 {

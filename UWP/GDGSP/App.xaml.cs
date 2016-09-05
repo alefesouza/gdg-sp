@@ -92,7 +92,7 @@ namespace GDGSP
 
             if (!string.IsNullOrEmpty(e.Arguments) && rootFrame != null)
             {
-                MainPage.mainPage.LaunchParam = e.Arguments + "|1";
+                MainPage.Instance.LaunchParam = e.Arguments + "|1";
             }
 
             // Do not repeat app initialization when the Window already has content,
@@ -157,7 +157,7 @@ namespace GDGSP
 
             var toastArgs = args as ToastNotificationActivatedEventArgs;
             var arguments = toastArgs.Argument;
-            MainPage.mainPage.LaunchParam = arguments;
+            MainPage.Instance.LaunchParam = arguments;
         }
 
         public void titleBarColor()

@@ -7,12 +7,12 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.List;
 import java.util.ArrayList;
 
-public class PeopleTabAdapter extends FragmentPagerAdapter {
+public class TabAdapter extends FragmentPagerAdapter {
 
 	private final List<Fragment> mFragmentList = new ArrayList<>();
 	private final List<String> mFragmentTitleList = new ArrayList<>();
 
-	public PeopleTabAdapter(FragmentManager manager) {
+	public TabAdapter(FragmentManager manager) {
 		super(manager);
 	}
 

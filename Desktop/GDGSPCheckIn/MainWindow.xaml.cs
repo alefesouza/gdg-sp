@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
+using DYMO.Label.Framework;
+using GDGSPCheckIn.Properties;
 using SQLitePCL;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using System.Windows.Forms;
 using ZXing;
@@ -32,6 +36,10 @@ namespace GDGSPCheckIn
         Timer webCamTimer;
         int eventId;
         public Timer removeName = new Timer();
+        bool useDymo;
+        List<string> labelItems = new List<string>();
+        ILabel _label;
+        string printerName = "";
 
         public MainWindow(int eventId)
         {
@@ -52,6 +60,13 @@ namespace GDGSPCheckIn
             };
 
             LeftText.Text = "Abra o aplicativo do " + App.AppName + ", toque nos três pontinhos e escolha \"Fazer check-in\"";
+
+            useDymo = Settings.Default.UseDymo;
+
+            if (useDymo)
+            {
+                SetupDymo();
+            }
         }
 
         void webCamTimer_Tick(object sender, EventArgs e)
@@ -77,13 +92,21 @@ namespace GDGSPCheckIn
 
                     while (member.Step() == SQLiteResult.ROW)
                     {
-                        ResultText.Text = member[2].ToString();
-                        string now = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy");
+                        removeName.Stop();
+
                         int id = int.Parse(member[0].ToString());
+                        string name = member[2].ToString();
+
+                        ResultText.Text = name;
+                        string now = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy");
 
                         App.objConn.Prepare("UPDATE event_" + eventId + " SET checked=1, date='" + now + "' WHERE id=" + id).Step();
 
-                        removeName.Stop();
+                        if (useDymo)
+                        {
+                            PrintCode(id, name, now);
+                        }
+
                         removeName.Start();
                     }
                 }
@@ -100,6 +123,85 @@ namespace GDGSPCheckIn
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             InitWebCam();
+        }
+
+        private void SetupDymo()
+        {   
+            if(!File.Exists(Settings.Default.LabelPath))
+            {
+                System.Windows.MessageBox.Show("Não foi possível abrir o arquivo .label");
+                return;
+            }
+
+            _label = Framework.Open(Settings.Default.LabelPath);
+
+            if (_label == null)
+            {
+                return;
+            }
+
+            foreach (string objName in _label.ObjectNames)
+            {
+                if (!string.IsNullOrEmpty(objName))
+                {
+                    labelItems.Add(objName);
+                }
+            }
+
+            foreach (IPrinter printer in Framework.GetPrinters())
+            {
+                printerName = printer.Name;
+            }
+
+            if (printerName.Equals(""))
+            {
+                System.Windows.MessageBox.Show("Não foi possível encontrar uma impressora Dymo");
+            }
+        }
+
+        /// <summary>
+        /// Enviar dados para uma impressora Dymo imprimir a etiqueta
+        /// </summary>
+        /// <param name="id">ID do membro</param>
+        /// <param name="name">Nome do membro</param>
+        /// <param name="date">Data atual</param>
+        private void PrintCode(int id, string name, string date)
+        {
+            if (printerName.Equals(""))
+            {
+                foreach (IPrinter printers in Framework.GetPrinters())
+                {
+                    printerName = printers.Name;
+                }
+
+                if (printerName.Equals(""))
+                {
+                    return;
+                }
+            }
+
+            if (labelItems.Contains("name"))
+            {
+                _label.SetObjectText("name", name);
+            }
+
+            if (labelItems.Contains("barcode"))
+            {
+                _label.SetObjectText("barcode", id.ToString());
+            }
+
+            if (labelItems.Contains("qrcode"))
+            {
+                _label.SetObjectText("qrcode", App.QRCode + id);
+            }
+
+            if (labelItems.Contains("date"))
+            {
+                _label.SetObjectText("date", date);
+            }
+
+            IPrinter printer = Framework.GetPrinters()[printerName];
+            _label.Print(printer);
         }
 
         // Código de https://zxingnet.codeplex.com/SourceControl/latest#trunk/Clients/WindowsFormsDemo/WindowsFormsDemoForm.cs

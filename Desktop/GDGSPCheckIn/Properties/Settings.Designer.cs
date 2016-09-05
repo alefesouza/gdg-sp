@@ -34,5 +34,29 @@ namespace GDGSPCheckIn.Properties {
                 this["APIKey"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LabelPath {
+            get {
+                return ((string)(this["LabelPath"]));
+            }
+            set {
+                this["LabelPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseDymo {
+            get {
+                return ((bool)(this["UseDymo"]));
+            }
+            set {
+                this["UseDymo"] = value;
+            }
+        }
     }
 }

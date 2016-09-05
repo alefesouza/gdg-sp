@@ -24,9 +24,7 @@ import android.os.Handler;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-
 import com.onesignal.OneSignal;
-
 import org.gdgsp.R;
 
 /**

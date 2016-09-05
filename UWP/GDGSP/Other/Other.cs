@@ -81,9 +81,16 @@ namespace GDGSP.Other
         /// Métodos que retorna a URL de receber os eventos.
         /// </summary>
         /// <returns>A URL final para receber os eventos.</returns>
-        public static string GetEventsUrl()
+        public static string GetEventsUrl(int page = 0)
         {
-            return "http://" + backendUrl + "api/events.php" + finalUrl;
+            string p = "";
+
+            if (page != 0)
+            {
+                p = "&page=" + page;
+            }
+
+            return "http://" + backendUrl + "api/events.php" + finalUrl + p;
         }
 
         /// <summary>
@@ -129,6 +136,19 @@ namespace GDGSP.Other
         public static string GetRaffleUrl(int id)
         {
             return "http://" + backendUrl + "api/raffle.php" + finalUrl + "&eventid=" + id;
+        }
+
+        /// <summary>
+        /// Método que retorna a URL de tweets.
+        /// </summary>
+        public static string GetTweetsUrl(string max_id = "")
+        {
+            if (!max_id.Equals(""))
+            {
+                max_id = "&max_id=" + max_id;
+            }
+
+            return "http://" + backendUrl + "api/tweets.php" + finalUrl + max_id;
         }
 
         /// <summary>

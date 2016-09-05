@@ -124,12 +124,12 @@ public class RaffleManagerFragment extends Fragment {
 
 					switch(result) {
 						case "invalid_user": case "invalid_key":
-							Toast.makeText(activity, "Usuário ou chave do aplicativo inválida", Toast.LENGTH_SHORT).show();
+							Toast.makeText(activity, getString(R.string.raffle_invalid), Toast.LENGTH_SHORT).show();
 							activity.finish();
 							break;
 						case "[]":
 							AlertDialog alertDialog = new AlertDialog.Builder(activity)
-								.setTitle("Não há pessoas sorteadas nesse evento")
+								.setTitle(getString(R.string.raffle_no_people))
 								.setMessage(getString(R.string.login_error_sub))
 								.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
 									@Override

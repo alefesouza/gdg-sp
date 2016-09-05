@@ -35,7 +35,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import org.gdgsp.R;
-import org.gdgsp.adapter.PeopleTabAdapter;
+import org.gdgsp.adapter.TabAdapter;
 import org.gdgsp.fragment.PeopleFragment;
 import org.gdgsp.model.Person;
 import org.gdgsp.other.Other;
@@ -49,7 +49,7 @@ public class PeopleActivity extends AppCompatActivity {
 	private TabLayout tabLayout;
 	private ViewPager viewPager;
 	private ProgressBar progress;
-	private PeopleTabAdapter adapter;
+	private TabAdapter adapter;
 	private List<Person> listPeople;
 	private String jsonPeople = null;
 	private Event event;
@@ -69,7 +69,8 @@ public class PeopleActivity extends AppCompatActivity {
 		getSupportActionBar().setTitle(event.getWho());
 
 		viewPager = (ViewPager) findViewById(R.id.viewpager);
-		adapter = new PeopleTabAdapter(getSupportFragmentManager());
+		viewPager.setOffscreenPageLimit(3);
+		adapter = new TabAdapter(getSupportFragmentManager());
 		viewPager.setAdapter(adapter);
 
 		tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);

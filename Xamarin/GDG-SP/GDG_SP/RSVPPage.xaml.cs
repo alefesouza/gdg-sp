@@ -164,7 +164,7 @@ namespace GDG_SP
                         await DisplayAlert("", message, "OK");
 
                         MainPage.openEvent = _event.Id;
-                        MainPage.main.GetEvents();
+						MainPage.Instance.GetEvents();
                     }
                     else
                     {

@@ -25,18 +25,27 @@ namespace GDGSP
     public sealed partial class HomePage : Page
     {
         public Frame mainframe, eventopen;
-        public static HomePage homePage;
+
+        private static HomePage instance;
+
+        public static HomePage Instance
+        {
+            get
+            {
+                return instance;
+            }
+        }
 
         public HomePage()
         {
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Required;
-            homePage = this;
+            instance = this;
 
             eventopen = EventFrame;
             mainframe = EventsFrame;
 
-            MainPage.mainPage.headerList.SelectedIndex = 0;
+            MainPage.Instance.headerList.SelectedIndex = 0;
         }
     }
 }

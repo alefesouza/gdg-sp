@@ -50,7 +50,7 @@ limitations under the License.
 	<RelativeLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:layout_marginTop="?attr/actionBarSize">
+		app:layout_behavior="@string/appbar_scrolling_view_behavior">
 		<android.support.v4.view.ViewPager
 			android:id="@+id/viewpager"
 			android:layout_width="match_parent"

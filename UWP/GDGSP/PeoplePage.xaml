@@ -148,7 +148,7 @@ limitations under the License.
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
 
-                                    <Ellipse Width="75" Height="75" Grid.Row="0" Grid.RowSpan="2">
+                                    <Ellipse Width="75" Height="75" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Top">
                                         <Ellipse.Fill>
                                             <ImageBrush ImageSource="{Binding Photo}" />
                                         </Ellipse.Fill>

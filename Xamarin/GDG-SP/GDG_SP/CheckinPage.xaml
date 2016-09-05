@@ -18,8 +18,8 @@ limitations under the License.
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="GDG_SP.CheckinPage">
 	<ContentPage.Content>
 		<ScrollView>
-			<StackLayout>
-				<Label Text="Use esse QR Code para fazer check-in ao chegar em um evento" HorizontalOptions="Center" HorizontalTextAlignment="Center" Margin="0, 20, 0, 0" />
+			<StackLayout Padding="16">
+				<Label Text="Use esse QR Code para fazer check-in ao chegar em um evento" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
 				<Image x:Name="CheckInQrCode" Margin="15" HorizontalOptions="Center" />
 				<Label x:Name="MemberName" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
 			</StackLayout>

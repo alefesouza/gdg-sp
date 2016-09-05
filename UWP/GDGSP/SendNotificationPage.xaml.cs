@@ -31,7 +31,7 @@ namespace GDGSP
         {
             this.InitializeComponent();
 
-            if (EventsPage.events.listEvents.Count > 0)
+            if (EventsPage.Instance.listEvents.Count > 0)
             {
                 ToAll.Checked += (s, e) =>
                 {
@@ -43,8 +43,8 @@ namespace GDGSP
                     Events.Visibility = Visibility.Visible;
                 };
 
-                Events.ItemsSource = EventsPage.events.listEvents;
-                Events.SelectedItem = EventsPage.events.listEvents[0];
+                Events.ItemsSource = EventsPage.Instance.listEvents;
+                Events.SelectedItem = EventsPage.Instance.listEvents[0];
             }
             else
             {
@@ -88,7 +88,7 @@ namespace GDGSP
                         {
                             case "notification_send":
                                 Other.Other.ShowMessage("Notificação enviada com sucesso");
-                                MainPage.mainPage.headerList.SelectedIndex = 0;
+                                MainPage.Instance.headerList.SelectedIndex = 0;
                                 break;
                             case "invalid_user":
                                 Other.Other.ShowMessage("Usuário inválido");

@@ -18,20 +18,20 @@ package org.gdgsp.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.koushikdutta.ion.Ion;
+
 import org.gdgsp.R;
-import org.gdgsp.model.Person;
-import org.gdgsp.other.Other;
+import org.gdgsp.model.Raffle;
+
 import java.util.List;
-import org.gdgsp.model.*;
-import android.text.*;
 
 /**
  * Adapter dos cards de pessoas exibidos no PeopleFragment.

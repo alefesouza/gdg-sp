@@ -61,6 +61,7 @@ public class FragmentActivity extends AppCompatActivity {
 
 				Bundle bundleEvent = new Bundle();
 				bundleEvent.putSerializable("event", getIntent().getSerializableExtra("event"));
+				bundleEvent.putBoolean("isPast", getIntent().getBooleanExtra("isPast", false));
 
 				fragment.setArguments(bundleEvent);
 				break;

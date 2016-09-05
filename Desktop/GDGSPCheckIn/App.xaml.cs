@@ -23,9 +23,6 @@ using System.Windows;
 
 namespace GDGSPCheckIn
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
         public const string AppName = "GDG-SP";

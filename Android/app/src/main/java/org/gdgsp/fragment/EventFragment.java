@@ -98,7 +98,9 @@ public class EventFragment extends Fragment {
 		}, 1000);
 
 		FloatingActionButton do_rsvp = (FloatingActionButton)view.findViewById(R.id.do_rsvp);
-		do_rsvp.setVisibility(View.VISIBLE);
+		
+		do_rsvp.setVisibility(getArguments().getBoolean("isPast") ? View.GONE : View.VISIBLE);
+		
 		do_rsvp.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View p1) {

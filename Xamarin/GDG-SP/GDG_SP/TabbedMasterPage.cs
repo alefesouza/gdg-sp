@@ -28,7 +28,9 @@ namespace GDG_SP
         {
 			Title = AppResources.AppName;
 
-            Children.Add(new MainPage() { Title = "Eventos", Icon = Device.OnPlatform("Home.png", null, null) });
+            Children.Add(new MainPage() { Title = "Futuros", Icon = Device.OnPlatform("Home.png", null, null) });
+			Children.Add(new PastEventsPage() { Title = "Anteriores", Icon = Device.OnPlatform("Clock.png", null, null) });
+			Children.Add(new TweetsPage() { Title = "#GDGSP", Icon = Device.OnPlatform("TwitterTab.png", null, null) });
             Children.Add(new LinksPage() { Title = "Links", Icon = Device.OnPlatform("Links.png", null, null) });
             Children.Add(new AboutPage() { Title = "Sobre", Icon = Device.OnPlatform("About.png", null, null) });
         }

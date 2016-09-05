@@ -111,7 +111,7 @@ namespace GDG_SP
 
                 if(!isLogin)
                 {
-                    ToolbarItems.Add(new ToolbarItem("Abrir no navegator", null, () =>
+                    ToolbarItems.Add(new ToolbarItem("Abrir no navegador", null, () =>
                     {
                         Other.Other.OpenSite((WView.Source as UrlWebViewSource).Url, this);
                     }, ToolbarItemOrder.Secondary));
@@ -164,7 +164,7 @@ namespace GDG_SP
 						Other.Other.AddSetting("qr_code", qr_code);
 						await DisplayAlert("", "Login realizado com sucesso", "OK");
 						MainPage.openEvent = eventId;
-						MainPage.main.GetEvents(false);
+						MainPage.Instance.GetEvents(false);
 					}
 				}
 				else

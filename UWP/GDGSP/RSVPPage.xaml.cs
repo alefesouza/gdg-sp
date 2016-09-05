@@ -152,7 +152,7 @@ namespace GDGSP
                         Other.Other.ShowMessage(message);
 
                         MainPage.openEvent = _event.Id;
-                        EventsPage.events.GetEvents();
+                        EventsPage.Instance.GetEvents();
                     }
                     else
                     {

@@ -48,6 +48,10 @@ limitations under the License.
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <ListBox Name="HeaderLB" Grid.Row="1" SelectionChanged="HeaderLB_SelectionChanged" ScrollViewer.VerticalScrollMode="Disabled" Margin="0 48 0 0">
+                        <FlyoutBase.AttachedFlyout>
+                            <MenuFlyout x:Name="RaffleList">
+                            </MenuFlyout>
+                        </FlyoutBase.AttachedFlyout>
                         <ListBoxItem x:Name="Home">
                             <ToolTipService.ToolTip>
                                 <TextBlock Text="Eventos"></TextBlock>

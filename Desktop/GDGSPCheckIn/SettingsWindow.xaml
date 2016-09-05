@@ -20,7 +20,7 @@ limitations under the License.
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GDGSPCheckIn"
-        mc:Ignorable="d" Icon="Assets/Icon.ico" Height="350" Width="525">
+        mc:Ignorable="d" Icon="Assets/Icon.ico" Height="500" Width="525">
     <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -84,7 +84,8 @@ limitations under the License.
                 para receber sua API Key do Meetup
             </TextBlock>
 
-            <Button Grid.Row="1" Grid.ColumnSpan="2" x:Name="UseLocal" Content="Usar base de dados local" Click="UseLocal_Click" Margin="0, 15, 0, 15" />
+            <Button Grid.Row="1" x:Name="UseLocal" Content="Usar base de dados local" Click="UseLocal_Click" Margin="0, 15, 0, 15" />
+            <Button Grid.Row="1" Grid.Column="1"  x:Name="PrinterConfig" Content="Configurar impressora" Click="PrinterConfig_Click"  Margin="0, 15, 0, 15" />
             
             <Button x:Name="ShowRelatories" Content="Exibir relatórios" Click="ShowRelatories_Click" Grid.Row="2" />
             <Button Grid.Column="1" x:Name="ShowAllUsers" Content="Exibir todos os usuários" Click="ShowAllUsers_Click" Grid.Row="2" />

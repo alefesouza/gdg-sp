@@ -29,7 +29,7 @@ Recursos
 
 Com o aplicativo, você pode:
 
-- Ver os eventos futuros.
+- Ver os eventos futuros e anteriores e o que estão falando no Twitter sobre o GDG-SP.
 - Quem deu resposta aos eventos.
 - Fazer RSVP e check-in com sua conta do meetup.
 - Realizar sorteios.

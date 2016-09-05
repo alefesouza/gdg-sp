@@ -125,6 +125,7 @@
     <Compile Include="Models\Link.cs" />
     <Compile Include="Models\Person.cs" />
     <Compile Include="Models\Raffle.cs" />
+    <Compile Include="Models\Tweet.cs" />
     <Compile Include="Other\Other.cs" />
     <Compile Include="PeoplePage.xaml.cs">
       <DependentUpon>PeoplePage.xaml</DependentUpon>

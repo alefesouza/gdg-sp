@@ -106,7 +106,7 @@ public class PeopleFragment extends Fragment {
         Type datasetListType = new TypeToken<List<Person>>() {}.getType();
         listPeople = gson.fromJson(getArguments().getString("peopleJson"), datasetListType);
 
-        if(hasAppPeople.size() == 0) {
+        if(getArguments().getInt("position") == 0) {
             for (Person p : listPeople) {
                 if (p.isHas_app()) {
                     hasAppPeople.add(p);
@@ -173,7 +173,7 @@ public class PeopleFragment extends Fragment {
 						
 						AlertDialog alertDialog = new AlertDialog.Builder(activity)
 							.setTitle(getString(R.string.raffle_person))
-							.setMessage("Você!\n\nSorteado ás " + localDate)
+							.setMessage("Você!\n\nSorteado às " + localDate)
 							.setPositiveButton(getString(R.string.send), new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface p1, int p2) {

@@ -82,7 +82,7 @@ public class SendNotificationFragment extends Fragment {
 
         send = (Button)view.findViewById(R.id.button_send);
 
-        final List<Event> listEvents = MainActivity.listEvents;
+        final List<Event> listEvents = EventsFragment.getInstance().listEvents;
 
         if(listEvents.size() > 0) {
             String[] events = new String[listEvents.size()];

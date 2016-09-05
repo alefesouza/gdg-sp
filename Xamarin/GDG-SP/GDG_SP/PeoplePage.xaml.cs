@@ -126,7 +126,7 @@ namespace GDG_SP
 					string localDate = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy");
 					string dbDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
-					if (LinksPage.member != null && go[number].Id == LinksPage.member.Id)
+					if (LinksPage.Instance.member != null && go[number].Id == LinksPage.Instance.member.Id)
 					{
 						count = 0;
 						timerBlock = false;

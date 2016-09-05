@@ -19,9 +19,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Net.Http;
-using Windows.Networking.PushNotifications;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Popups;
@@ -40,9 +38,22 @@ namespace GDGSP
     {
         public ProgressRing toKnow;
         TextBlock title;
-        public static EventsPage events;
-        public ObservableCollection<Event> listEvents = null;
+        public ObservableCollection<Event> listEvents = null, pastEvents;
+        ObservableCollection<Tweet> listTweets;
         public static Event actualEvent = null;
+        string max_id;
+        bool isLoadingTweets, isLoadingPast;
+        int page = 2;
+
+        private static EventsPage instance;
+
+        public static EventsPage Instance
+        {
+            get
+            {
+                return instance;
+            }
+        }
 
         public EventsPage()
         {
@@ -50,12 +61,12 @@ namespace GDGSP
             this.NavigationCacheMode = NavigationCacheMode.Required;
             Other.Other.Transition(this);
 
-            events = this;
+            instance = this;
 
             // ToKnow é um elemento/variável que eu uso para saber se a tela está com duas colunas
             toKnow = ToKnow;
 
-            if (HomePage.homePage.eventopen.Visibility == Visibility.Collapsed)
+            if (HomePage.Instance.eventopen.Visibility == Visibility.Collapsed)
             {
                 SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             }
@@ -82,16 +93,26 @@ namespace GDGSP
 
             title.Text = Other.Other.resourceLoader.GetString("AppName");
 
-            TryAgain.Click += (s, e) =>
+            PastTryAgainFooter.Click += (s, e) =>
             {
-                ErrorScreen.Visibility = Visibility.Collapsed;
-                GetEvents();
+                GetEvents(page);
+            };
+
+            TweetsTryAgainFooter.Click += (s, e) =>
+            {
+                GetTweets(max_id);
+            };
+
+            ListsPivot.SelectionChanged += (s, e) =>
+            {
+                TweetsRefresh.Visibility = ListsPivot.SelectedIndex == 2 ? Visibility.Visible : Visibility.Collapsed;
             };
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             GetEvents();
+            GetTweets();
         }
 
         /// <summary>
@@ -101,9 +122,12 @@ namespace GDGSP
         public async void GetEvents(bool refresh = false)
         {
             ErrorScreen.Visibility = Visibility.Collapsed;
-
             ListEvents.Visibility = Visibility.Collapsed;
             PRing.Visibility = Visibility.Visible;
+
+            PastErrorScreen.Visibility = Visibility.Collapsed;
+            PastScroll.Visibility = Visibility.Collapsed;
+            PastPRing.Visibility = Visibility.Visible;
 
             string jsonString = "";
 
@@ -137,6 +161,9 @@ namespace GDGSP
                     md.Commands.Add(new UICommand("Não", new UICommandInvokedHandler((c) => {
                         ListEvents.Visibility = Visibility.Visible;
                         PRing.Visibility = Visibility.Collapsed;
+
+                        PastScroll.Visibility = Visibility.Visible;
+                        PastPRing.Visibility = Visibility.Collapsed;
                     }))
                     { Id = 1 });
 
@@ -147,6 +174,10 @@ namespace GDGSP
                     ErrorMessage.Text = "Verifique sua conexão de internet";
                     ErrorScreen.Visibility = Visibility.Visible;
                     PRing.Visibility = Visibility.Collapsed;
+
+                    PastErrorMessage.Text = "Verifique sua conexão de internet";
+                    PastErrorScreen.Visibility = Visibility.Visible;
+                    PastPRing.Visibility = Visibility.Collapsed;
                 }
                 return;
             }
@@ -156,7 +187,6 @@ namespace GDGSP
             try
             {
                 root = JObject.Parse(jsonString);
-                HeaderImage.Source = new BitmapImage(new Uri(root["header"].ToString(), UriKind.Absolute));
                 listEvents = JsonConvert.DeserializeObject<ObservableCollection<Event>>(root["events"].ToString());
             }
             catch
@@ -164,23 +194,29 @@ namespace GDGSP
                 ErrorMessage.Text = "Houve um erro ao receber a lista de eventos";
                 ErrorScreen.Visibility = Visibility.Visible;
                 PRing.Visibility = Visibility.Collapsed;
+
+                PastErrorMessage.Text = "Houve um erro ao receber a lista de eventos";
+                PastErrorScreen.Visibility = Visibility.Visible;
+                PastPRing.Visibility = Visibility.Collapsed;
                 return;
             }
 
             // Se o ID for diferente de 0 significa que o usuário está fez login, então preenche as informações dele
             if ((int)root["member"]["id"] != 0)
             {
-                MainPage.mainPage.member = JsonConvert.DeserializeObject<Person>(root["member"].ToString());
+                MainPage mainPage = MainPage.Instance;
+
+                mainPage.member = JsonConvert.DeserializeObject<Person>(root["member"].ToString());
                 Other.Other.localSettings.Values["member_profile"] = root["member"].ToString();
 
-                MainPage.mainPage.profilePhoto.ImageSource = new BitmapImage(new Uri(MainPage.mainPage.member.Photo));
-                MainPage.mainPage.profileName.Text = MainPage.mainPage.member.Name;
-                MainPage.mainPage.profileIntro.Text = MainPage.mainPage.member.Intro;
+                mainPage.profilePhoto.ImageSource = new BitmapImage(new Uri(mainPage.member.Photo));
+                mainPage.profileName.Text = mainPage.member.Name;
+                mainPage.profileIntro.Text = mainPage.member.Intro;
 
                 if ((bool)root["member"]["is_admin"])
                 {
-                    MainPage.mainPage.sendNotification.Visibility = Visibility.Visible;
-                    MainPage.mainPage.raffleManager.Visibility = Visibility.Visible;
+                    mainPage.sendNotification.Visibility = Visibility.Visible;
+                    mainPage.raffleManager.Visibility = Visibility.Visible;
                 }
             }
             else
@@ -188,19 +224,28 @@ namespace GDGSP
                 // Se retornar 0 e o aplicativo conter a configuração refresh_token, significa que tem algo de errado com o login deve, como revogação de acesso por exemplo, nesse caso apaga todas as informações de login
                 if (Other.Other.localSettings.Values.ContainsKey("refresh_token"))
                 {
+                    MainPage mainPage = MainPage.Instance;
+
                     Other.Other.localSettings.Values.Remove("refresh_token");
                     Other.Other.localSettings.Values.Remove("member_profile");
-                    MainPage.mainPage.profilePhoto.ImageSource = new BitmapImage(new Uri("ms-appx:///Assets/Images/Logo.png", UriKind.Absolute));
-                    MainPage.mainPage.profileName.Text = "Fazer login";
-                    MainPage.mainPage.profileIntro.Text = "Fazer login";
+                    mainPage.profilePhoto.ImageSource = new BitmapImage(new Uri("ms-appx:///Assets/Images/Logo.png", UriKind.Absolute));
+                    mainPage.profileName.Text = "Fazer login";
+                    mainPage.profileIntro.Text = "Fazer login";
                 }
             }
 
+            HeaderImage.Source = new BitmapImage(new Uri(root["header"].ToString(), UriKind.Absolute));
+            PastHeaderImage.Source = new BitmapImage(new Uri(root["header"].ToString(), UriKind.Absolute));
+
             listEvents = JsonConvert.DeserializeObject<ObservableCollection<Event>>(root["events"].ToString());
+            pastEvents = JsonConvert.DeserializeObject<ObservableCollection<Event>>(root["past_events"].ToString());
+
+            ListPastEvents.ItemsSource = pastEvents;
+            PastScroll.Visibility = Visibility.Visible;
 
             if (listEvents.Count > 0)
             {
-                HeaderImage.Source = new BitmapImage(new Uri(root["header"].ToString(), UriKind.Absolute));
+                HomePage homePage = HomePage.Instance;
 
                 ListEvents.ItemsSource = listEvents;
 
@@ -210,20 +255,20 @@ namespace GDGSP
                     {
                         if (listEvents[i].Id == MainPage.openEvent)
                         {
-                            HomePage.homePage.eventopen.SetNavigationState("1,0");
+                            homePage.eventopen.SetNavigationState("1,0");
                             ListEvents.SelectedIndex = i;
                             MainPage.openEvent = 0;
                         }
                     }
                 }
-                else if (HomePage.homePage.eventopen.Visibility == Visibility.Collapsed && toKnow.IsActive)
+                else if (homePage.eventopen.Visibility == Visibility.Collapsed && toKnow.IsActive)
                 {
                     actualEvent = listEvents[0];
 
-                    HomePage.homePage.eventopen.Navigate(typeof(EventPage), listEvents[0]);
+                    homePage.eventopen.Navigate(typeof(EventPage), listEvents[0]);
 
                     SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-                    HomePage.homePage.eventopen.Visibility = Visibility.Visible;
+                    homePage.eventopen.Visibility = Visibility.Visible;
                 }
 
                 ListEvents.Visibility = Visibility.Visible;
@@ -237,7 +282,192 @@ namespace GDGSP
             PRing.Visibility = Visibility.Collapsed;
             ErrorScreen.Visibility = Visibility.Collapsed;
 
+            PastPRing.Visibility = Visibility.Collapsed;
+            PastErrorScreen.Visibility = Visibility.Collapsed;
+
             SuggestLogin();
+        }
+
+        public async void GetEvents(int page)
+        {
+            PastTryAgainFooter.Visibility = Visibility.Collapsed;
+            PastErrorScreen.Visibility = Visibility.Collapsed;
+            PastLoading.Visibility = Visibility.Visible;
+
+            string jsonString = "";
+
+            try
+            {
+                var client = new HttpClient();
+                client.MaxResponseContentBufferSize = 256000;
+                HttpResponseMessage response = await client.GetAsync(Other.Other.GetEventsUrl(page));
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string result = await response.Content.ReadAsStringAsync();
+
+                    jsonString = result;
+                }
+                else
+                {
+                    throw new Exception();
+                }
+            }
+            catch
+            {
+                PastLoading.Visibility = Visibility.Collapsed;
+                PastTryAgainFooter.Visibility = Visibility.Visible;
+                Other.Other.ShowMessage("Eventos anteriores\n\nVerifique sua conexão de internet");
+                return;
+            }
+
+            JObject root = null;
+
+            try
+            {
+                root = JObject.Parse(jsonString);
+                this.page++;
+                string events = root["past_events"].ToString();
+                ObservableCollection<Event> newEvents = JsonConvert.DeserializeObject<ObservableCollection<Event>>(events);
+                foreach (Event _event in newEvents)
+                {
+                    pastEvents.Add(_event);
+                }
+            }
+            catch
+            {
+                Other.Other.ShowMessage("Houve um erro ao receber a lista de tweets");
+                return;
+            }
+
+            if ((bool)root["more_past_events"])
+            {
+                isLoadingPast = false;
+                PastLoading.Visibility = Visibility.Visible;
+                PastMessage.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                isLoadingPast = true;
+                PastLoading.Visibility = Visibility.Collapsed;
+                PastMessage.Visibility = Visibility.Visible;
+            }
+
+            PastLoading.Visibility = Visibility.Collapsed;
+            ListEvents.Visibility = Visibility.Visible;
+        }
+
+        public async void GetTweets(string max_id = "")
+        {
+            if (max_id.Equals(""))
+            {
+                TweetsPRing.Visibility = Visibility.Visible;
+                TweetsScroll.Visibility = Visibility.Collapsed;
+            }
+
+            TweetsTryAgainFooter.Visibility = Visibility.Collapsed;
+            TweetsErrorScreen.Visibility = Visibility.Collapsed;
+            TweetsLoading.Visibility = Visibility.Visible;
+
+            string jsonString = "";
+
+            try
+            {
+                var client = new HttpClient();
+                client.MaxResponseContentBufferSize = 256000;
+                HttpResponseMessage response = await client.GetAsync(Other.Other.GetTweetsUrl(max_id));
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string result = await response.Content.ReadAsStringAsync();
+
+                    jsonString = result;
+                }
+                else
+                {
+                    throw new Exception();
+                }
+            }
+            catch
+            {
+                TweetsLoading.Visibility = Visibility.Collapsed;
+                TweetsTryAgainFooter.Visibility = Visibility.Visible;
+                Other.Other.ShowMessage("Tweets\n\nVerifique sua conexão de internet");
+                return;
+            }
+
+            JObject root = null;
+
+            try
+            {
+                if (max_id.Equals(""))
+                {
+                    root = JObject.Parse(jsonString);
+                    this.max_id = root["max_id"].ToString();
+                    string tweets = root["tweets"].ToString();
+                    listTweets = JsonConvert.DeserializeObject<ObservableCollection<Tweet>>(tweets);
+                    ListTweets.ItemsSource = listTweets;
+                }
+                else
+                {
+                    root = JObject.Parse(jsonString);
+                    this.max_id = root["max_id"].ToString();
+                    string tweets = root["tweets"].ToString();
+                    ObservableCollection<Tweet> newTweets = JsonConvert.DeserializeObject<ObservableCollection<Tweet>>(tweets);
+                    foreach (Tweet tweet in newTweets)
+                    {
+                        listTweets.Add(tweet);
+                    }
+                }
+            }
+            catch
+            {
+                Other.Other.ShowMessage("Houve um erro ao receber a lista de tweets");
+                return;
+            }
+
+            if ((bool)root["more_tweets"])
+            {
+                isLoadingTweets = false;
+                TweetsLoading.Visibility = Visibility.Visible;
+                TweetsMessage.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                isLoadingTweets = true;
+                TweetsLoading.Visibility = Visibility.Collapsed;
+                TweetsMessage.Visibility = Visibility.Visible;
+            }
+
+            TweetsLoading.Visibility = Visibility.Collapsed;
+            TweetsScroll.Visibility = Visibility.Visible;
+        }
+
+        private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            var verticalOffset = (sender as ScrollViewer).VerticalOffset;
+            var maxVerticalOffset = (sender as ScrollViewer).ScrollableHeight;
+
+            if (maxVerticalOffset < 0 ||
+                verticalOffset == maxVerticalOffset)
+            {
+                if(sender == PastScroll)
+                {
+                    if (!isLoadingPast)
+                    {
+                        GetEvents(page);
+                        isLoadingPast = true;
+                    }
+                }
+                else if(sender == TweetsScroll)
+                {
+                    if (!isLoadingTweets)
+                    {
+                        GetTweets(max_id);
+                        isLoadingTweets = true;
+                    }
+                }
+            }
         }
 
         private async void SuggestLogin()
@@ -249,7 +479,7 @@ namespace GDGSP
 
                 md.Commands.Add(new UICommand("Sim", new UICommandInvokedHandler((c) =>
                 {
-                    MainPage.mainPage.settingsList.SelectedIndex = 1;
+                    MainPage.Instance.settingsList.SelectedIndex = 1;
                 }))
                 { Id = 0 });
                 md.Commands.Add(new UICommand("Não", null)
@@ -263,22 +493,25 @@ namespace GDGSP
 
         private void ListEvents_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (ListEvents.SelectedIndex != -1)
+            if (ListEvents.SelectedIndex != -1 || ListPastEvents.SelectedIndex != -1)
             {
-                if (HomePage.homePage.eventopen.Visibility == Visibility.Collapsed)
+                HomePage homePage = HomePage.Instance;
+
+                if (homePage.eventopen.Visibility == Visibility.Collapsed)
                 {
-                    HomePage.homePage.eventopen.SetNavigationState("1,0");
+                    homePage.eventopen.SetNavigationState("1,0");
                 }
 
                 Event a = e.AddedItems[0] as Event;
-                HomePage.homePage.eventopen.Navigate(typeof(EventPage), a);
+                homePage.eventopen.Navigate(typeof(EventPage), a);
 
                 actualEvent = a;
 
                 SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-                HomePage.homePage.eventopen.Visibility = Visibility.Visible;
+                homePage.eventopen.Visibility = Visibility.Visible;
 
                 ListEvents.SelectedIndex = -1;
+                ListPastEvents.SelectedIndex = -1;
             }
         }
 
@@ -292,17 +525,29 @@ namespace GDGSP
             Other.Other.OpenSite("http://meetup.com/" + Other.Other.resourceLoader.GetString("MeetupId"));
         }
 
+        private void TweetsRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            GetTweets();
+        }
+
+        private void TryAgain_Click(object sender, RoutedEventArgs e)
+        {
+            ErrorScreen.Visibility = Visibility.Collapsed;
+            PastErrorScreen.Visibility = Visibility.Collapsed;
+            GetEvents();
+        }
+
         private async void DoCheckin_Click(object sender, RoutedEventArgs e)
         {
             if (Other.Other.localSettings.Values.ContainsKey("qr_code"))
             {
-                HomePage.homePage.mainframe.Navigate(typeof(CheckinPage));
+                HomePage.Instance.mainframe.Navigate(typeof(CheckinPage));
                 SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
             }
 			// Caso o usuário esteja com uma versão antiga do app
             else if (Other.Other.localSettings.Values.ContainsKey("refresh_token"))
             {
-                MainPage.mainPage.ToWebView(new Link() { Title = "Recebendo QR Code...", Value = Other.Other.GetLoginUrl() });
+                MainPage.Instance.ToWebView(new Link() { Title = "Recebendo QR Code...", Value = Other.Other.GetLoginUrl() });
             }
             else
             {
@@ -311,7 +556,7 @@ namespace GDGSP
 
                 md.Commands.Add(new UICommand("Sim", new UICommandInvokedHandler((c) =>
                 {
-                    MainPage.mainPage.settingsList.SelectedIndex = 1;
+                    MainPage.Instance.settingsList.SelectedIndex = 1;
                 }))
                 { Id = 0 });
                 md.Commands.Add(new UICommand("Não", null)

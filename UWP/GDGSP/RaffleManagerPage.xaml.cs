@@ -1,20 +1,4 @@
-﻿/*
- * Copyright (C) 2016 Alefe Souza <http://alefesouza.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-using Windows.UI.Xaml.Controls;
+﻿using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
@@ -23,11 +7,14 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using Windows.UI.Popups;
+using Windows.UI.Xaml.Navigation;
+
+// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace GDGSP
 {
     /// <summary>
-	/// Página que exibe as pessoas que sortearam a si mesmo no evento, exibida apenas para organizadores e usuários permitidos.
+    /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
     public sealed partial class RaffleManagerPage : Page
     {
@@ -36,8 +23,13 @@ namespace GDGSP
         public RaffleManagerPage()
         {
             this.InitializeComponent();
+        }
 
-            GetPeople(EventsPage.actualEvent.Id);
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            Event parameter = e.Parameter as Event;
+
+            GetPeople(parameter.Id);
         }
 
         /// <summary>
@@ -70,7 +62,7 @@ namespace GDGSP
                     {
                         case "invalid_user":
                         case "invalid_key":
-                            MainPage.mainPage.headerList.SelectedIndex = 0;
+                            MainPage.Instance.headerList.SelectedIndex = 0;
                             Other.Other.ShowMessage("Usuário ou chave do aplicativo inválida" + Other.Other.GetAppKey());
                             return;
                         case "[]":
@@ -82,7 +74,7 @@ namespace GDGSP
                             }))
                             { Id = 0 });
                             md.Commands.Add(new UICommand("Não", new UICommandInvokedHandler((c) => {
-                                MainPage.mainPage.headerList.SelectedIndex = 0;
+                                MainPage.Instance.headerList.SelectedIndex = 0;
                             }))
                             { Id = 1 });
                             return;
@@ -99,7 +91,7 @@ namespace GDGSP
             catch
             {
                 Other.Other.ShowMessage("Verifique sua conexão de internet");
-                MainPage.mainPage.headerList.SelectedIndex = 0;
+                MainPage.Instance.headerList.SelectedIndex = 0;
                 return;
             }
 
@@ -110,7 +102,7 @@ namespace GDGSP
             catch
             {
                 Other.Other.ShowMessage("Houve um erro ao receber a lista de pessoas");
-                MainPage.mainPage.headerList.SelectedIndex = 0;
+                MainPage.Instance.headerList.SelectedIndex = 0;
                 return;
             }
 

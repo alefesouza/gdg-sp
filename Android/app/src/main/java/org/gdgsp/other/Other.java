@@ -40,6 +40,7 @@ import android.widget.Toast;
 import org.gdgsp.R;
 import org.gdgsp.lib.*;
 import java.security.*;
+import android.util.*;
 
 /**
  * Aqui ficam métodos e atributos utilizados em várias classes do aplicativo.
@@ -60,7 +61,7 @@ public class Other extends Activity {
 
 		try {
 			final MessageDigest digest = MessageDigest.getInstance("md5");
-			digest.update("".getBytes());
+			digest.update(appKey.getBytes());
 			final byte[] bytes = digest.digest();
 			final StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < bytes.length; i++) {
@@ -85,8 +86,12 @@ public class Other extends Activity {
      * @param context Contexto usado para receber uma string no string.xml
      * @return A URL final para receber os eventos.
      */
-    public static String getEventsUrl(Context context) {
-		return "http://" + context.getString(R.string.backend_url) + "api/events.php?" + getFinalUrl(context);
+    public static String getEventsUrl(Context context, int page) {
+		if(page == 0)  {
+			return "http://" + context.getString(R.string.backend_url) + "api/events.php?" + getFinalUrl(context);
+		} else {
+			return "http://" + context.getString(R.string.backend_url) + "api/events.php?past=true&page=" + page + "&" + getFinalUrl(context);
+		}
     }
 
     /**
@@ -96,7 +101,7 @@ public class Other extends Activity {
      * @return A URL final para fazer RSVP no evento que o usuário quer ir.
      */
 	public static String getRSVPUrl(Context context, int id) {
-        return "http://" + context.getString(R.string.backend_url) + "api/rsvp.php?" + getFinalUrl(context) + "&eventid=" + id + "&" + getFinalUrl(context);
+        return "http://" + context.getString(R.string.backend_url) + "api/rsvp.php?" + getFinalUrl(context) + "&eventid=" + id;
     }
 
     /**
@@ -106,7 +111,7 @@ public class Other extends Activity {
      * @return A URL final para receber as respostas das pessoas sobre o evento.
      */
     public static String getRSVPSUrl(Context context, int id) {
-        return "http://" + context.getString(R.string.backend_url) + "api/people.php?" + getFinalUrl(context) + "&eventid=" + id + "&" + getFinalUrl(context);
+        return "http://" + context.getString(R.string.backend_url) + "api/people.php?" + getFinalUrl(context) + "&eventid=" + id;
     }
 
     /**
@@ -129,6 +134,22 @@ public class Other extends Activity {
 	public static String getRaffleUrl(Context context, int eventid) {
 		return "http://" + context.getString(R.string.backend_url) + "api/raffle.php?" + getFinalUrl(context) + "&eventid=" + eventid;
 	}
+
+    /**
+     * Método que retorna a URL de tweets.
+     * @param context Contexto usado para receber uma string no string.xml
+     * @param max_id O último id de tweets recebido, para receber os tweets após esse.
+     * @return A URL final da posição de tweets atual.
+     */
+	public static String getTweetsUrl(Context context, String max_id) {
+		String smax_id = "";
+		
+		if(!max_id.equals("0")) {
+			smax_id = "&max_id=" + max_id;
+		}
+		
+        return "http://" + context.getString(R.string.backend_url) + "api/tweets.php?" + getFinalUrl(context) + smax_id;
+    }
 
     /**
      * Método que retorna o refresh token armazenado nas configurações.
@@ -172,6 +193,22 @@ public class Other extends Activity {
 		try {
 			Intent intent = new Intent(Intent.ACTION_VIEW);
 			intent.setPackage("com.meetup");
+			intent.setData(Uri.parse(url));
+			context.startActivity(intent);
+		} catch (ActivityNotFoundException e) {
+			openSite(context, url);
+		}
+	}
+
+    /**
+     * Tenta abrir o app do Twitter com uma url, se não der certo usa o método de abrir sites.
+     * @param context Contexto usado.
+     * @param url URL a ser aberta.
+     */
+	public static void openTwitterApp(Context context, String url) {
+		try {
+			Intent intent = new Intent(Intent.ACTION_VIEW);
+			intent.setPackage("com.twitter.android");
 			intent.setData(Uri.parse(url));
 			context.startActivity(intent);
 		} catch (ActivityNotFoundException e) {
@@ -295,5 +332,11 @@ public class Other extends Activity {
 			}
 		}
 		return "";
+	}
+
+	public static int dpToPx(Activity activity, int dp) {
+		DisplayMetrics displayMetrics = activity.getResources().getDisplayMetrics();
+		int px = Math.round(dp*(displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+		return px;
 	}
 }

@@ -30,7 +30,7 @@ namespace GDG_SP
 
             Title = "Enviar notificação";
 
-            ObservableCollection<Event> listEvents = MainPage.main.listEvents;
+            ObservableCollection<Event> listEvents = MainPage.Instance.listEvents;
 
             if (listEvents.Count > 0)
             {

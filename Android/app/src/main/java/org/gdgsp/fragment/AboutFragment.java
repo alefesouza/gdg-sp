@@ -63,6 +63,7 @@ public class AboutFragment extends Fragment {
 				"<br><a href=\"http://github.com/koush/ion\">Ion</a>" +
 				"<br><a href=\"http://onesignal.com\">OneSignal</a>" +
 				"<br><a href=\"http://github.com/vinc3m1/RoundedImageView\">Rounded Image View</a>" +
+				"<br><a href=\"https://gist.github.com/darnmason/7bbf8beae24fe7296c8a\">HeaderViewRecyclerAdapter</a>" +
 				"<br><a href=\"http://github.com/google/gson\">Gson</a>" +
 				"<br><a href=\"http://developer.android.com/topic/libraries/support-library/index.html\">Android Support Libraries</a>" +
 				"<br><a href=\"http://developers.google.com/android/guides/overview\">Google Play Services</a>";

@@ -60,20 +60,22 @@ namespace GDGSP
 
         public void EventWebView_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
         {
+            MainPage mainPage = MainPage.Instance;
+
             string url = args.Uri.ToString();
 
             if (url.StartsWith("http://do_login"))
             {
-                MainPage.mainPage.toLogin = true;
+                mainPage.toLogin = true;
                 WebViewPage.openEvent = _event.Id;
-                MainPage.mainPage.ToWebView(new Link() { Title = "Login", Value = Other.Other.GetLoginUrl() });
+                mainPage.ToWebView(new Link() { Title = "Login", Value = Other.Other.GetLoginUrl() });
             }
             else
             {
-                MainPage.mainPage.ToWebView(new Link() { Title = "GDG-SP", Value = url });
+                mainPage.ToWebView(new Link() { Title = "GDG-SP", Value = url });
             }
 
-            MainPage.mainPage.toWebView = true;
+            mainPage.toWebView = true;
 
             args.Cancel = true;
         }
@@ -95,7 +97,7 @@ namespace GDGSP
 
         private void CBOpenSite_Click(object sender, RoutedEventArgs e)
         {
-            MainPage.mainPage.ToWebView(new Link() { Title = _event.Name, Value = _event.Link });
+            MainPage.Instance.ToWebView(new Link() { Title = _event.Name, Value = _event.Link });
         }
 
         private async void CBRSVP_Click(object sender, RoutedEventArgs e)
@@ -117,8 +119,8 @@ namespace GDGSP
                 md.Title = "RSVP";
 
                 md.Commands.Add(new UICommand("Sim", new UICommandInvokedHandler((c) => {
-                    MainPage.mainPage.toLogin = true;
-                    MainPage.mainPage.ToWebView(new Link() { Title = "Login", Value = Other.Other.GetLoginUrl() });
+                    MainPage.Instance.toLogin = true;
+                    MainPage.Instance.ToWebView(new Link() { Title = "Login", Value = Other.Other.GetLoginUrl() });
                     WebViewPage.openEvent = _event.Id;
                 }))
                 { Id = 0 });

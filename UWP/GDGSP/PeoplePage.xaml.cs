@@ -150,7 +150,7 @@ namespace GDGSP
             { Id = 0 });
             md.Commands.Add(new UICommand("Não", new UICommandInvokedHandler((c) =>
             {
-                HomePage.homePage.eventopen.GoBack();
+                HomePage.Instance.eventopen.GoBack();
             }))
             { Id = 1 });
 
@@ -163,7 +163,7 @@ namespace GDGSP
             {
                 Person selected = e.AddedItems[0] as Person;
 
-                MainPage.mainPage.ToWebView(new Link() { Title = selected.Name, Value = "http://meetup.com/" + Other.Other.resourceLoader.GetString("MeetupId") + "/member/" + selected.Id });
+                MainPage.Instance.ToWebView(new Link() { Title = selected.Name, Value = "http://meetup.com/" + Other.Other.resourceLoader.GetString("MeetupId") + "/member/" + selected.Id });
 
                 (sender as ListView).SelectedIndex = -1;
             }
@@ -194,7 +194,7 @@ namespace GDGSP
                 string localDate = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy");
                 string dbDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
-                if (MainPage.mainPage.member != null && go[number].Id == MainPage.mainPage.member.Id)
+                if (MainPage.Instance.member != null && go[number].Id == MainPage.Instance.member.Id)
                 {
                     count = 0;
                     timerBlock = false;

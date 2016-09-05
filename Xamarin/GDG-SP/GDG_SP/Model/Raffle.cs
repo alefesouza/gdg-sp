@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace GDG_SP
+namespace GDG_SP.Model
 {
 	/// <summary>
 	/// Objeto que representa uma pessoa sorteada retornada pelo JSON

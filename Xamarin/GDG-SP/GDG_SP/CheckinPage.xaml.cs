@@ -32,9 +32,9 @@ namespace GDG_SP
 			byte[] qr_code = Convert.FromBase64String(qr_code_base64);
 			CheckInQrCode.Source = ImageSource.FromStream(() => new MemoryStream(qr_code));
 
-            if (LinksPage.member != null)
+            if (LinksPage.Instance.member != null)
             {
-                MemberName.Text = LinksPage.member.Name;
+                MemberName.Text = LinksPage.Instance.member.Name;
             }
 		}
 	}

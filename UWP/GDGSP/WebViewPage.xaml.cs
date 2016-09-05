@@ -106,7 +106,7 @@ namespace GDGSP
             progress.IsIndeterminate = true;
             progress.Visibility = Visibility.Visible;
 
-            if (!MainPage.mainPage.toLogin)
+            if (!MainPage.Instance.toLogin)
             {
                 CBOpen.Visibility = Visibility.Visible;
                 CBShare.Visibility = Visibility.Visible;
@@ -117,7 +117,7 @@ namespace GDGSP
                 CBShare.Visibility = Visibility.Collapsed;
             }
 
-            if (url.Contains(Other.Other.backendUrl) && MainPage.mainPage.toLogin && url.Contains("code="))
+            if (url.Contains(Other.Other.backendUrl) && MainPage.Instance.toLogin && url.Contains("code="))
             {
                 GetCode(Other.Other.GetQuery(url, "code"));
             }
@@ -150,9 +150,9 @@ namespace GDGSP
                     Other.Other.localSettings.Values["qr_code"] = qr_code;
                     MainPage.openEvent = openEvent;
                     openEvent = 0;
-                    HomePage.homePage.eventopen.Visibility = Visibility.Collapsed;
+                    HomePage.Instance.eventopen.Visibility = Visibility.Collapsed;
                     SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-                    MainPage.mainPage.toWebView = false;
+                    MainPage.Instance.toWebView = false;
                     FrameGoBack();
                 }
                 else
@@ -169,7 +169,7 @@ namespace GDGSP
 
                         md.Commands.Add(new UICommand("Sim", new UICommandInvokedHandler((c) =>
                         {
-                            MainPage.mainPage.toLogin = false;
+                            MainPage.Instance.toLogin = false;
 
                             WV.Source = new Uri("http://meetup.com/" + Other.Other.resourceLoader.GetString("MeetupId"));
                         }))
@@ -223,8 +223,8 @@ namespace GDGSP
 
         private void FrameGoBack()
         {
-            MainPage.mainPage.headerList.SelectedIndex = 0;
-            MainPage.mainPage.mainFrame.GoBack();
+            MainPage.Instance.headerList.SelectedIndex = 0;
+            MainPage.Instance.mainFrame.GoBack();
         }
 
         private void webView1_LoadCompleted(object sender, NavigationEventArgs e)

@@ -22,7 +22,6 @@ using System;
 using System.Collections.ObjectModel;
 using Xamarin.Forms;
 using System.Linq;
-using System.Collections.Generic;
 
 namespace GDG_SP
 {
@@ -32,16 +31,25 @@ namespace GDG_SP
     public partial class LinksPage : ContentPage
     {
         public ObservableCollection<Link> listLinks = new ObservableCollection<Link>();
-        public static LinksPage linksPage;
         public CircleImage profileImage;
         public Label profileName, profileIntro;
-        public static Person member = null;
+        public Person member = null;
+
+		private static LinksPage instance;
+
+		public static LinksPage Instance
+		{
+			get
+			{
+				return instance;
+			}
+		}
 
         public LinksPage()
         {
             InitializeComponent();
 
-            linksPage = this;
+            instance = this;
 
             profileImage = ProfileImage;
             profileName = ProfileName;
@@ -114,11 +122,29 @@ namespace GDG_SP
             }
             else if (item.Value.Equals("raffle_manager"))
 			{
-				string[] events = MainPage.main.listEvents.Select(_event => _event.Name).ToArray();
-				string action = await DisplayActionSheet("Escolha o evento", "Cancelar", null, events);
+				string action = await DisplayActionSheet("Escolha o tipo de evento", "Cancelar", null, "Futuros", "Anteriores");
 
-				ObservableCollection<Event> lEv = new ObservableCollection<Event>(MainPage.main.listEvents.Where(_event => _event.Name.Equals(action)));
-				await Navigation.PushAsync(new RaffleManagerPage(lEv[0].Id));
+				int id = 0;
+				string[] events;
+				ObservableCollection<Event> lEv;
+
+				if (action.Equals("Futuros"))
+				{
+
+					events = MainPage.Instance.listEvents.Select(_event => _event.Name).ToArray();
+					string actionEvents = await DisplayActionSheet("Escolha o evento", "Cancelar", null, events);
+					lEv = new ObservableCollection<Event>(MainPage.Instance.listEvents.Where(_event => _event.Name.Equals(actionEvents)));
+				}
+				else
+				{
+					events = PastEventsPage.Instance.listEvents.Select(_event => _event.Name).ToArray();
+					string actionEvents = await DisplayActionSheet("Escolha o evento", "Cancelar", null, events);
+					lEv = new ObservableCollection<Event>(PastEventsPage.Instance.listEvents.Where(_event => _event.Name.Equals(actionEvents)));
+				}
+
+				id = lEv[0].Id;
+
+				await Navigation.PushAsync(new RaffleManagerPage(id));
 			}
 			else if(item.Title.Equals("Contato"))
             {

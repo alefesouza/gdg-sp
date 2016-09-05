@@ -39,10 +39,12 @@ import org.gdgsp.activity.*;
 public class CardAdapter extends RecyclerView.Adapter <RecyclerView.ViewHolder> {
 	private Context context;
 	private List<Event> events;
+	private boolean isPast;
 
-	public CardAdapter(Context context, List <Event> events) {
+	public CardAdapter(Context context, List <Event> events, boolean isPast) {
 		this.context = context;
 		this.events = events;
+		this.isPast = isPast;
 	}
 
 	@Override
@@ -82,7 +84,7 @@ public class CardAdapter extends RecyclerView.Adapter <RecyclerView.ViewHolder> 
 			holder.content.setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
 					MainActivity main = (MainActivity)context;
-					main.openEvent(events.get(position));
+					main.openEvent(main, events.get(position), isPast);
 				}
 			});
 

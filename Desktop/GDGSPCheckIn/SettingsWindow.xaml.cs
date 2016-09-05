@@ -170,7 +170,7 @@ namespace GDGSPCheckIn
                         {
                             Person p = JsonConvert.DeserializeObject<Person>(member["member"].ToString());
 
-                            string query = $"INSERT OR REPLACE INTO event_{eventId} (id, member_id, member_name, date, checked) VALUES ((SELECT id FROM event_{eventId} WHERE member_id={p.Id}), {p.Id}, \"{p.Name}\", \"\", 0)";
+                            string query = $"INSERT OR REPLACE INTO event_{eventId} (id, member_id, member_name, date, checked) VALUES ((SELECT id FROM event_{eventId} WHERE member_id={p.Id}), {p.Id}, \"{p.Name.Replace("\"", "\"\"")}\", \"\", 0)";
                             App.objConn.Prepare(query).Step();
                         }
                     }
@@ -250,6 +250,11 @@ namespace GDGSPCheckIn
 
                 Save.Visibility = Visibility.Visible;
             }
+        }
+
+        private void PrinterConfig_Click(object sender, RoutedEventArgs e)
+        {
+            new PrinterConfigWindow().Show();
         }
     }
 }

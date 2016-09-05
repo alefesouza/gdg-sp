@@ -20,9 +20,11 @@ include("../functions.php");
 if($_POST["refresh_token"] != "") {
 	$token = refreshMeetupToken($_POST["refresh_token"]);
 	
-	$json = @file_get_contents("https://api.meetup.com/$meetupid/events?access_token=$token&fields=survey_questions,self,rsvpable");
+	$pastJson = @file_get_contents("https://api.meetup.com/$meetupid/events?access_token=$token&status=past");
 	
-	//$json = @file_get_contents("https://api.meetup.com/$meetupid/events?access_token=$token&fields=survey_questions,self,rsvpable&status=past");
+	if(!isset($_GET["page"])) {
+		$json = @file_get_contents("https://api.meetup.com/$meetupid/events?access_token=$token&fields=survey_questions,self,rsvpable");
+	}
 	
 	if(strpos($http_response_header[0], "200") !== false) {
 		$memberdata = file_get_contents("https://api.meetup.com/$meetupid/members/self?access_token=$token");
@@ -42,62 +44,44 @@ if($_POST["refresh_token"] != "") {
 			mysqli_query($dbi, "UPDATE meetup_wns_users SET member_id=$memberid WHERE device='".$_POST["ChannelUri"]."'");
 		}
 	} else {
-		$json = file_get_contents("https://api.meetup.com/$meetupid/events?fields=rsvpable");
+		$pastJson = file_get_contents("https://api.meetup.com/$meetupid/events?status=past");
+		
+		if(!isset($_GET["page"])) {
+			$json = file_get_contents("https://api.meetup.com/$meetupid/events?fields=rsvpable");
+		}
 	}
 } else {
-	$json = file_get_contents("https://api.meetup.com/$meetupid/events?fields=rsvpable");
-}
-
-$events = json_decode($json);
-//$events = array($events[count($events) - 5], $events[count($events) - 4], $events[count($events) - 3], $events[count($events) - 2]);
-
-$newevents = array();
-
-foreach($events as $event) {
-  $name = $event->name;
-  $image = getImage($name, $event->description);
-  $who = $event->group->who;
-  $place = $event->venue->name;
-  $address = $event->venue->address_1;
-  $lat = $event->venue->lat;
-  $lon = $event->venue->lon;
-  $start = date("d/m/Y H:i", $event->time / 1000);
-  $end = date("H:i", ($event->time + $event->duration) / 1000);
-  $yes_rsvp_count = (int)$event->yes_rsvp_count;
-  
-  $description = getHtml($name, $event->description, $lat, $lon, $place, $address, $start, $end, $yes_rsvp_count, $who, $event->how_to_find_us);
-  
-  $newevents[] = array(
-    "id" => (int)$event->id,
-    "name" => $name,
-    "image" => $image,
-    "description" => $description,
-    "link" => $event->link,
-    "who" => $who,
-    "place" => (string)$place,
-    "address" => (string)$address,
-    "city" => (string)$event->venue->city,
-    "lat" => (double)$lat,
-    "lon" => (double)$lon,
-    "start" => (string)$start,
-    "end" => (string)$end,
-    "yes_rsvp_count" => (int)$yes_rsvp_count,
-    "rsvp_limit" => (int)$event->rsvp_limit,
-    "waitlist_count" => (int)$event->waitlist_count,
-    "response" => $event->self->rsvp->response,
-    "survey_questions" => $event->survey_questions,
-    "answers" => $event->self->rsvp->answers,
-    "rsvpable" => $event->rsvpable
-	);
+	$pastJson = file_get_contents("https://api.meetup.com/$meetupid/events?status=past");
 	
-	if($_GET["via"] == "xamarin") {
-		list($width, $height, $type, $attr) = getimagesize($image);
-		$newevents[count($newevents) - 1]["image_width"] = $width;
-		$newevents[count($newevents) - 1]["image_height"] = $height;
+	if(!isset($_GET["page"])) {
+		$json = file_get_contents("https://api.meetup.com/$meetupid/events?fields=rsvpable");
 	}
 }
 
-$newjson = array("member" => array("id" => (int)$memberid, "name" => (string)$membername, "photo" => (string)$memberphoto, "intro" => (string)$memberintro, "is_admin" => (boolean)$isadmin), "header" => $header_image, "events" => $newevents);
+$pastEvents = json_decode($pastJson);
+
+$page = isset($_GET["page"]) ? $_GET["page"] : 1;
+
+$plus = ($page - 1) * 10;
+
+for($i = 1; $i <= 10; $i++) {
+	$event = $pastEvents[count($pastEvents) - ($i + $plus)];
+	
+	if($event != null) {
+		$newPastEvents[] = $event;
+	}
+}
+
+if($pastEvents[count($pastEvents) - (11 + $plus)] != null) {
+	$more_past_events = true;
+}
+
+$newjson = array("member" => array("id" => (int)$memberid, "name" => (string)$membername, "photo" => (string)$memberphoto, "intro" => (string)$memberintro, "is_admin" => (boolean)$isadmin), "header" => $header_image, "more_past_events" => (bool)$more_past_events, "past_events" => formJson($newPastEvents, true));
+
+if(!isset($_GET["page"])) {
+	$events = json_decode($json);
+	$newjson["events"] = formJson($events, false);
+}
 
 if($_GET["via"] == "xamarin") {
 	list($width, $height, $type, $attr) = getimagesize($header_image);
@@ -109,51 +93,107 @@ if($_GET["via"] == "xamarin") {
 //echo $newevents[0]["description"];
 echo json_encode($newjson);
 
-function getHtml($title, $description, $lat, $lon, $place, $address, $start, $end, $yes_rsvp_count, $who, $how_to_find_us) {
-  global $location;
-  global $platform;
+function formJson($events, $past) {
+	$newevents = array();
+
+	foreach($events as $event) {
+		$name = $event->name;
+		$image = getImage($name, $event->description);
+		$who = $event->group->who;
+		$place = $event->venue->name;
+		$address = $event->venue->address_1;
+		$lat = $event->venue->lat;
+		$lon = $event->venue->lon;
+		$start = date("d/m/Y H:i", $event->time / 1000);
+		$end = date("H:i", ($event->time + $event->duration) / 1000);
+		$yes_rsvp_count = (int)$event->yes_rsvp_count;
+
+		$description = getHtml($name, $event->description, $lat, $lon, $place, $address, $start, $end, $yes_rsvp_count, $who, $event->how_to_find_us, $past);
+
+		$newevents[] = array(
+			"id" => (int)$event->id,
+			"name" => $name,
+			"image" => $image,
+			"description" => $description,
+			"link" => $event->link,
+			"who" => $who,
+			"place" => (string)$place,
+			"address" => (string)$address,
+			"city" => (string)$event->venue->city,
+			"lat" => (double)$lat,
+			"lon" => (double)$lon,
+			"start" => (string)$start,
+			"end" => (string)$end,
+			"yes_rsvp_count" => (int)$yes_rsvp_count,
+			"rsvp_limit" => (int)$event->rsvp_limit,
+			"waitlist_count" => (int)$event->waitlist_count,
+			"response" => $event->self->rsvp->response,
+			"survey_questions" => $event->survey_questions,
+			"answers" => $event->self->rsvp->answers,
+			"rsvpable" => (bool)$event->rsvpable
+		);
+
+		if($_GET["via"] == "xamarin") {
+			list($width, $height, $type, $attr) = getimagesize($image);
+			$newevents[count($newevents) - 1]["image_width"] = $width;
+			$newevents[count($newevents) - 1]["image_height"] = $height;
+		}
+	}
+	
+	return $newevents;
+}
+
+function getHtml($title, $description, $lat, $lon, $place, $address, $start, $end, $yes_rsvp_count, $who, $how_to_find_us, $past) {
+	global $location;
+	global $platform;
 	global $mapbox_token;
-  
+
 	if($platform == "windows" || $platform == "windows81" || $platform == "wp") {
 		$geotag = "bingmaps:?cp=$lat~$lon&lvl=10&where=".urlencode("$place, $address");
 	} else if($platform == "ios") {
 		$geotag = "maps://maps.apple.com/?ll=$lat,$lon&q=".urlencode("$place, $address");
 	} else {
-    $geotag = "geo:$lat, $lon?q=".urlencode("$place, $address");
-  }
+		$geotag = "geo:$lat, $lon?q=".urlencode("$place, $address");
+	}
 
 	$end = strpos($start, $end) !== false ? "" : " - $end";
-  $date = str_replace(" ", "<br>", $start).$end;
-  
-  $html = '<!DOCTYPE html>
+	$date = str_replace(" ", "<br>", $start).$end;
+
+	$html = '<!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<link rel="stylesheet" href="'.$location.'/css/style.css" />
 	<link rel="stylesheet" href="'.$location.'/css/leaflet-0.7.7.css" />
-  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700,700italic,400italic" rel="stylesheet" type="text/css">';
-	
-	if($platform == "android") {
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,700,700italic,400italic" rel="stylesheet" type="text/css">';
+
+	if($platform == "android" && !$past) {
 		$html .= '<style>
 		body {
 			padding-bottom: 70px;
 		}
 		</style>';
 	}
+
+	if($past) {
+		 $go = "foram";
+		} else {
+		 $go = "vão";
+		}
 	
 $html .= '</head>
 <body>
-  <h2 class="margin">'.$title.'</h2>
-  <table class="margin"><tr><td>'.$date.'</td><td>'.$yes_rsvp_count.' '.$who.' vão</td></table>';
-	
+	<h2 class="margin">'.$title.'</h2>
+	<table class="margin"><tr><td>'.$date.'</td><td>'.$yes_rsvp_count.' '.$who.' '.$go.'</td></table>';
+
 	if($place == "") {
 		$html .= '<p class="margin"><a href="http://do_login">Faça login para visualizar a localização</a></p>';
 	} else {
 		$html .= '<div id="map"></div><p class="margin" style="text-align: center;">'.$place.' - '.$address.'<br>'.$how_to_find_us.'</p>';
 	}
-	
-  $html .= '<div class="margin">'.$description.'</div>';
+
+	$html .= '<div class="margin">'.$description.'</div>';
 
 	if($place != "") {
 	$html .= '<script src="'.$location.'/js/leaflet-0.7.7.js"></script>
@@ -168,23 +208,23 @@ $html .= '</head>
 				"Imagery © <a href=\"http://mapbox.com\">Mapbox</a>",
 			id: "mapbox.streets"
 		}).addTo(mymap);
-		
+
 		L.marker(['.$lat.', '.$lon.']).addTo(mymap)
 			.bindPopup("<b>'.$place.'</b>").openPopup();
 
 		var popup = L.popup();
 
 		function onMapClick(e) {
-		  window.location.replace("'.$geotag.'");
+			window.location.replace("'.$geotag.'");
 		}
 
 		mymap.on("click", onMapClick);
 
 	</script>';
 	}
-	
+
 	$html .=	'</body>
 	</html>';
-  return $html;
+	return $html;
 }
 ?>

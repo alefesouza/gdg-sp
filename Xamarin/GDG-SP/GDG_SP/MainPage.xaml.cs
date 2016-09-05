@@ -22,8 +22,8 @@ using Plugin.Share;
 using System;
 using System.Collections.ObjectModel;
 using System.Net.Http;
-
 using Xamarin.Forms;
+using System.Diagnostics;
 
 namespace GDG_SP
 {
@@ -32,7 +32,6 @@ namespace GDG_SP
     /// </summary>
     public partial class MainPage : ContentPage
     {
-        public static MainPage main;
         public ObservableCollection<Event> listEvents;
         Event _event;
         public static int openEvent = 0;
@@ -42,11 +41,21 @@ namespace GDG_SP
         bool tabletMenu;
         bool notificationAdded;
 
+		private static MainPage instance;
+
+		public static MainPage Instance
+		{
+			get
+			{
+				return instance;
+			}
+		}
+
         public MainPage()
         {
             InitializeComponent();
 
-            main = this;
+			instance = this;
 
             if (Device.Idiom == TargetIdiom.Desktop)
             {
@@ -142,6 +151,11 @@ namespace GDG_SP
 
         public async void GetEvents(bool refresh = false)
         {
+			if (PastEventsPage.Instance != null)
+			{
+				PastEventsPage.Instance.GetEvents("");
+			}
+
             ErrorScreen.IsVisible = false;
 
             // PopToRootAsync não funciona como esperado no Windows
@@ -234,26 +248,28 @@ namespace GDG_SP
 
             DependencyService.Get<IDependencies>().SendOneSignalTag("app_version", DependencyService.Get<IDependencies>().GetAppVersion());
 
+			LinksPage linksPage = LinksPage.Instance;
+
             if ((int)root["member"]["id"] != 0)
             {
-                LinksPage.member = JsonConvert.DeserializeObject<Person>(root["member"].ToString());
+                LinksPage.Instance.member = JsonConvert.DeserializeObject<Person>(root["member"].ToString());
                 Other.Other.AddSetting("member_profile", root["member"].ToString());
 
-                LinksPage.linksPage.profileImage.Source = ImageSource.FromUri(new Uri(LinksPage.member.Photo));
-                LinksPage.linksPage.profileName.Text = LinksPage.member.Name;
-                LinksPage.linksPage.profileIntro.Text = LinksPage.member.Intro;
+                linksPage.profileImage.Source = ImageSource.FromUri(new Uri(linksPage.member.Photo));
+                linksPage.profileName.Text = linksPage.member.Name;
+                linksPage.profileIntro.Text = linksPage.member.Intro;
 
                 if((bool)root["member"]["is_admin"])
                 {
                     if (!notificationAdded)
                     {
-                        LinksPage.linksPage.listLinks.Insert(0, new Link() { Title = "Enviar notificação", Icon = Device.OnPlatform("SendNotification.png", "ic_send.png", "Assets/Images/SendNotification.png"), Value = "send_notification" });
-						LinksPage.linksPage.listLinks.Insert(1, new Link() { Title = "Gerenciar sorteios", Icon = Device.OnPlatform("Raffle.png", "ic_raffle.png", "Assets/Images/Raffle.png"), Value = "raffle_manager" });
+                        linksPage.listLinks.Insert(0, new Link() { Title = "Enviar notificação", Icon = Device.OnPlatform("SendNotification.png", "ic_send.png", "Assets/Images/SendNotification.png"), Value = "send_notification" });
+						linksPage.listLinks.Insert(1, new Link() { Title = "Gerenciar sorteios", Icon = Device.OnPlatform("Raffle.png", "ic_raffle.png", "Assets/Images/Raffle.png"), Value = "raffle_manager" });
                         notificationAdded = true;
                     }
                 }
 
-				DependencyService.Get<IDependencies>().SendOneSignalTag("member_id", LinksPage.member.Id.ToString());
+				DependencyService.Get<IDependencies>().SendOneSignalTag("member_id", linksPage.member.Id.ToString());
             }
             else
             {
@@ -261,7 +277,8 @@ namespace GDG_SP
                 {
                     Other.Other.AddSetting("refresh_token", "");
                     Other.Other.AddSetting("member_profile", "");
-                    LinksPage.member = null;
+					Other.Other.AddSetting("qr_code", "");
+                    linksPage.member = null;
 
                     string image = "";
 
@@ -276,9 +293,9 @@ namespace GDG_SP
                         image = "Assets/Square70x70Logo.scale-100.png";
                     }
 
-                    LinksPage.linksPage.profileImage.Source = ImageSource.FromFile(image);
-                    LinksPage.linksPage.profileName.Text = "Fazer login";
-                    LinksPage.linksPage.profileIntro.Text = "Fazer login";
+                    linksPage.profileImage.Source = ImageSource.FromFile(image);
+                    linksPage.profileName.Text = "Fazer login";
+                    linksPage.profileIntro.Text = "";
                 }
             }
 
@@ -425,6 +442,8 @@ namespace GDG_SP
             }
 
             Loading.IsVisible = false;
+
+			PastEventsPage.Instance.GetEvents(jsonString);
 
             SuggestLogin();
         }

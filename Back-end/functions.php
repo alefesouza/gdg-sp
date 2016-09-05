@@ -78,7 +78,11 @@ if(!function_exists('getImage')) {
 
 		$trilhas = array(
 			array(
-				"name" => "html5 study group html5sg",
+				"name" => "html5 study group",
+				"image" => "html5_study_group.jpg"
+			),
+			array(
+				"name" => "html5sg",
 				"image" => "html5_study_group.jpg"
 			),
 			array(

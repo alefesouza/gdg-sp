@@ -26,6 +26,7 @@ using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.System;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace GDGSP
 {
@@ -40,8 +41,19 @@ namespace GDGSP
         public ImageBrush profilePhoto;
         public ListBoxItem sendNotification, raffleManager;
 
+        public ViewModels.LeftPanelViewModel LeftViewModel { get; set; }
+
         ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-        public static MainPage mainPage;
+
+        private static MainPage instance;
+
+        public static MainPage Instance
+        {
+            get
+            {
+                return instance;
+            }
+        }
 
         /// <summary>
         /// Atributos de ações a serem tomadas caso o usuário foi para as configurações, para a WebViewPage ou fazer login.
@@ -63,7 +75,7 @@ namespace GDGSP
             this.InitializeComponent();
             this.DataContextChanged += (s, e) => { LeftViewModel = DataContext as ViewModels.LeftPanelViewModel; };
 
-            mainPage = this;
+            instance = this;
 
             mainFrame = MainFrame;
             profileName = ProfileName;
@@ -98,7 +110,7 @@ namespace GDGSP
             string parameter = e.Parameter as string;
             if (!string.IsNullOrEmpty(parameter))
             {
-                mainPage.LaunchParam = parameter + "|0";
+                LaunchParam = parameter + "|0";
             }
         }
 
@@ -160,8 +172,6 @@ namespace GDGSP
             HeaderLB.SelectedIndex = -1;
         }
 
-        public ViewModels.LeftPanelViewModel LeftViewModel { get; set; }
-
         private void HamburguerButton_Click(object sender, RoutedEventArgs e)
         {
             MainSplitView.IsPaneOpen = !MainSplitView.IsPaneOpen;
@@ -173,7 +183,7 @@ namespace GDGSP
             {
                 if (toSettings || toWebView)
                 {
-                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = HomePage.homePage.eventopen.Visibility == Visibility.Visible ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
+                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = HomePage.Instance.eventopen.Visibility == Visibility.Visible ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
                     MainFrame.GoBack();
                     toSettings = false;
                     toWebView = false;
@@ -188,22 +198,40 @@ namespace GDGSP
 
                 if (e.AddedItems[0] == SendNotification)
                 {
-                    HomePage.homePage.mainframe.Navigate(typeof(SendNotificationPage));
+                    HomePage.Instance.mainframe.Navigate(typeof(SendNotificationPage));
                 }
                 else if (e.AddedItems[0] == RaffleManager)
                 {
-                    if (EventsPage.actualEvent == null)
+                    RaffleList.Items.Clear();
+
+                    MenuFlyoutSubItem futuros = new MenuFlyoutSubItem() { Text = "Futuros" };
+                    MenuFlyoutSubItem anteriores = new MenuFlyoutSubItem() { Text = "Anteriores" };
+
+                    foreach(Event _event in EventsPage.Instance.listEvents)
                     {
-                        Other.Other.ShowMessage("Selecione um evento");
+                        futuros.Items.Add(new MenuFlyoutItem() { Text = _event.Name });
                     }
-                    else
+
+                    foreach (Event _event in EventsPage.Instance.pastEvents)
                     {
-                        HomePage.homePage.mainframe.Navigate(typeof(RaffleManagerPage));
+                        MenuFlyoutItem item = new MenuFlyoutItem() { Text = _event.Name };
+                        item.Click += (s, ev) =>
+                        {
+                            HomePage.Instance.mainframe.Navigate(typeof(RaffleManagerPage), _event);
+                        };
+                        anteriores.Items.Add(item);
                     }
+
+                    RaffleList.Items.Add(futuros);
+                    RaffleList.Items.Add(anteriores);
+
+                    FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
+
+                    HeaderLB.SelectedIndex = -1;
                 }
                 else
                 {
-                    HomePage.homePage.mainframe.Navigate(typeof(EventsPage));
+                    HomePage.Instance.mainframe.Navigate(typeof(EventsPage));
                 }
             }
         }
@@ -265,7 +293,7 @@ namespace GDGSP
             // Activity e Fragment fazem falta
             if (toSettings)
             {
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = HomePage.homePage.eventopen.Visibility == Visibility.Visible ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = HomePage.Instance.eventopen.Visibility == Visibility.Visible ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
                 toSettings = false;
 
                 settingsList.SelectedIndex = -1;
@@ -281,7 +309,7 @@ namespace GDGSP
                 }
                 else
                 {
-                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = HomePage.homePage.eventopen.Visibility == Visibility.Visible ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
+                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = HomePage.Instance.eventopen.Visibility == Visibility.Visible ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
                     toWebView = false;
 
                     HeaderLB.SelectedIndex = 0;
@@ -290,20 +318,22 @@ namespace GDGSP
             }
             else
             {
-                if (HomePage.homePage.mainframe.CanGoBack)
+                HomePage homePage = HomePage.Instance;
+
+                if (homePage.mainframe.CanGoBack)
                 {
-                    HomePage.homePage.mainframe.GoBack();
+                    homePage.mainframe.GoBack();
                 }
-                else if (HomePage.homePage.eventopen.Visibility == Visibility.Visible)
+                else if (homePage.eventopen.Visibility == Visibility.Visible)
                 {
                     // My canGoBack always return false, that's my programmer way https://github.com/alefesouza/alefe-ultimate-programmer/
-                    if (HomePage.homePage.eventopen.CanGoBack)
+                    if (homePage.eventopen.CanGoBack)
                     {
-                        HomePage.homePage.eventopen.GoBack();
+                        homePage.eventopen.GoBack();
                     }
                     else
                     {
-                        HomePage.homePage.eventopen.Visibility = Visibility.Collapsed;
+                        homePage.eventopen.Visibility = Visibility.Collapsed;
                         SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                     }
                 }

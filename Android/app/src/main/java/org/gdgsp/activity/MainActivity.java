@@ -16,6 +16,7 @@
 
 package org.gdgsp.activity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,63 +25,58 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
-import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.onesignal.OneSignal;
-import java.lang.reflect.Type;
-import java.util.List;
+
 import org.gdgsp.R;
-import org.gdgsp.adapter.CardAdapter;
+import org.gdgsp.adapter.TabAdapter;
 import org.gdgsp.fragment.EventFragment;
+import org.gdgsp.fragment.EventsFragment;
+import org.gdgsp.fragment.PastEventsFragment;
+import org.gdgsp.fragment.TweetsFragment;
 import org.gdgsp.model.Event;
 import org.gdgsp.model.Person;
 import org.gdgsp.other.Other;
-import android.view.*;
-import android.content.*;
-import android.widget.*;
+
+import java.lang.reflect.Type;
 
 /**
  * Activity principal do aplicativo, contém o navigation drawer e a lista de eventos.
  */
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private CardAdapter cardAdapter;
-    private RecyclerView list;
-    private ProgressBar progress;
     private SharedPreferences preferences;
-    private SharedPreferences.Editor editor;
-    private NavigationView navigationView;
+    public static NavigationView navigationView;
     private DrawerLayout drawer;
-    private Person person = null;
+    public static Person person = null;
     private Gson gson = new Gson();
 
-    public static List<Event> listEvents;
+	private TabLayout tabLayout;
+	private ViewPager viewPager;
+	private TabAdapter adapter;
 
-    private LinearLayout errorScreen;
-    private View navHeader;
-    private TextView profileName, profileIntro, errorMessage;
-    private ImageView profilePhoto;
+    public static View navHeader;
+    public static TextView profileName, profileIntro;
+    public static ImageView profilePhoto;
 
     public static int openEvent = 0;
 
@@ -93,14 +89,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        editor = preferences.edit();
-
-        list = (RecyclerView)findViewById(R.id.list);
-        progress = (ProgressBar)findViewById(R.id.progress);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+			this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
@@ -113,11 +105,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         profileName = (TextView)navHeader.findViewById(R.id.profile_name);
         profileIntro = (TextView)navHeader.findViewById(R.id.profile_intro);
         profilePhoto = (ImageView)navHeader.findViewById(R.id.profile_photo);
-
-        errorScreen = (LinearLayout)findViewById(R.id.error_screen);
-        errorMessage = (TextView)findViewById(R.id.error_message);
-
-        list.setLayoutManager(new LinearLayoutManager(MainActivity.this));
 
         if(preferences.contains("member_profile")) {
             Type datasetListType = new TypeToken<Person>() {}.getType();
@@ -135,175 +122,55 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getIntent().removeExtra("fromlogin");
         }
 
-        findViewById(R.id.try_again).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View p1) {
-                errorScreen.setVisibility(View.GONE);
-                getEvents();
-            }
-        });
-
         navigationView.getHeaderView(0).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View p1) {
-                if(person == null) {
-                    Intent intent = new Intent(MainActivity.this, FragmentActivity.class);
-                    intent.putExtra("fragment", 2);
-                    intent.putExtra("title", getString(R.string.login_do));
-                    intent.putExtra("url", Other.getLoginUrl(MainActivity.this));
-                    intent.putExtra("islogin", true);
-                    startActivity(intent);
-                } else {
-                    Other.openSite(MainActivity.this, "http://meetup.com/" + getString(R.string.meetup_id) + "/members/" + person.getId());
-                    drawer.closeDrawer(GravityCompat.START);
-                }
-            }
-        });
+				@Override
+				public void onClick(View p1) {
+					if(person == null) {
+						Intent intent = new Intent(MainActivity.this, FragmentActivity.class);
+						intent.putExtra("fragment", 2);
+						intent.putExtra("title", getString(R.string.login_do));
+						intent.putExtra("url", Other.getLoginUrl(MainActivity.this));
+						intent.putExtra("islogin", true);
+						startActivity(intent);
+					} else {
+						Other.openSite(MainActivity.this, "http://meetup.com/" + getString(R.string.meetup_id) + "/members/" + person.getId());
+						drawer.closeDrawer(GravityCompat.START);
+					}
+				}
+			});
 
-        getEvents();
-    }
+		viewPager = (ViewPager) findViewById(R.id.viewpager);
+		viewPager.setOffscreenPageLimit(3);
+		adapter = new TabAdapter(getSupportFragmentManager());
+		viewPager.setAdapter(adapter);
 
-    /**
-     * Método que solicita a lista de eventos e preenche a lista.
-     */
-    private void getEvents() {
-        list.setVisibility(View.GONE);
-        progress.setVisibility(View.VISIBLE);
+		tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+		tabLayout.setupWithViewPager(viewPager);
 
-        Ion.with(this)
-                .load(Other.getEventsUrl(this))
-                .setBodyParameter("refresh_token", Other.getRefreshToken(this))
-                .asJsonObject()
-                .setCallback(new FutureCallback<JsonObject>() {
-                    @Override
-                    public void onCompleted(Exception e, final JsonObject json) {
-                        if(e != null) {
-                            if(e instanceof JsonParseException) {
-                                errorMessage.setText(getString(R.string.error_message));
-                                errorScreen.setVisibility(View.VISIBLE);
-                            } else {
-                                errorMessage.setText(getString(R.string.connection_error));
-                                errorScreen.setVisibility(View.VISIBLE);
-                            }
-                            progress.setVisibility(View.GONE);
-                            return;
-                        }
+		adapter.addFragment(new EventsFragment(), getString(R.string.comming));
+		adapter.addFragment(new PastEventsFragment(), getString(R.string.before));
+		adapter.addFragment(new TweetsFragment(), getString(R.string.hashtag));
 
-                        OneSignal.sendTag("app_version", Other.getAppVersion(MainActivity.this));
-
-                        if(json.get("member").getAsJsonObject().get("id").getAsInt() > 0) {
-                            JsonObject member = json.get("member").getAsJsonObject();
-
-                            editor.putString("member_profile", member.toString()).commit();
-
-                            Type datasetListType = new TypeToken<Person>() {}.getType();
-                            person = gson.fromJson(json.get("member").getAsJsonObject().toString(), datasetListType);
-
-                            profileName.setText(person.getName());
-                            profileIntro.setText(person.getIntro());
-
-                            Ion.with(MainActivity.this).load(person.getPhoto()).intoImageView(profilePhoto);
-
-                            if(member.get("is_admin").getAsBoolean()) {
-                                navigationView.getMenu().getItem(0).setVisible(true);
-                                navigationView.getMenu().getItem(1).setVisible(true);
-                            }
-
-                            OneSignal.sendTag("member_id", String.valueOf(person.getId()));
-                        } else {
-                            // Se o id retornar 0 e o usuário tiver a configuração refresh_token significa que tem algum problema com o token dele, nesse caso apaga o token atual e pede login novamente
-                            if(preferences.contains("refresh_token")) {
-                                profileName.setText(getString(R.string.login_do));
-                                profileIntro.setText("");
-                                profilePhoto.setImageResource(R.drawable.ic_launcher);
-
-                                person = null;
-
-                                editor.remove("refresh_token").remove("member_profile").commit();
-                            }
-                        }
-
-                        Type datasetListType = new TypeToken<List<Event>>() {}.getType();
-
-                        listEvents = gson.fromJson(json.get("events").getAsJsonArray().toString(), datasetListType);
-
-                        Ion.with(MainActivity.this).load(json.get("header").getAsString()).intoImageView((ImageView)navHeader.findViewById(R.id.cover_photo));
-
-                        if(listEvents.size() > 0) {
-                            cardAdapter = new CardAdapter(MainActivity.this, listEvents);
-                            list.setAdapter(cardAdapter);
-
-                            progress.setVisibility(View.GONE);
-
-                            if(openEvent != 0) {
-                                for(Event event : listEvents) {
-                                    if(event.getId() == openEvent) {
-                                        openEvent(event);
-                                        openEvent = 0;
-                                    }
-                                }
-                            } else if(Other.isTablet(MainActivity.this) && listEvents.size() > 0) {
-                                openEvent(listEvents.get(0));
-                            }
-
-                            list.setVisibility(View.VISIBLE);
-                        } else {
-                            errorMessage.setText(getString(R.string.error_noevents));
-                            errorScreen.setVisibility(View.VISIBLE);
-                        }
-
-                        progress.setVisibility(View.GONE);
-                    }
-                });
-        suggestLogin();
-    }
-
-    /**
-     * Método que sugere ao usuário fazer login
-     */
-    private void suggestLogin() {
-        if(!preferences.contains("suggest_login")) {
-            AlertDialog alertDialog = new AlertDialog.Builder(this)
-                    .setTitle(getString(R.string.suggest_login_title).replace("{appname}", getString(R.string.app_name)))
-                    .setMessage(getString(R.string.suggest_login_sub))
-                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface p1, int p2) {
-                            Intent intent = new Intent(MainActivity.this, FragmentActivity.class);
-                            intent.putExtra("fragment", 2);
-                            intent.putExtra("title", getString(R.string.login_do));
-                            intent.putExtra("url", Other.getLoginUrl(MainActivity.this));
-                            intent.putExtra("islogin", true);
-                            startActivity(intent);
-
-                            p1.dismiss();
-                        }
-                    })
-                    .setNegativeButton(getString(R.string.no), null)
-                    .create();
-
-            alertDialog.show();
-
-            editor.putBoolean("suggest_login", true);
-            editor.commit();
-        }
+		adapter.notifyDataSetChanged();
     }
 
     /**
      * Método que abre o evento selecionado, criando uma Activity no mobile, ou abrindo na coluna direita no tablet.
      * @param event Evento a ser aberto.
      */
-    public void openEvent(Event event) {
-        if (!Other.isTablet(this)) {
-            Intent intent = new Intent(this, FragmentActivity.class);
+    public static void openEvent(AppCompatActivity activity, Event event, boolean isPast) {
+        if (!Other.isTablet(activity)) {
+            Intent intent = new Intent(activity, FragmentActivity.class);
             intent.putExtra("fragment", 1);
             intent.putExtra("event", event);
-            startActivity(intent);
+			intent.putExtra("isPast", isPast);
+            activity.startActivity(intent);
         } else {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
             Fragment eventFragment = new EventFragment();
             Bundle bundle = new Bundle();
             bundle.putSerializable("event", event);
+			bundle.putBoolean("isPast", isPast);
             eventFragment.setArguments(bundle);
             ft.replace(R.id.frame_event, eventFragment);
             ft.commit();
@@ -330,33 +197,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(notification);
                 break;
             case R.id.nav_raffle:
-                if(listEvents.size() > 0) {
-                    String[] events = new String[listEvents.size()];
+				String[] types = {getString(R.string.comming), getString(R.string.before)};
+				
+				AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+				LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				View convertView = inflater.inflate(R.layout.list_pressed, null);
+				alertDialog.setView(convertView);
+				alertDialog.setTitle(getString(R.string.choose_event_type));
 
-                    for (int i = 0; i < listEvents.size(); i++) {
-                        events[i] = listEvents.get(i).getName();
-                    }
+				alertDialog.setItems(types, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int item) {
+							showRaffleDialog(item != 0);
+						}
+					});
 
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-                    LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    View convertView = inflater.inflate(R.layout.list_pressed, null);
-                    alertDialog.setView(convertView);
-                    alertDialog.setTitle("Escolha o evento");
-
-                    alertDialog.setItems(events, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int item) {
-                            Intent raffleManager = new Intent(MainActivity.this, FragmentActivity.class);
-                            raffleManager.putExtra("fragment", 7);
-                            raffleManager.putExtra("eventid", listEvents.get(item).getId());
-                            startActivity(raffleManager);
-                        }
-                    });
-
-                    alertDialog.create();
-                    alertDialog.show();
-                } else {
-                    Toast.makeText(this, "Não há eventos", Toast.LENGTH_SHORT);
-                }
+				alertDialog.create();
+				alertDialog.show();
                 break;
             case R.id.nav_site:
                 Other.openSite(this, getString(R.string.site_url));
@@ -391,26 +247,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     settings.putExtra("fragment", 0);
                     startActivity(settings);
                 } else {
-                    AlertDialog alertDialog = new AlertDialog.Builder(this)
-                            .setTitle(getString(R.string.pref_notification))
-                            .setMessage(getString(R.string.pref_notification_summary))
-                            .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface p1, int p2) {
-                                    OneSignal.setSubscription(true);
-                                    p1.dismiss();
-                                }
-                            })
-                            .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface p1, int p2) {
-                                    OneSignal.setSubscription(false);
-                                    p1.dismiss();
-                                }
-                            })
-                            .create();
+                    AlertDialog alertDialog2 = new AlertDialog.Builder(this)
+						.setTitle(getString(R.string.pref_notification))
+						.setMessage(getString(R.string.pref_notification_summary))
+						.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface p1, int p2) {
+								OneSignal.setSubscription(true);
+								p1.dismiss();
+							}
+						})
+						.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface p1, int p2) {
+								OneSignal.setSubscription(false);
+								p1.dismiss();
+							}
+						})
+						.create();
 
-                    alertDialog.show();
+                    alertDialog2.show();
                 }
                 break;
             case R.id.nav_about:
@@ -424,62 +280,59 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+	public void showRaffleDialog(final boolean past) {
+		final EventsFragment eventsFragment = EventsFragment.getInstance();
+		final PastEventsFragment pastEventsFragment = PastEventsFragment.getInstance();
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_refresh:
-                getEvents();
-                return true;
-            case R.id.menu_checkin:
-                if(preferences.contains("qr_code")) {
-                    Intent checkin = new Intent(MainActivity.this, FragmentActivity.class);
-                    checkin.putExtra("fragment", 6);
-                    startActivity(checkin);
-                } else if(preferences.contains("refresh_token")) {
-                    // Caso o usuário esteja com uma versão antiga do app
-                    Intent intent = new Intent(MainActivity.this, FragmentActivity.class);
-                    intent.putExtra("fragment", 2);
-                    intent.putExtra("title", getString(R.string.getting_qrcode));
-                    intent.putExtra("url", Other.getLoginUrl(MainActivity.this));
-                    intent.putExtra("islogin", true);
-                    startActivity(intent);
+		String[] events = new String[0];
 
-                    Other.showToast(this, getString(R.string.getting_qrcode));
-                } else {
-                    AlertDialog alertDialog = new AlertDialog.Builder(this)
-                            .setTitle(getString(R.string.checkin_need_login))
-                            .setMessage(getString(R.string.rsvp_need_sub))
-                            .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface p1, int p2) {
-                                    Intent intent = new Intent(MainActivity.this, FragmentActivity.class);
-                                    intent.putExtra("fragment", 2);
-                                    intent.putExtra("title", getString(R.string.login_do));
-                                    intent.putExtra("url", Other.getLoginUrl(MainActivity.this));
-                                    intent.putExtra("islogin", true);
-                                    startActivity(intent);
+		if(past) {
+			if(pastEventsFragment.listEvents.size() > 0) {
+				events = new String[pastEventsFragment.listEvents.size()];
+			}
 
-                                    p1.dismiss();
-                                }
-                            })
-                            .setNegativeButton(getString(R.string.no), null)
-                            .create();
+			for (int i = 0; i < pastEventsFragment.listEvents.size(); i++) {
+				events[i] = pastEventsFragment.listEvents.get(i).getName();
+			}
+		} else {
+			if(eventsFragment.listEvents.size() > 0) {
+				events = new String[eventsFragment.listEvents.size()];
+			}
 
-                    alertDialog.show();
-                }
-                return true;
-            case R.id.menu_open_meetup:
-                Other.openMeetupApp(this, "http://meetup.com/" + getString(R.string.meetup_id));
-                return true;
-            default:
-                return
-                        super.onOptionsItemSelected(item);
-        }
-    }
+			for (int i = 0; i < eventsFragment.listEvents.size(); i++) {
+				events[i] = eventsFragment.listEvents.get(i).getName();
+			}
+		}
+
+		if(events.length == 0) {
+			Toast.makeText(this, getString(R.string.no_events), Toast.LENGTH_SHORT);
+			return;
+		}
+
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+		LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View convertView = inflater.inflate(R.layout.list_pressed, null);
+		alertDialog.setView(convertView);
+		alertDialog.setTitle(getString(R.string.choose_event));
+
+		alertDialog.setItems(events, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int item) {
+					int id;
+					
+					if(past) {
+						id = pastEventsFragment.getInstance().listEvents.get(item).getId();
+					} else {
+						id = eventsFragment.getInstance().listEvents.get(item).getId();
+					}
+					
+					Intent raffleManager = new Intent(MainActivity.this, FragmentActivity.class);
+					raffleManager.putExtra("fragment", 7);
+					raffleManager.putExtra("eventid", id);
+					startActivity(raffleManager);
+				}
+			});
+
+		alertDialog.create();
+		alertDialog.show();
+	}
 }

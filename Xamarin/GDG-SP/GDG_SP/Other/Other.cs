@@ -58,9 +58,16 @@ namespace GDG_SP.Other
         /// Métodos que retorna a URL de receber os eventos.
         /// </summary>
         /// <returns>A URL final para receber os eventos.</returns>
-        public static string GetEventsUrl()
+        public static string GetEventsUrl(int page = 0)
         {
-            return "http://" + AppResources.BackendUrl + "api/events.php" + GetFinalUrl();
+			string p = "";
+
+			if (page != 0)
+			{
+				p = "&page=" + page;
+			}
+
+            return "http://" + AppResources.BackendUrl + "api/events.php" + GetFinalUrl() + p;
         }
 
         /// <summary>
@@ -106,6 +113,19 @@ namespace GDG_SP.Other
 		public static string GetRaffleUrl(int id)
 		{
 			return "http://" + AppResources.BackendUrl + "api/raffle.php" + GetFinalUrl() + "&eventid=" + id;
+		}
+
+		/// <summary>
+		/// Método que retorna a URL de tweets.
+		/// </summary>
+		public static string GetTweetsUrl(string max_id = "")
+		{
+			if (!max_id.Equals(""))
+			{
+				max_id = "&max_id=" + max_id;
+			}
+
+			return "http://" + AppResources.BackendUrl + "api/tweets.php" + GetFinalUrl() + max_id;
 		}
 
         /// <summary>
