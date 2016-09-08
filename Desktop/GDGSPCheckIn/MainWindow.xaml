@@ -20,7 +20,7 @@ limitations under the License.
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GDGSPCheckIn"
-        mc:Ignorable="d" Icon="Assets/Icon.ico" Height="350" Width="525" WindowStyle="None" WindowState="Maximized" Loaded="Window_Loaded">
+        mc:Ignorable="d" Icon="Assets/Icon.ico" Height="350" Width="525" WindowStyle="None" WindowState="Maximized" ResizeMode="NoResize" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="100" />
@@ -69,7 +69,7 @@ limitations under the License.
 
             <TextBlock Grid.Row="0" FontFamily="Assets/Fonts/Roboto-Bold.ttf#Roboto" Text="Bem-vindo!" x:Name="ResultText" Foreground="White" FontSize="50" VerticalAlignment="Center" HorizontalAlignment="Center" />
 
-            <TextBlock Grid.Row="1" HorizontalAlignment="Stretch" FontFamily="Assets/Fonts/Roboto-Regular.ttf#Roboto" Text="GDG-SP Check-in versão: 1.4.2 - Desenvolvido por Alefe Souza - Nesse programa foi utilizado: ZXing.NET, SQLite.NET PCL, Newtonsoft.Json, Dymo SDK" x:Name="CreditsText" Foreground="Black" Background="White" FontSize="10" Padding="2" VerticalAlignment="Center" />
+            <TextBlock Grid.Row="1" HorizontalAlignment="Stretch" FontFamily="Assets/Fonts/Roboto-Regular.ttf#Roboto" Text="GDG-SP Check-in versão: 1.4.3 - Desenvolvido por Alefe Souza - Nesse programa foi utilizado: ZXing.NET, SQLite.NET PCL, Newtonsoft.Json, Dymo SDK" x:Name="CreditsText" Foreground="Black" Background="White" FontSize="10" Padding="2" VerticalAlignment="Center" />
         </Grid>
     </Grid>
 </Window>

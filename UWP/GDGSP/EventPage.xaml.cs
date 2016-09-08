@@ -33,6 +33,7 @@ namespace GDGSP
     public sealed partial class EventPage : Page
     {
         Event _event;
+        public static AppBarButton rsvpButton;
 
         public EventPage()
         {
@@ -47,6 +48,8 @@ namespace GDGSP
                 CBTitle.Visibility = Visibility.Collapsed;
                 CB.Background = new SolidColorBrush(Color.FromArgb(255, 27, 27, 27));
             }
+
+            rsvpButton = CBRSVP;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

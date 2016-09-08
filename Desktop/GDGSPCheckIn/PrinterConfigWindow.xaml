@@ -21,34 +21,52 @@ limitations under the License.
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GDGSPCheckIn"
         mc:Ignorable="d" Icon="Assets/Icon.ico" Height="350" Width="525">
-    <Grid Margin="15">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-
-        <CheckBox Content="Usar Dymo Label" x:Name="UseDymo" Click="UseDymo_Click"></CheckBox>
-
-        <Grid Grid.Row="1">
+    <ScrollViewer>
+        <Grid Margin="15">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+            <CheckBox Content="Usar Dymo Label" x:Name="UseDymo" Click="UseDymo_Click"></CheckBox>
 
-            <TextBlock Text="Arquivo .label" Margin="0, 15, 0, 0" />
-            <TextBox Grid.Column="1" x:Name="DotLabelPath" Margin="15, 15, 15, 0" />
-            <Button Grid.Column="2" x:Name="DotLabelButton" Content="Escolher arquivo" Click="DotLabelButton_Click"  Margin="0, 15, 0, 0" />
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Margin="0, 15, 0, 0" Text="No Object Properties dos objetos do .label, na aba Advanced, defina o &quot;Reference name&quot; como:&#10;&#10;&quot;name&quot; = Nome do usuário que fez check-in&#10;&quot;barcode&quot; = ID do Meetup do usuário para ser exibida em um código de barras por exemplo&#10;&quot;qrcode&quot; = QR Code exibido no aplicativo do usuário&#10;&quot;date&quot; = Momento em que o usuário fez check-in" TextWrapping="Wrap" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Arquivo .label" Margin="0, 15, 0, 0" />
+                <TextBox Grid.Column="1" x:Name="DotLabelPath" Margin="15, 15, 15, 0" />
+                <Button Grid.Column="2" x:Name="DotLabelButton" Content="Escolher arquivo" Click="DotLabelButton_Click"  Margin="0, 15, 0, 0" />
+
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="3" Margin="0, 15, 0, 0">
+                    <TextBlock Text="No Properties dos objetos do .label, na aba Advanced, defina o &quot;Reference name&quot; com a chave entre aspas, todas são opcionais.&#10;Você pode personalizar o que será imprimido, com o %s sendo subtituído pelo valor final." TextWrapping="Wrap" />
+
+                    <TextBlock Margin="0, 15, 0, 0" Text="&quot;name&quot; = Nome do usuário que fez check-in" TextWrapping="Wrap" />
+                    <TextBox Margin="0, 5, 0, 0" x:Name="LabelName" />
+
+                    <TextBlock Margin="0, 15, 0, 0" Text="&quot;date&quot; = Data em que o usuário fez check-in" TextWrapping="Wrap" />
+                    <TextBox Margin="0, 5, 0, 0" x:Name="LabelDate" />
+
+                    <TextBlock Margin="0, 15, 0, 0" Text="&quot;date_hour&quot; = Data e hora em que o usuário fez check-in" TextWrapping="Wrap" />
+                    <TextBox Margin="0, 5, 0, 0" x:Name="LabelDateHour" />
+
+                    <TextBlock Margin="0, 15, 0, 0" Text="&quot;event&quot; = Nome do evento" TextWrapping="Wrap" />
+                    <TextBox Margin="0, 5, 0, 0" x:Name="LabelEvent" />
+
+                    <TextBlock Margin="0, 15, 0, 0" Text="Você também pode usar: &#10;&quot;meetup_id&quot; = ID do Meetup do usuário&#10;&quot;qrcode&quot; = QR Code exibido no aplicativo do usuário" TextWrapping="Wrap" />
+                </StackPanel>
+            </Grid>
+
+            <Button Grid.Row="2" x:Name="Save" Content="Salvar" Click="Save_Click" Margin="0, 15, 0, 0" />
         </Grid>
-
-        <Button Grid.Row="2" x:Name="Save" Content="Salvar" Click="Save_Click" Margin="0, 15, 0, 0" />
-    </Grid>
+    </ScrollViewer>
 </Window>

@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
 using ZXing;
 
 namespace GDGSPCheckIn
@@ -39,15 +40,18 @@ namespace GDGSPCheckIn
         bool useDymo;
         List<string> labelItems = new List<string>();
         ILabel _label;
-        string printerName = "";
+        string printerName = "", eventName;
+        List<int> printedIds = new List<int>();
 
-        public MainWindow(int eventId)
+        public MainWindow(int eventId, string eventName)
         {
             InitializeComponent();
 
             Title = App.AppName + " Check-in";
+            Mouse.OverrideCursor = System.Windows.Input.Cursors.None;
 
             this.eventId = eventId;
+            this.eventName = eventName;
 
             removeName.Interval = 5000;
             removeName.Tick += (s, e) =>
@@ -80,42 +84,48 @@ namespace GDGSPCheckIn
             {
                 string code = result.Text.ToString();
                 string[] codeSplit = code.Split('/');
+                int member_id = int.Parse(codeSplit[codeSplit.Length - 1]);
 
-                if (code.StartsWith(App.QRCode) && codeSplit.Length == 5)
+                if (!printedIds.Contains(member_id))
                 {
-                    var member = App.objConn.Prepare("SELECT * FROM event_" + eventId + " WHERE member_id=" + codeSplit[codeSplit.Length - 1]);
-
-                    if (member.ColumnCount != 0)
+                    if (code.StartsWith(App.QRCode) && codeSplit.Length == 5)
                     {
-                        ResultText.Text = "QR Code não encontrado neste evento";
-                    }
+                        printedIds.Add(member_id);
 
-                    while (member.Step() == SQLiteResult.ROW)
-                    {
-                        removeName.Stop();
+                        var member = App.objConn.Prepare("SELECT * FROM event_" + eventId + " WHERE member_id=" + member_id);
 
-                        int id = int.Parse(member[0].ToString());
-                        string name = member[2].ToString();
-
-                        ResultText.Text = name;
-                        string now = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy");
-
-                        App.objConn.Prepare("UPDATE event_" + eventId + " SET checked=1, date='" + now + "' WHERE id=" + id).Step();
-
-                        if (useDymo)
+                        if (member.ColumnCount != 0)
                         {
-                            PrintCode(id, name, now);
+                            ResultText.Text = "QR Code não encontrado neste evento";
                         }
 
+                        while (member.Step() == SQLiteResult.ROW)
+                        {
+                            removeName.Stop();
+
+                            int id = int.Parse(member[0].ToString());
+                            string name = member[2].ToString();
+
+                            ResultText.Text = name;
+                            string now = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy");
+
+                            App.objConn.Prepare("UPDATE event_" + eventId + " SET checked=1, date='" + now + "' WHERE id=" + id).Step();
+
+                            if (useDymo)
+                            {
+                                PrintCode(member_id, name, now);
+                            }
+
+                            removeName.Start();
+                        }
+                    }
+                    else
+                    {
+                        ResultText.Text = "QR Code inválido";
+
+                        removeName.Stop();
                         removeName.Start();
                     }
-                }
-                else
-                {
-                    ResultText.Text = "QR Code inválido";
-
-                    removeName.Stop();
-                    removeName.Start();
                 }
             }
         }
@@ -162,10 +172,10 @@ namespace GDGSPCheckIn
         /// <summary>
         /// Enviar dados para uma impressora Dymo imprimir a etiqueta
         /// </summary>
-        /// <param name="id">ID do membro</param>
+        /// <param name="member_id">ID do membro</param>
         /// <param name="name">Nome do membro</param>
         /// <param name="date">Data atual</param>
-        private void PrintCode(int id, string name, string date)
+        private void PrintCode(int member_id, string name, string date_hour)
         {
             if (printerName.Equals(""))
             {
@@ -185,23 +195,41 @@ namespace GDGSPCheckIn
                 _label.SetObjectText("name", name);
             }
 
-            if (labelItems.Contains("barcode"))
+            if (labelItems.Contains("date"))
             {
-                _label.SetObjectText("barcode", id.ToString());
+                string date = Settings.Default.LabelDate.Replace("%s", date_hour.Split(' ')[1]);
+                _label.SetObjectText("date", date);
+            }
+
+            if (labelItems.Contains("date_hour"))
+            {
+                string date_hour_format = Settings.Default.LabelDateHour.Replace("%s", date_hour);
+                _label.SetObjectText("date_hour", date_hour_format);
+            }
+
+            if (labelItems.Contains("event"))
+            {
+                string _event = Settings.Default.LabelEvent.Replace("%s", eventName);
+                _label.SetObjectText("event", _event);
+            }
+
+            if (labelItems.Contains("meetup_id"))
+            {
+                _label.SetObjectText("meetup_id", member_id.ToString());
             }
 
             if (labelItems.Contains("qrcode"))
             {
-                _label.SetObjectText("qrcode", App.QRCode + id);
+                _label.SetObjectText("qrcode", App.QRCode + member_id.ToString());
             }
 
-            if (labelItems.Contains("date"))
+            new System.Threading.Thread(() =>
             {
-                _label.SetObjectText("date", date);
-            }
+                System.Threading.Thread.CurrentThread.IsBackground = true;
 
-            IPrinter printer = Framework.GetPrinters()[printerName];
-            _label.Print(printer);
+                IPrinter printer = Framework.GetPrinters()[printerName];
+                _label.Print(printer);
+            }).Start();
         }
 
         // Código de https://zxingnet.codeplex.com/SourceControl/latest#trunk/Clients/WindowsFormsDemo/WindowsFormsDemoForm.cs

@@ -512,6 +512,8 @@ namespace GDGSP
 
                 ListEvents.SelectedIndex = -1;
                 ListPastEvents.SelectedIndex = -1;
+
+                EventPage.rsvpButton.Visibility = sender == ListPastEvents ? Visibility.Collapsed : Visibility.Visible;
             }
         }
 

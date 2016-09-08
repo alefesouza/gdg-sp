@@ -32,6 +32,11 @@ namespace GDGSPCheckIn
             UseDymo.IsChecked = Settings.Default.UseDymo;
             DotLabelPath.Text = Settings.Default.LabelPath;
 
+            LabelName.Text = Settings.Default.LabelName;
+            LabelDate.Text = Settings.Default.LabelDate;
+            LabelDateHour.Text = Settings.Default.LabelDateHour;
+            LabelEvent.Text = Settings.Default.LabelEvent;
+
             DotLabelPath.IsEnabled = (bool)UseDymo.IsChecked;
             DotLabelButton.IsEnabled = (bool)UseDymo.IsChecked;
         }
@@ -55,15 +60,22 @@ namespace GDGSPCheckIn
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
+            Settings.Default.LabelName = LabelName.Text;
+            Settings.Default.LabelDate = LabelDate.Text;
+            Settings.Default.LabelDateHour = LabelDateHour.Text;
+            Settings.Default.LabelEvent = LabelEvent.Text;
+
             if ((bool)UseDymo.IsChecked && DotLabelPath.Text.Length != 0 && DotLabelPath.Text.EndsWith(".label"))
             {
                 Settings.Default.UseDymo = (bool)UseDymo.IsChecked;
                 Settings.Default.LabelPath = DotLabelPath.Text;
+                Settings.Default.Save();
                 Close();
             }
             else if(!(bool)UseDymo.IsChecked)
             {
                 Settings.Default.UseDymo = (bool)UseDymo.IsChecked;
+                Settings.Default.Save();
                 Close();
             }
             else

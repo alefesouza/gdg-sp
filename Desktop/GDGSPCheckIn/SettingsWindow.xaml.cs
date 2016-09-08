@@ -1,4 +1,4 @@
-﻿/*
+﻿ /*
  * Copyright (C) 2016 Alefe Souza <http://alefesouza.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -177,14 +177,14 @@ namespace GDGSPCheckIn
 
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        new MainWindow(eventId).Show();
+                        new MainWindow(eventId, _event.Name).Show();
                         Close();
                     });
                 }).Start();
             }
             else
             {
-                new MainWindow(eventId).Show();
+                new MainWindow(eventId, _event.Name).Show();
                 Close();
             }
         }
