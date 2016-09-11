@@ -58,5 +58,53 @@ namespace GDGSPCheckIn.Properties {
                 this["UseDymo"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("%s")]
+        public string LabelName {
+            get {
+                return ((string)(this["LabelName"]));
+            }
+            set {
+                this["LabelName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data: %s")]
+        public string LabelDate {
+            get {
+                return ((string)(this["LabelDate"]));
+            }
+            set {
+                this["LabelDate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data e hora: %s")]
+        public string LabelDateHour {
+            get {
+                return ((string)(this["LabelDateHour"]));
+            }
+            set {
+                this["LabelDateHour"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Evento: %s")]
+        public string LabelEvent {
+            get {
+                return ((string)(this["LabelEvent"]));
+            }
+            set {
+                this["LabelEvent"] = value;
+            }
+        }
     }
 }

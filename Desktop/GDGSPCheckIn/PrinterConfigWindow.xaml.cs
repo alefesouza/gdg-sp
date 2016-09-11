@@ -16,6 +16,8 @@
 
 using GDGSPCheckIn.Properties;
 using Microsoft.Win32;
+using System.IO;
+using System.Reflection;
 using System.Windows;
 
 namespace GDGSPCheckIn
@@ -65,15 +67,17 @@ namespace GDGSPCheckIn
             Settings.Default.LabelDateHour = LabelDateHour.Text;
             Settings.Default.LabelEvent = LabelEvent.Text;
 
-            if ((bool)UseDymo.IsChecked && DotLabelPath.Text.Length != 0 && DotLabelPath.Text.EndsWith(".label"))
+            if (((bool)UseDymo.IsChecked && DotLabelPath.Text.Length != 0 && DotLabelPath.Text.EndsWith(".label")) || DotLabelPath.Text.Equals(""))
             {
-                Settings.Default.UseDymo = (bool)UseDymo.IsChecked;
-                Settings.Default.LabelPath = DotLabelPath.Text;
-                Settings.Default.Save();
-                Close();
-            }
-            else if(!(bool)UseDymo.IsChecked)
-            {
+                if(DotLabelPath.Text.Equals(""))
+                {
+                    Settings.Default.LabelPath = Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString(), App.AppName + ".label");
+                }
+				else
+				{
+					Settings.Default.LabelPath = DotLabelPath.Text;
+				}
+
                 Settings.Default.UseDymo = (bool)UseDymo.IsChecked;
                 Settings.Default.Save();
                 Close();

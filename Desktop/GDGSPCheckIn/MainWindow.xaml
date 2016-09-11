@@ -52,13 +52,32 @@ limitations under the License.
         <Grid Grid.Row="1" Grid.Column="0">
             <TextBlock FontFamily="Assets/Fonts/Roboto-Regular.ttf#Roboto" FontSize="35" x:Name="LeftText" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Grid>
-        
+
         <Viewbox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch">
             <WindowsFormsHost Name="WFHost" HorizontalAlignment="Stretch" />
         </Viewbox>
 
-        <Grid Grid.Row="1" Grid.Column="2">
-            <TextBlock FontFamily="Assets/Fonts/Roboto-Regular.ttf#Roboto" FontSize="35" Text="Após isso, aponte o QR Code na WebCam e espere aparecer seu nome" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" />
+        <Grid Grid.Row="1" Grid.Column="2" Margin="0, 150, 0, 0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <TextBlock FontFamily="Assets/Fonts/Roboto-Regular.ttf#Roboto" FontSize="35" Text="Após isso, aponte o QR Code na WebCam e espere aparecer seu nome" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Bottom" />
+
+            <TextBlock FontFamily="Assets/Fonts/Roboto-Regular.ttf#Roboto" Text="Ou digite seu nome no campo de texto abaixo" TextWrapping="Wrap" TextAlignment="Center" Grid.Row="1" />
+            <TextBox x:Name="BoxName" Margin="20, 0" Grid.Row="2" />
+            <ListView x:Name="ListName" Margin="20, 0" Visibility="Hidden" Grid.Row="3">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <WrapPanel>
+                            <TextBlock Text="{Binding Name}" />
+                        </WrapPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </Grid>
 
         <Grid Grid.Row="2" Grid.ColumnSpan="3" Background="#00a057">
@@ -69,7 +88,7 @@ limitations under the License.
 
             <TextBlock Grid.Row="0" FontFamily="Assets/Fonts/Roboto-Bold.ttf#Roboto" Text="Bem-vindo!" x:Name="ResultText" Foreground="White" FontSize="50" VerticalAlignment="Center" HorizontalAlignment="Center" />
 
-            <TextBlock Grid.Row="1" HorizontalAlignment="Stretch" FontFamily="Assets/Fonts/Roboto-Regular.ttf#Roboto" Text="GDG-SP Check-in versão: 1.4.3 - Desenvolvido por Alefe Souza - Nesse programa foi utilizado: ZXing.NET, SQLite.NET PCL, Newtonsoft.Json, Dymo SDK" x:Name="CreditsText" Foreground="Black" Background="White" FontSize="10" Padding="2" VerticalAlignment="Center" />
+            <TextBlock Grid.Row="1" HorizontalAlignment="Stretch" FontFamily="Assets/Fonts/Roboto-Regular.ttf#Roboto" Text="GDG-SP Check-in versão: 1.4.5 - Desenvolvido por Alefe Souza - Nesse programa foi utilizado: ZXing.NET, SQLite.NET PCL, Newtonsoft.Json, Dymo SDK" x:Name="CreditsText" Foreground="Black" Background="White" FontSize="10" Padding="2" VerticalAlignment="Center" />
         </Grid>
     </Grid>
 </Window>

@@ -72,7 +72,6 @@ namespace GDGSPCheckIn
                 try
                 {
                     var client = new HttpClient();
-                    client.MaxResponseContentBufferSize = 256000;
                     HttpResponseMessage response = await client.GetAsync("http://api.meetup.com/" + App.MeetupId + "/events?key=" + APIKey.Text);
 
                     if (response.IsSuccessStatusCode)
@@ -132,7 +131,6 @@ namespace GDGSPCheckIn
                 try
                 {
                     var client = new HttpClient();
-                    client.MaxResponseContentBufferSize = 256000;
                     HttpResponseMessage response = await client.GetAsync("http://api.meetup.com/" + App.MeetupId + "/events/" + eventId + "/rsvps?key=" + APIKey.Text);
 
                     if (response.IsSuccessStatusCode)

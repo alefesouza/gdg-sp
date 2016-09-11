@@ -15,6 +15,7 @@
  */
 
 using DYMO.Label.Framework;
+using GDGSPCheckIn.Model;
 using GDGSPCheckIn.Properties;
 using SQLitePCL;
 using System;
@@ -22,7 +23,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Input;
 using ZXing;
 
 namespace GDGSPCheckIn
@@ -48,7 +48,6 @@ namespace GDGSPCheckIn
             InitializeComponent();
 
             Title = App.AppName + " Check-in";
-            Mouse.OverrideCursor = System.Windows.Input.Cursors.None;
 
             this.eventId = eventId;
             this.eventName = eventName;
@@ -66,6 +65,42 @@ namespace GDGSPCheckIn
             LeftText.Text = "Abra o aplicativo do " + App.AppName + ", toque nos três pontinhos e escolha \"Fazer check-in\"";
 
             useDymo = Settings.Default.UseDymo;
+
+            BoxName.Focus();
+
+            BoxName.TextChanged += (s, e) =>
+            {
+                if (BoxName.Text.Length > 1)
+                {
+                    var member = App.objConn.Prepare("SELECT * FROM event_" + eventId + " WHERE member_name LIKE '%" + BoxName.Text.Replace("\"", "\"\"") + "%'");
+
+                    List<Person> names = new List<Person>();
+
+                    while (member.Step() == SQLiteResult.ROW)
+                    {
+                        names.Add(new Person() { Id = int.Parse(member[1].ToString()), Name = member[2].ToString() });
+                    }
+
+                    ListName.ItemsSource = names;
+                    ListName.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    ListName.Visibility = Visibility.Hidden;
+                }
+            };
+
+            ListName.SelectionChanged += (s, e) =>
+            {
+                if (ListName.SelectedIndex != -1)
+                {
+                    Person p = e.AddedItems[0] as Person;
+                    DoCheckin(p.Id);
+                    BoxName.Text = "";
+                    ListName.Visibility = Visibility.Hidden;
+                    ListName.SelectedIndex = -1;
+                }
+            };
 
             if (useDymo)
             {
@@ -90,34 +125,7 @@ namespace GDGSPCheckIn
                 {
                     if (code.StartsWith(App.QRCode) && codeSplit.Length == 5)
                     {
-                        printedIds.Add(member_id);
-
-                        var member = App.objConn.Prepare("SELECT * FROM event_" + eventId + " WHERE member_id=" + member_id);
-
-                        if (member.ColumnCount != 0)
-                        {
-                            ResultText.Text = "QR Code não encontrado neste evento";
-                        }
-
-                        while (member.Step() == SQLiteResult.ROW)
-                        {
-                            removeName.Stop();
-
-                            int id = int.Parse(member[0].ToString());
-                            string name = member[2].ToString();
-
-                            ResultText.Text = name;
-                            string now = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy");
-
-                            App.objConn.Prepare("UPDATE event_" + eventId + " SET checked=1, date='" + now + "' WHERE id=" + id).Step();
-
-                            if (useDymo)
-                            {
-                                PrintCode(member_id, name, now);
-                            }
-
-                            removeName.Start();
-                        }
+                        DoCheckin(member_id);
                     }
                     else
                     {
@@ -130,14 +138,49 @@ namespace GDGSPCheckIn
             }
         }
 
+        private void DoCheckin(int member_id)
+        {
+            printedIds.Add(member_id);
+
+            var member = App.objConn.Prepare("SELECT * FROM event_" + eventId + " WHERE member_id=" + member_id);
+
+            if (member.ColumnCount != 0)
+            {
+                ResultText.Text = "QR Code não encontrado neste evento";
+            }
+
+            while (member.Step() == SQLiteResult.ROW)
+            {
+                int id = int.Parse(member[0].ToString());
+                string name = member[2].ToString();
+
+                ResultText.Text = name;
+                string now = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy");
+
+                App.objConn.Prepare("UPDATE event_" + eventId + " SET checked=1, date='" + now + "' WHERE id=" + id).Step();
+
+                if (useDymo)
+                {
+                    PrintCode(member_id, name, now);
+                }
+            }
+
+            BoxName.Text = "";
+            ListName.Visibility = Visibility.Hidden;
+            ListName.SelectedIndex = -1;
+
+            removeName.Stop();
+            removeName.Start();
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             InitWebCam();
         }
 
         private void SetupDymo()
-        {   
-            if(!File.Exists(Settings.Default.LabelPath))
+        {
+            if (!File.Exists(Settings.Default.LabelPath))
             {
                 System.Windows.MessageBox.Show("Não foi possível abrir o arquivo .label");
                 return;
@@ -209,7 +252,7 @@ namespace GDGSPCheckIn
 
             if (labelItems.Contains("event"))
             {
-                string _event = Settings.Default.LabelEvent.Replace("%s", eventName);
+                string _event = Settings.Default.LabelEvent.Replace("%s", eventName.Replace(" - ", "\n"));
                 _label.SetObjectText("event", _event);
             }
 

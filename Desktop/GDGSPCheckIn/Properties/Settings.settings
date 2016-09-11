@@ -11,5 +11,17 @@
     <Setting Name="UseDymo" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="LabelName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">%s</Value>
+    </Setting>
+    <Setting Name="LabelDate" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Data: %s</Value>
+    </Setting>
+    <Setting Name="LabelDateHour" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Data e hora: %s</Value>
+    </Setting>
+    <Setting Name="LabelEvent" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Evento: %s</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
