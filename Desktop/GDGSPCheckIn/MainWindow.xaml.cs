@@ -21,36 +21,33 @@ using SQLitePCL;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
 using ZXing;
 
 namespace GDGSPCheckIn
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         PictureBox picWebCam = new PictureBox();
         WebCam wCam;
         Timer webCamTimer;
-        int eventId;
         public Timer removeName = new Timer();
         bool useDymo;
-        List<string> labelItems = new List<string>();
         ILabel _label;
-        string printerName = "", eventName;
+        string printerName = "";
+        List<string> labelItems = new List<string>();
         List<int> printedIds = new List<int>();
+        List<Event> events;
 
-        public MainWindow(int eventId, string eventName)
+        public MainWindow(List<Event> events)
         {
             InitializeComponent();
 
             Title = App.AppName + " Check-in";
 
-            this.eventId = eventId;
-            this.eventName = eventName;
+            this.events = events;
 
             removeName.Interval = 5000;
             removeName.Tick += (s, e) =>
@@ -72,17 +69,49 @@ namespace GDGSPCheckIn
             {
                 if (BoxName.Text.Length > 1)
                 {
-                    var member = App.objConn.Prepare("SELECT * FROM event_" + eventId + " WHERE member_name LIKE '%" + BoxName.Text.Replace("\"", "\"\"") + "%'");
-
-                    List<Person> names = new List<Person>();
-
-                    while (member.Step() == SQLiteResult.ROW)
+                    new System.Threading.Thread(() =>
                     {
-                        names.Add(new Person() { Id = int.Parse(member[1].ToString()), Name = member[2].ToString() });
-                    }
+                        System.Threading.Thread.CurrentThread.IsBackground = true;
 
-                    ListName.ItemsSource = names;
-                    ListName.Visibility = Visibility.Visible;
+                        List<Person> names = new List<Person>();
+
+                        string query = "";
+                        string text = "";
+
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            text = BoxName.Text.Replace("\"", "\"\"");
+                        });
+
+                        foreach (Event _event in events)
+                        {
+                            if (!query.Equals(""))
+                            {
+                                query += " UNION ALL ";
+                            }
+
+                            query += "SELECT * FROM event_" + _event.Id + " WHERE member_name LIKE '%" + text + "%'";
+                        }
+
+                        var member = App.objConn.Prepare(query);
+
+                        while (member.Step() == SQLiteResult.ROW)
+                        {
+                            int id = int.Parse(member[1].ToString());
+
+                            if (!names.Any(p => p.Id == id))
+                            {
+                                Person p = new Person() { Id = id, Name = member[2].ToString() };
+                                names.Add(p);
+                            }
+                        }
+
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            ListName.ItemsSource = names;
+                            ListName.Visibility = Visibility.Visible;
+                        });
+                    }).Start();
                 }
                 else
                 {
@@ -142,32 +171,51 @@ namespace GDGSPCheckIn
         {
             printedIds.Add(member_id);
 
-            var member = App.objConn.Prepare("SELECT * FROM event_" + eventId + " WHERE member_id=" + member_id);
+            string query = "";
+
+            foreach (Event _event in events)
+            {
+                if (!query.Equals(""))
+                {
+                    query += " UNION ALL ";
+                }
+
+                query += "SELECT * FROM event_" + _event.Id + " WHERE member_id=" + member_id;
+            }
+
+            var member = App.objConn.Prepare(query);
 
             if (member.ColumnCount != 0)
             {
                 ResultText.Text = "QR Code não encontrado neste evento";
             }
 
+            string name = "";
+            string now = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy");
+
             while (member.Step() == SQLiteResult.ROW)
             {
                 int id = int.Parse(member[0].ToString());
-                string name = member[2].ToString();
+                name = member[2].ToString();
 
                 ResultText.Text = name;
-                string now = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy");
 
-                App.objConn.Prepare("UPDATE event_" + eventId + " SET checked=1, date='" + now + "' WHERE id=" + id).Step();
-
-                if (useDymo)
+                foreach (Event _event in events)
                 {
-                    PrintCode(member_id, name, now);
+                    App.objConn.Prepare("UPDATE event_" + _event.Id + " SET checked=1, date='" + now + "' WHERE member_id=" + member_id).Step();
                 }
+            }
+
+            if (!name.Equals("") && useDymo)
+            {
+                PrintCode(member_id, name, now);
             }
 
             BoxName.Text = "";
             ListName.Visibility = Visibility.Hidden;
             ListName.SelectedIndex = -1;
+
+            BoxName.Focus();
 
             removeName.Stop();
             removeName.Start();
@@ -252,8 +300,29 @@ namespace GDGSPCheckIn
 
             if (labelItems.Contains("event"))
             {
-                string _event = Settings.Default.LabelEvent.Replace("%s", eventName.Replace(" - ", "\n"));
-                _label.SetObjectText("event", _event);
+                string eventName = "";
+
+                if (events.Count == 1)
+                {
+                    eventName = Settings.Default.LabelEvent.Replace("%s", events[0].Name.Replace(" - ", "\n"));
+                }
+                else
+                {
+                    string allEvents = "";
+
+                    foreach (Event _event in events)
+                    {
+                        if (!allEvents.Equals(""))
+                        {
+                            allEvents += "\n";
+                        }
+
+                        allEvents += _event.Name.Split('-')[0];
+                    }
+
+                    eventName = Settings.Default.LabelEvent.Replace("%s", allEvents);
+                }
+                _label.SetObjectText("event", eventName);
             }
 
             if (labelItems.Contains("meetup_id"))

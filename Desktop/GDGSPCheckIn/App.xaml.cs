@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
+using GDGSPCheckIn.Properties;
 using SQLitePCL;
 using System;
 using System.IO;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows;
@@ -34,6 +36,12 @@ namespace GDGSPCheckIn
         public App()
         {
             objConn.Prepare("CREATE TABLE IF NOT EXISTS events (id integer primary key autoincrement, event_id int, event_name text)").Step();
+
+            if(Settings.Default.LabelPath.Equals(""))
+            {
+                Settings.Default.LabelPath = Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString(), AppName + ".label");
+                Settings.Default.Save();
+            }
         }
 
         /// <summary>

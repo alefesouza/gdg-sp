@@ -46,7 +46,6 @@ namespace GDGSPCheckIn
             try
             {
                 var client = new HttpClient();
-                client.MaxResponseContentBufferSize = 256000;
                 HttpResponseMessage response = await client.PostAsync("http://" + App.BackendUrl + "all_users.php?meetupid=" + App.MeetupId, new FormUrlEncodedContent(postData));
 
                 if (response.IsSuccessStatusCode)

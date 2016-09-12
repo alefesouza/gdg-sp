@@ -32,21 +32,30 @@ limitations under the License.
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+            <Grid x:Name="MainGrid">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-            <TextBlock Text="Meetup API Key" Margin="0, 15, 0, 0" />
-            <TextBox Grid.Column="1" x:Name="APIKey" Margin="15, 15, 15, 0" />
-            <Button Grid.Column="2" x:Name="OK" Content="OK" Click="OK_Click" Margin="0, 15, 0, 0" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-            <StackPanel x:Name="StackList" Visibility="Collapsed" Grid.Row="2" Grid.ColumnSpan="3" Margin="0, 15, 0, 0">
-                <TextBlock Text="Escolha o evento:" />
+                <TextBlock Text="Meetup API Key" Margin="0, 15, 0, 0" />
+                <TextBox Grid.Column="1" x:Name="APIKey" Margin="15, 15, 15, 0" />
+
+                <TextBlock Text="ID do Meetup" Margin="0, 15, 0, 0" Grid.Row="1" />
+                <TextBox Grid.Column="1" x:Name="MeetupId" Margin="15, 15, 15, 0" Grid.Row="1" />
+                <Button Grid.Column="2" x:Name="OK" Content="OK" Click="OK_Click" Grid.Row="1" Margin="0, 15, 0, 0" />
+            </Grid>
+
+            <StackPanel x:Name="StackList" Visibility="Collapsed" Grid.Row="1" Margin="0, 15, 0, 0">
+                <TextBlock Text="Escolha o evento:" x:Name="EventChoose" />
                 <ListView x:Name="ListEvents" Margin="0, 5, 0, 0">
                     <ListView.ItemTemplate>
                         <DataTemplate>
@@ -56,15 +65,18 @@ limitations under the License.
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
+
+                <Button x:Name="ReceiveUsers" Content="Receber participantes" Click="ReceiveUsers_Click"  Margin="0, 15, 0, 15" />
+                <Button x:Name="Save" Content="Salvar" Click="Save_Click" Visibility="Collapsed"  Margin="0, 15, 0, 15" />
             </StackPanel>
 
-            <StackPanel x:Name="GetData" Grid.Row="3" Grid.ColumnSpan="3" Visibility="Collapsed" Margin="0, 15, 0, 0">
-                <ProgressBar IsIndeterminate="True" />
+            <StackPanel x:Name="GetData" Grid.Row="2" Visibility="Collapsed" Margin="0, 15, 0, 0">
+                <ProgressBar IsIndeterminate="True" x:Name="Progress" />
                 <TextBlock x:Name="Info" TextAlignment="Center" />
             </StackPanel>
         </Grid>
 
-        <Grid Grid.Row="1">
+        <Grid x:Name="BottomGrid" Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -83,14 +95,12 @@ limitations under the License.
                 </Hyperlink>
                 para receber sua API Key do Meetup
             </TextBlock>
-
-            <Button Grid.Row="1" x:Name="UseLocal" Content="Usar base de dados local" Click="UseLocal_Click" Margin="0, 15, 0, 15" />
-            <Button Grid.Row="1" Grid.Column="1"  x:Name="PrinterConfig" Content="Configurar impressora" Click="PrinterConfig_Click"  Margin="0, 15, 0, 15" />
             
             <Button x:Name="ShowRelatories" Content="Exibir relatórios" Click="ShowRelatories_Click" Grid.Row="2" />
             <Button Grid.Column="1" x:Name="ShowAllUsers" Content="Exibir todos os usuários" Click="ShowAllUsers_Click" Grid.Row="2" />
 
-            <Button Grid.Row="3" Grid.ColumnSpan="2" x:Name="Save" Content="Salvar" Click="Save_Click" Visibility="Collapsed" Margin="0, 15, 0, 0" />
+            <Button Grid.Row="3" x:Name="PrinterConfig" Content="Configurar impressora" Click="PrinterConfig_Click"  Margin="0, 15, 0, 15" />
+            <Button Grid.Row="3" Grid.Column="1" x:Name="Start" Content="Iniciar" Click="Start_Click" Margin="0, 15, 0, 15" />
         </Grid>
     </Grid>
 </Window>
