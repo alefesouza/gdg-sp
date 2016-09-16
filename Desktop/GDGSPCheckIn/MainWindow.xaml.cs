@@ -20,20 +20,21 @@ using GDGSPCheckIn.Properties;
 using SQLitePCL;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Media.Imaging;
+using WebEye.Controls.Wpf;
 using ZXing;
 
 namespace GDGSPCheckIn
 {
     public partial class MainWindow : Window
     {
-        PictureBox picWebCam = new PictureBox();
-        WebCam wCam;
-        Timer webCamTimer;
-        public Timer removeName = new Timer();
+        public Timer removeName = new Timer(), checkQR = new Timer();
         bool useDymo;
         ILabel _label;
         string printerName = "";
@@ -58,6 +59,10 @@ namespace GDGSPCheckIn
                     removeName.Stop();
                 });
             };
+
+            checkQR.Interval = 2000;
+            checkQR.Tick += webCamTimer_Tick;
+            checkQR.Start();
 
             LeftText.Text = "Abra o aplicativo do " + App.AppName + ", toque nos três pontinhos e escolha \"Fazer check-in\"";
 
@@ -131,6 +136,13 @@ namespace GDGSPCheckIn
                 }
             };
 
+            ComboBox.ItemsSource = webCameraControl.GetVideoCaptureDevices();
+
+            if (ComboBox.Items.Count > 0)
+            {
+                ComboBox.SelectedItem = ComboBox.Items[0];
+            }
+
             if (useDymo)
             {
                 SetupDymo();
@@ -139,32 +151,44 @@ namespace GDGSPCheckIn
 
         void webCamTimer_Tick(object sender, EventArgs e)
         {
-            var bitmap = wCam.GetCurrentImage();
-            if (bitmap == null)
-                return;
-            var reader = new BarcodeReader();
-            var result = reader.Decode(bitmap);
-            if (result != null)
+            new System.Threading.Thread(() =>
             {
-                string code = result.Text.ToString();
-                string[] codeSplit = code.Split('/');
-                int member_id = int.Parse(codeSplit[codeSplit.Length - 1]);
+                Bitmap bitmap = null;
 
-                if (!printedIds.Contains(member_id))
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
                 {
-                    if (code.StartsWith(App.QRCode) && codeSplit.Length == 5)
-                    {
-                        DoCheckin(member_id);
-                    }
-                    else
-                    {
-                        ResultText.Text = "QR Code inválido";
+                    bitmap = webCameraControl.GetCurrentImage();
+                });
 
-                        removeName.Stop();
-                        removeName.Start();
+                if (bitmap == null)
+                    return;
+                var reader = new BarcodeReader();
+                var result = reader.Decode(bitmap);
+                if (result != null)
+                {
+                    string code = result.Text.ToString();
+                    string[] codeSplit = code.Split('/');
+                    int member_id = int.Parse(codeSplit[codeSplit.Length - 1]);
+
+                    if (!printedIds.Contains(member_id))
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            if (code.StartsWith(App.QRCode) && codeSplit.Length == 5)
+                            {
+                                DoCheckin(member_id);
+                            }
+                            else
+                            {
+                                ResultText.Text = "QR Code inválido";
+
+                                removeName.Stop();
+                                removeName.Start();
+                            }
+                        });
                     }
                 }
-            }
+            }).Start();
         }
 
         private void DoCheckin(int member_id)
@@ -223,7 +247,8 @@ namespace GDGSPCheckIn
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            InitWebCam();
+            var cameraId = (WebCameraId)ComboBox.SelectedItem;
+            webCameraControl.StartCapture(cameraId);
         }
 
         private void SetupDymo()
@@ -234,7 +259,19 @@ namespace GDGSPCheckIn
                 return;
             }
 
-            _label = Framework.Open(Settings.Default.LabelPath);
+            try
+            {
+                _label = Framework.Open(Settings.Default.LabelPath);
+            }
+            catch
+            {
+                if(System.Windows.MessageBox.Show("Parece que o software da Dymo não está instalado, deseja baixar agora?", "GDG-SP", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    Process.Start("http://www.dymo.com/en-US/dymo-user-guides");
+                    useDymo = false;
+                }
+                return;
+            }
 
             if (_label == null)
             {
@@ -344,44 +381,10 @@ namespace GDGSPCheckIn
             }).Start();
         }
 
-        // Código de https://zxingnet.codeplex.com/SourceControl/latest#trunk/Clients/WindowsFormsDemo/WindowsFormsDemoForm.cs
-        void InitWebCam()
+        private void OK_Click(object sender, RoutedEventArgs e)
         {
-            picWebCam.Anchor = (((((AnchorStyles.Top | AnchorStyles.Bottom)
-               | AnchorStyles.Left)
-               | AnchorStyles.Right)));
-            picWebCam.BorderStyle = BorderStyle.None;
-            picWebCam.Location = new System.Drawing.Point(3, 57);
-            picWebCam.Name = "picWebCam";
-            picWebCam.Size = new System.Drawing.Size((int)SecondRow.ActualHeight, (int)SecondRow.ActualHeight);
-            picWebCam.SizeMode = PictureBoxSizeMode.StretchImage;
-            picWebCam.TabIndex = 8;
-            picWebCam.BackColor = System.Drawing.Color.Blue;
-            picWebCam.TabStop = false;
-
-            WFHost.Child = picWebCam;
-
-            if (wCam == null)
-            {
-                wCam = new WebCam
-                {
-                    Container = picWebCam
-                };
-
-                wCam.OpenConnection();
-
-                webCamTimer = new Timer();
-                webCamTimer.Tick += webCamTimer_Tick;
-                webCamTimer.Interval = 50;
-                webCamTimer.Start();
-            }
-            else
-            {
-                webCamTimer.Stop();
-                webCamTimer = null;
-                wCam.Dispose();
-                wCam = null;
-            }
+            VideoDevice.Visibility = Visibility.Collapsed;
+            BoxName.Focus();
         }
     }
 }
