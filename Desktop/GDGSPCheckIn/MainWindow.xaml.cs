@@ -37,7 +37,7 @@ namespace GDGSPCheckIn
         public Timer removeName = new Timer(), checkQR = new Timer();
         bool useDymo;
         ILabel _label;
-        string printerName = "";
+        string printerName = "", latestName = "";
         List<string> labelItems = new List<string>();
         List<int> printedIds = new List<int>();
         List<Event> events;
@@ -60,7 +60,7 @@ namespace GDGSPCheckIn
                 });
             };
 
-            checkQR.Interval = 2000;
+            checkQR.Interval = 1000;
             checkQR.Tick += webCamTimer_Tick;
             checkQR.Start();
 
@@ -168,71 +168,80 @@ namespace GDGSPCheckIn
                 {
                     string code = result.Text.ToString();
                     string[] codeSplit = code.Split('/');
-                    int member_id = int.Parse(codeSplit[codeSplit.Length - 1]);
+                    int number = 0;
+                    bool tryParse = int.TryParse(codeSplit[codeSplit.Length - 1], out number);
 
-                    if (!printedIds.Contains(member_id))
+                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
                     {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        if (code.StartsWith(App.QRCode) && codeSplit.Length == 5 && tryParse)
                         {
-                            if (code.StartsWith(App.QRCode) && codeSplit.Length == 5)
-                            {
-                                DoCheckin(member_id);
-                            }
-                            else
-                            {
-                                ResultText.Text = "QR Code inválido";
+                            DoCheckin(number);
+                        }
+                        else
+                        {
+                            ResultText.Text = "QR Code inválido";
 
-                                removeName.Stop();
-                                removeName.Start();
-                            }
-                        });
-                    }
+                            removeName.Stop();
+                            removeName.Start();
+                        }
+                    });
                 }
             }).Start();
         }
 
         private void DoCheckin(int member_id)
         {
-            printedIds.Add(member_id);
-
-            string query = "";
-
-            foreach (Event _event in events)
+            if (!printedIds.Contains(member_id))
             {
-                if (!query.Equals(""))
-                {
-                    query += " UNION ALL ";
-                }
+                printedIds.Add(member_id);
 
-                query += "SELECT * FROM event_" + _event.Id + " WHERE member_id=" + member_id;
-            }
-
-            var member = App.objConn.Prepare(query);
-
-            if (member.ColumnCount != 0)
-            {
-                ResultText.Text = "QR Code não encontrado neste evento";
-            }
-
-            string name = "";
-            string now = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy");
-
-            while (member.Step() == SQLiteResult.ROW)
-            {
-                int id = int.Parse(member[0].ToString());
-                name = member[2].ToString();
-
-                ResultText.Text = name;
+                string query = "";
 
                 foreach (Event _event in events)
                 {
-                    App.objConn.Prepare("UPDATE event_" + _event.Id + " SET checked=1, date='" + now + "' WHERE member_id=" + member_id).Step();
+                    if (!query.Equals(""))
+                    {
+                        query += " UNION ALL ";
+                    }
+
+                    query += "SELECT * FROM event_" + _event.Id + " WHERE member_id=" + member_id;
+                }
+
+                var member = App.objConn.Prepare(query);
+
+                if (member.ColumnCount != 0)
+                {
+                    ResultText.Text = "QR Code não encontrado neste evento";
+                }
+
+                string name = "";
+                string now = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy");
+
+                while (member.Step() == SQLiteResult.ROW)
+                {
+                    int id = int.Parse(member[0].ToString());
+                    name = member[2].ToString();
+                    latestName = name;
+
+                    ResultText.Text = name;
+
+                    foreach (Event _event in events)
+                    {
+                        App.objConn.Prepare("UPDATE event_" + _event.Id + " SET checked=1, date='" + now + "' WHERE member_id=" + member_id).Step();
+                    }
+                }
+
+                if (!name.Equals("") && useDymo)
+                {
+                    PrintCode(member_id, name, now);
                 }
             }
-
-            if (!name.Equals("") && useDymo)
+            else
             {
-                PrintCode(member_id, name, now);
+                if (!BoxName.Text.Equals(latestName))
+                {
+                    ResultText.Text = "Check-in realizado anteriormente";
+                }
             }
 
             BoxName.Text = "";
@@ -265,7 +274,7 @@ namespace GDGSPCheckIn
             }
             catch
             {
-                if(System.Windows.MessageBox.Show("Parece que o software da Dymo não está instalado, deseja baixar agora?", "GDG-SP", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                if (System.Windows.MessageBox.Show("Parece que o software da Dymo não está instalado, deseja baixar agora?", "GDG-SP", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
                     Process.Start("http://www.dymo.com/en-US/dymo-user-guides");
                     useDymo = false;
@@ -294,6 +303,7 @@ namespace GDGSPCheckIn
             if (printerName.Equals(""))
             {
                 System.Windows.MessageBox.Show("Não foi possível encontrar uma impressora Dymo");
+                useDymo = false;
             }
         }
 
