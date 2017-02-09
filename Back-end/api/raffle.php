@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 Alefe Souza <http://alefesouza.com>
+ * Copyright (C) 2017 Alefe Souza <contact@alefesouza.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,34 +15,31 @@
  * limitations under the License.
  */
 
-include("../functions.php");
+include("../index.php");
 
-if($_POST["app_key"] == $app_key) {
-  if($_POST["refresh_token"] != "") {
-    $eventid = $_GET["eventid"];
+use GDGSP\API\MeetupAPI;
+use GDGSP\Utils\Util;
 
-    $token = refreshMeetupToken($_POST["refresh_token"]);
+//if($_POST["app_key"] == Utils::getAppKey()) {
+  if(isset($_GET["refresh_token"]) && $_GET["refresh_token"] != "") {
+    $event_id = $_GET["eventid"];
 
-    $memberdata = file_get_contents("https://api.meetup.com/$meetupid/members/self?access_token=$token");
+    $token = MeetupAPI::refreshMeetupToken($_GET["refresh_token"]);
 
-    $member = json_decode($memberdata);
+    $api = new MeetupAPI($token);
 
-    $memberid = mysqli_real_escape_string($dbi, $member->id);
+    $member = $api->getMemberInfo();
+
+    $member_id = $member->getId();
     
-    if(isset($_POST["manager"])) {
-      $isadmin = checkIsAdmin($memberid, $token);
+    if(isset($_GET["manager"])) {
+      $is_admin = MeetupAPI::checkIsAdmin($member_id);
 
-      if($isadmin) {
-        if($_POST["empty"] == "true") {
-          $query = mysqli_query($dbi, "DELETE FROM meetup_raffle_manager WHERE event_id=$eventid");
+      if($is_admin) {
+        if(isset($_GET["empty"]) && $_GET["empty"] == "true") {
+          $db->clearRaffle($event_id);
         } else {
-          $query = mysqli_query($dbi, "SELECT *, DATE_FORMAT(raffle_date,'%H:%i:%s %d/%m/%Y') AS raffle_date_format, DATE_FORMAT(post_date,'%H:%i:%s %d/%m/%Y') AS post_date_format FROM meetup_raffle_manager WHERE meetup_id='$meetupid' AND event_id=$eventid ORDER BY raffle_date");
-          
-          $raffle_people = array();
-          
-          while($row = mysqli_fetch_array($query)) {
-            $raffle_people[] = array("id" => $row["member_id"], "name" => $row["member_name"], "photo" => $row["member_photo"], "raffle_date" => $row["raffle_date_format"], "post_date" => $row["post_date_format"], "seconds" => (string)$row["seconds"]);
-          }
+          $raffle_people = $db->getAllRaffle($event_id);
 
           echo json_encode($raffle_people);
         }
@@ -50,21 +47,17 @@ if($_POST["app_key"] == $app_key) {
         echo "invalid_user";
       }
     } else {
-      $membername = mysqli_real_escape_string($dbi, $member->name);
-      $memberphoto = mysqli_real_escape_string($dbi, $member->photo->photo_link);
-
       $raffle_date = $_POST["raffle_date"];
       $seconds = $_POST["seconds"];
 
-      // Notei que meu servidor estava 14 segundos adiantado
-      $add_seconds = 14;
-      
-      mysqli_query($dbi, "INSERT INTO meetup_raffle_manager (event_id, member_id, member_name, member_photo, meetup_id, raffle_date, post_date, seconds) VALUES ($eventid, $memberid, '$membername', '$memberphoto', '$meetupid', '$raffle_date', DATE_ADD(NOW(), INTERVAL $add_seconds SECOND), $seconds)") or die ("Error: ".mysqli_error($dbi));
-
-      echo "success";
+      if($db->addRaffle($member, $event_id, $raffle_date, $seconds)) {
+        echo "success";
+      } else {
+        echo "error";
+      }
     }
   }
-} else {
-  echo "invalid_key";
-}
+// } else {
+//   echo "invalid_key";
+// }
 ?>

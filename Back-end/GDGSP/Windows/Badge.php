@@ -15,14 +15,28 @@
  * limitations under the License.
  */
 
-include("../index.php");
+namespace GDGSP\Windows {
+    use GDGSP\API\MeetupAPI;
 
-use GDGSP\API\MeetupAPI;
-use GDGSP\Util\Utils;
+    class Badge {
+        public function getBadge() : string {
+            $api = new MeetupAPI("");
+            $result = $api->getEvents(false, 0, false);
 
-if($_POST["app_key"] == Utils::getAppKey()) {
-  echo MeetupAPI::getAllUsers($_GET["api_key"]);
-} else {
-  echo "invalid_key";
+            $events = $result->getResultAsArray();
+
+            ob_start() ?>
+<?xml version="1.0" encoding="utf-8"?>
+<badge value="<?php echo count($events); ?>" />
+            <?php
+
+            $content = ob_get_clean();
+
+            $badge = new \SimpleXMLElement($content);
+
+            header('Content-type: text/xml');
+            return $badge->asXML();
+        }
+    }
 }
 ?>

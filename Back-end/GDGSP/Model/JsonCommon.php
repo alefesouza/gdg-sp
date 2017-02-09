@@ -15,14 +15,19 @@
  * limitations under the License.
  */
 
-include("../index.php");
+namespace GDGSP\Model {
+    abstract class JsonCommon implements \JsonSerializable {
+        public function jsonSerialize() {
+            $vars = get_object_vars($this);
 
-use GDGSP\API\MeetupAPI;
-use GDGSP\Util\Utils;
+            foreach($vars as $key=>$value) {
+                if(!isset($vars[$key])) {
+                    unset($vars[$key]);
+                }
+            }
 
-if($_POST["app_key"] == Utils::getAppKey()) {
-  echo MeetupAPI::getAllUsers($_GET["api_key"]);
-} else {
-  echo "invalid_key";
+            return $vars;
+        }
+    }
 }
 ?>

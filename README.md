@@ -22,7 +22,7 @@ Para desenvolver os aplicativos eu utilizei as IDEs:
 
 [Visual Studio Community 2015](https://www.visualstudio.com/pt-br/products/visual-studio-community-vs.aspx) no aplicativo para UWP e Xamarin, tive problemas para gerar o .ipa do iOS no Visual Studio, por isso usei o [Xamarin Studio](https://www.xamarin.com/studio) no Mac só para isso.
 
-[Codeanywhere](https://codeanywhere.com) e [AWD](https://play.google.com/store/apps/details?id=org.kidinov.awd) no desenvolvimento do back-end.
+[Visual Studio Code](https://code.visualstudio.com/) e [Codeanywhere](https://codeanywhere.com) no desenvolvimento do back-end.
 
 Recursos
 -----
@@ -42,7 +42,7 @@ Procurei deixar muito simples para adaptar o aplicativo para outros meetups, em 
 Licença
 -----
 
-    Copyright (C) 2016 Alefe Souza <http://alefesouza.com>
+    Copyright (C) 2017 Alefe Souza <contact@alefesouza.com>
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

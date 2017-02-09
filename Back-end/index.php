@@ -15,14 +15,31 @@
  * limitations under the License.
  */
 
-include("../index.php");
+declare(strict_types = 1);
 
-use GDGSP\API\MeetupAPI;
+date_default_timezone_set("America/Sao_Paulo");
+
+header('Content-Type: application/json; charset=utf-8');
+
+spl_autoload_register(function ($name) {
+    require str_replace("\\", "/", $name).".php";
+});
+
+use GDGSP\Database\DB;
 use GDGSP\Util\Utils;
 
-if($_POST["app_key"] == Utils::getAppKey()) {
-  echo MeetupAPI::getAllUsers($_GET["api_key"]);
-} else {
-  echo "invalid_key";
+if(isset($_GET["platform"])) {
+    Utils::$platform = $_GET["platform"];
+}
+
+if(isset($_GET["via"])) {
+    Utils::$via = $_GET["via"];
+}
+
+$db = DB::getInstance();
+
+if(isset($_GET["meetupid"])) {
+    $meetup_id = $_GET["meetupid"];
+    DB::init($meetup_id);
 }
 ?>

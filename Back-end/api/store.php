@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 Alefe Souza <http://alefesouza.com>
+ * Copyright (C) 2017 Alefe Souza <contact@alefesouza.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

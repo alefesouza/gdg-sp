@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 Alefe Souza <http://alefesouza.com>
+ * Copyright (C) 2017 Alefe Souza <contact@alefesouza.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,66 +15,19 @@
  * limitations under the License.
  */
 
-include("../functions.php");
+include("../index.php");
 
-$location = strtok("http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'],'?');
+use GDGSP\API\MeetupAPI;
 
 if(isset($_POST["code"])) {
-  $url = 'https://secure.meetup.com/oauth2/access';
-  
-  $code = $_POST["code"];
-  $query = "client_id=$meetup_client_key&client_secret=$meetup_secret_key&grant_type=authorization_code&redirect_uri=$location?meetupid=$meetupid&code=$code";
-
-  $headers = array(
-      'Content-Type: application/x-www-form-urlencoded'
-  );
-
-  $ch = curl_init();
-
-  curl_setopt($ch, CURLOPT_URL, $url);
-
-  curl_setopt($ch, CURLOPT_POST, true);
-  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-  curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
-
-  $result = curl_exec($ch);
-  $json = json_decode($result);
-  
-	$token = refreshMeetupToken($json->refresh_token);
-	
-	$ismember = @file_get_contents("https://api.meetup.com/$meetupid?access_token=$token&fields=self");
-  $json2 = json_decode($ismember);
-  
-  $status = $json2->self->status;
-  
-	if(strpos($http_response_header[0], "200") !== false) {
-		if($status != "active") {
-			echo json_encode(array("is_error" => true, "description" => $status));
-		} else {
-			$memberdata = @file_get_contents("https://api.meetup.com/$meetupid/members/self?access_token=$token");
-			$memberjson = json_decode($memberdata);
-			$memberid = $memberjson->id;
-      $membername = mysqli_real_escape_string($dbi, $member->name);
-
-			$query = mysqli_query($dbi, "SELECT * FROM meetup_app_members WHERE member_id=$memberid");
-			
-			if(mysqli_num_rows($query) == 0) {
-				mysqli_query($dbi, "INSERT INTO meetup_app_members (meetup_id, member_id, member_name, has_app, last_activity) VALUES ('$meetupid', $memberid, '$membername', 1, now())");
-			} else {
-				mysqli_query($dbi, "UPDATE meetup_app_members SET has_app=1, last_activity=now() WHERE member_id=$memberid AND meetup_id='$meetupid'");
-			}
-			
-			$qr = file_get_contents("https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=".$qrcode.$memberid);
-			
-			echo json_encode(array("is_error" => false, "refresh_token" => $json->refresh_token, "qr_code" => base64_encode($qr)));
-		}
-	} else {
-		echo json_encode(array("is_error" => true, "description" => "error"));
-	}
+	MeetupAPI::doLogin($_POST["code"]);
 } else if(isset($_GET["code"])) {
 } else {
-  header("location:https://secure.meetup.com/oauth2/authorize?client_id=$meetup_client_key&response_type=code&redirect_uri=$location?meetupid=$meetupid&scope=rsvp+event_management");
+	header(
+		"location:https://secure.meetup.com/oauth2/authorize?client_id=".$db::$meetupClientKey.
+		"&response_type=code".
+		"&redirect_uri=".MeetupAPI::getLoginLocation().
+		"&scope=rsvp+event_management"
+	);
 }
 ?>

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 Alefe Souza <http://alefesouza.com>
+ * Copyright (C) 2017 Alefe Souza <contact@alefesouza.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,42 +15,27 @@
  * limitations under the License.
  */
 
-/*
-Cron job de atualização de usuários que desinstalaram o aplicativo
-Esse cron job verifica usuários que desinstalaram o aplicativo usando a API do One Signal e atualiza eles no banco de dados para não aparecerem na seção "Pessoas com o app" dos aplicativos.
-*/
+use GDGSP\API\OneSignalAPI;
+use GDGSP\Database\DB;
 
-$meetupids = array("GDG-SP");
+include("../index.php");
 
-foreach($meetupids as $meetupid) {
-  include("../functions.php");
+$meetup_ids = array("GDG-SP");
 
-  $return = json_decode(getDevices());
+foreach($meetup_ids as $meetup_id) {
+  DB::init($meetup_id);
+
+  $return = OneSignalAPI::getDevices();
   
   foreach($return->players as $player) {
     if($player->invalid_identifier) {
-      $memberid = $player->tags->member_id;
+      $member_id = $player->tags->member_id ?? "";
       
-      if($player->tags->member_id != "") {
-			  $query = mysqli_query($dbi, "UPDATE meetup_app_members SET has_app=0 WHERE member_id=$memberid");
+      if($member_id != "") {
+        $db->deleteUser($member_id);
+        break;
       }
     }
   }
-}
-
-function getDevices(){
-  global $one_signal_appid;
-  global $one_signal_restkey;
-  
-  $ch = curl_init(); 
-  curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/players?app_id=".$one_signal_appid); 
-  curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 
-                                             'Authorization: Basic '.$one_signal_restkey)); 
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE); 
-  curl_setopt($ch, CURLOPT_HEADER, FALSE);
-  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-  $response = curl_exec($ch); 
-  curl_close($ch); 
-  return $response; 
 }
 ?>

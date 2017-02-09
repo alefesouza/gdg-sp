@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 Alefe Souza <http://alefesouza.com>
+ * Copyright (C) 2017 Alefe Souza <contact@alefesouza.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,32 +15,32 @@
  * limitations under the License.
  */
 
-include("../functions.php");
+include("../index.php");
 
-if($_POST["app_key"] == $app_key) {
-	$memberdata = file_get_contents("https://api.meetup.com/$meetupid/members/self?key=".$_POST["api_key"]);
+use GDGSP\API\MeetupAPI;
+use GDGSP\Database\DB;
+use GDGSP\Util\Utils;
+
+if($_POST["app_key"] == Utils::getAppKey()) {
+	$api_key = $_POST["api_key"];
+
+	$member_data = file_get_contents("https://api.meetup.com/".DB::$meetupId."/members/self?key=".$api_key);
   
 	if(strpos($http_response_header[0], "200") !== false) {
-		$member = json_decode($memberdata);
+		$member = json_decode($member_data);
 
-		$memberid = $member->id;
+		$memberId = $member->id;
 		
-		$isadmin = checkIsAdmin($memberid);
+		$is_admin = MeetupAPI::checkIsAdmin($memberId, $api_key);
 		
-    if($isadmin) {
+    if($is_admin) {
       $json = json_decode($_POST["json"]);
 			
-      foreach($json as $person) {
-				$personid = $person->id;
-				$personname = mysqli_real_escape_string($dbi, $person->name);
-				
-				$query = mysqli_query($dbi, "SELECT * FROM meetup_app_members WHERE member_id=$personid");
-			
-				if(mysqli_num_rows($query) == 0) {
-					mysqli_query($dbi, "INSERT INTO meetup_app_members (meetup_id, member_id, member_name, has_app, last_activity, faults) VALUES ('$meetupid', $personid, '$personname', 0, 0, 1)");
-				} else {
-					mysqli_query($dbi, "UPDATE meetup_app_members SET faults=(faults + 1) WHERE meetup_id='$meetupid' AND member_id=".$personid);
-				}
+      foreach($json as $member) {
+				$member_id = $member->id;
+				$member_name = $member->name;
+
+				DB::getInstance()->manageMeetupMember($member_id, $member_name);
       }
       
       echo "success";

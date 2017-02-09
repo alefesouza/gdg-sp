@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 Alefe Souza <http://alefesouza.com>
+ * Copyright (C) 2017 Alefe Souza <contact@alefesouza.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,24 +21,25 @@ Coloque um cron job no seu servidor para rodar esse arquivo de minuto em minuto 
 Caso a API tenha um dado diferente do banco de dados, o arquivo enviará uma notificação de novo evento.
 */
 
+include("../index.php");
+
+use GDGSP\API\{ MeetupAPI, OneSignalAPI };
+use GDGSP\Database\DB;
+use GDGSP\Notification\WNS;
+use GDGSP\Util\Utils;
+
 // Supondo que estivesse suportando mais de um meetup, só incrementar esse array
-$meetupids = array("GDG-SP");
+$meetup_ids = array("GDG-SP");
 
-include("../connect_db.php");
-include("wns/wns.php");
+foreach($meetup_ids as $meetup_id) {
+  DB::init($meetup_id);
 
-foreach($meetupids as $meetupid) {
-  include("../functions.php");
+  $api = new MeetupAPI("");
+  $result = $api->getEvents(false, 0, false);
 
-  $json = file_get_contents("http://api.meetup.com/$meetupid/events");
+  $events = $result->getResultAsArray();
 
-  $events = json_decode($json);
-  
-  $query = mysqli_query($dbi, "SELECT event_id FROM meetup_last_events WHERE meetup_id='$meetupid'");
-
-  while($row = mysqli_fetch_array($query)) {
-    $last_events[] = $row["event_id"];
-  }
+  $last_events = $db->getLastNotifiedEvents();
 
   for($i = 0; $i < count($events); $i++) {
     if(!in_array($events[$i]->id, $last_events)) {
@@ -46,28 +47,33 @@ foreach($meetupids as $meetupid) {
     }
   }
 
-  // Se o evento for diferente de null
-  if($event != null) {
+  if(isset($event)) {
     $id = $event->id;
     $name = $event->name;
     $description = $event->description;
-    $place = $event->venue->name;
+    
+    if(isset($event->venue)) {
+      $place = isset($event->venue->name) ? $event->venue->name : "";
+    }
+
     $start = date("d/m/Y H:i", $event->time / 1000);
 
+    $image = Utils::getImage($name, $description);
+
     $message = $start;
-    if($place != "") {
-      $message .= " ".$place;
+
+    if(isset($place)) {
+      $message .= " - ".$place;
     }
   
-    mysqli_query($dbi, "INSERT INTO meetup_last_events (meetup_id, event_id) VALUES ('$meetupid', $id)");
+    $db->addEventNotification($id);
 
-    sendMessageOneSignal(count($events), $name, $message, getImage($name, $description), $id);
+    OneSignalAPI::sendNotification(count($events), $name, $message, $image, $id);
 
     // Já checa se tem algum token expirado na tabela dos usuários do Windows 10 e apaga
-    $checkExpire = date("Ymd", time());
-    mysqli_query($dbi, "DELETE FROM meetup_wns_users WHERE expire < $checkExpire");
+    $db->clearWnsUsers();
 
-    notify_wns_users(count($events), $name, $message, getImage($name, $description), $id);
+    WNS::notifyUsers(count($events), $name, $message, $image, $id);
   }
 }
 ?>

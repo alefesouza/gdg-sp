@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 Alefe Souza <http://alefesouza.com>
+ * Copyright (C) 2017 Alefe Souza <contact@alefesouza.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,12 @@
  * limitations under the License.
  */
 
-include("../../functions.php");
+include("../../index.php");
 
-$json = file_get_contents("http://api.meetup.com/".$meetupid."/events");
+use GDGSP\Windows\Badge;
 
-$events = json_decode($json);
+$badge = new Badge();
+$content = $badge->getBadge();
 
-$badge = new SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><badge value="'.count($events).'" />');
-
-Header('Content-type: text/xml');
-print($badge->asXML());
+print $content;
 ?>

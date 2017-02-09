@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 Alefe Souza <http://alefesouza.com>
+ * Copyright (C) 2017 Alefe Souza <contact@alefesouza.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,45 +16,23 @@
  */
 
 // Pelos aplicativos, o usuário pode dar um post aqui com a resposta dele se irá e as perguntas respondidas após ter feito login
-include("../functions.php");
+include("../index.php");
 
-$eventid = $_GET["eventid"];
-$token = refreshMeetupToken($_POST["refresh_token"]);
+use GDGSP\API\MeetupAPI;
 
-$json = json_decode($_POST["json"]);
-$response = $json->response;
+$event_id = $_GET["eventid"];
 
-$query = "event_id=$eventid&rsvp=$response&access_token=$token";
+$token = MeetupAPI::refreshMeetupToken($_POST["refresh_token"]);
 
-foreach($json->answers as $answer) {
-  $query .= "&answer_".$answer->id."=".urlencode($answer->answer);
-}
+$api = new MeetupAPI($token);
 
-$query = str_replace("+", "%20", $query);
+$json = $api->doRSVP($event_id, $_POST["json"]);
 
-$url = "https://api.meetup.com/2/rsvp/";
+$response = $json->getResult()->response;
 
-$headers = array(
-    'Content-Type: application/x-www-form-urlencoded'
-);
-
-$ch = curl_init();
-
-curl_setopt($ch, CURLOPT_URL, $url);
-
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
-
-$result = curl_exec($ch);
-
-$json = json_decode($result);
-
-switch($json->response) {
+switch($response) {
   case "yes": case "waitlist": case "no":
-    echo $json->response;
+    echo $response;
     break;
   default:
     http_response_code(401);

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 Alefe Souza <http://alefesouza.com>
+ * Copyright (C) 2017 Alefe Souza <contact@alefesouza.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,56 +15,12 @@
  * limitations under the License.
  */
 
-include("../../functions.php");
+include("../../index.php");
 
-$json = file_get_contents("https://api.meetup.com/$meetupid/events");
-$events = json_decode($json);
+use GDGSP\Windows\Tile;
 
-$event = $events[$_GET["tile"]];
+$tile = new Tile();
+$content = $tile->getTile($_GET["tile"]);
 
-if($_GET["platform"] != "wp") {
-	$wp = "AndLogo";
-}
-
-if($event != null) {
-  $name = $event->name;
-	$description = $event->description;
-  $place = $event->venue->name;
-  $address = $event->venue->address_1;
-  $start = date("d/m/Y H:i", $event->time / 1000);
-	$end = date("H:i", ($event->time + $event->duration) / 1000);
-	$end = strpos($start, $end) !== false ? "" : " - $end";
-	
-  $tile = new SimpleXMLElement('<tile>
-  <visual lang="pt-BR" version="2">
-  <binding template="TileSquare150x150Text03" fallback="TileSquareText03" branding="name'.$wp.'">
-  <text id="1">'.$name.'</text>
-  <text id="2">'.$place.'</text>
-  <text id="3">'.date("d/m/Y", $event->time / 1000).'</text>
-  <text id="4">'.date("H:i", $event->time / 1000).$end.'</text>
-  </binding> 
-  <binding template="TileWide310x150Text05" fallback="TileWideText05" branding="name'.$wp.'">
-  <text id="1">'.$name.'</text>
-  <text id="2">'.$place.'</text>
-  <text id="3">'.$event->venue->address_1.'</text>
-  <text id="4">'.date("d/m/Y", $event->time / 1000).' ~ '.date("H:i", $event->time / 1000).$end.'</text>
-  <text id="5"> </text>
-  </binding>
-  <binding template="TileSquare310x310BlockAndText01" branding="name'.$wp.'">
-  <text id="1">'.$name.'</text>
-  <text id="2">'.$place.'</text>
-  <text id="3">'.$event->venue->address_1.'</text>
-  <text id="4">'.date("H:i", $event->time / 1000).$end.'</text>
-  <text id="5"> </text>
-  <text id="6"> </text>
-  <text id="7"> </text>
-  <text id="8">'.date("d", $event->time / 1000).'</text>
-  <text id="9">'.date("m/Y", $event->time / 1000).'</text>
-  </binding>
-  </visual>
-  </tile>');
-
-  Header('Content-type: text/xml');
-  print($tile->asXML());
-}
+print $content;
 ?>
