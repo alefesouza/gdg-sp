@@ -19,7 +19,7 @@ namespace GDGSP\Model {
     class Person extends JsonCommon {
         protected $id, $name, $photo, $intro, $response, $has_app, $is_admin;
 
-        public function __construct(int $id, string $name, string $photo, string $intro) {
+        public function __construct(int $id, string $name, string $photo = "", string $intro = "") {
             $this->id = $id;
             $this->name = $name;
             $this->photo = $photo;

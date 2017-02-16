@@ -9,11 +9,12 @@ namespace GDGSP\Notification {
     include("WPN.php");
 
     class WNS {
-        private static $channelUri;
+        public static $channelUri;
         private static $channel = "";
 
         public static function checkURI() {
-            $user = checkWNSUserExists(self::$channelUri);
+            $db = DB::getInstance();
+            $user = $db->getSingleWNSUser(self::$channelUri);
             
             $channel = $user["device"];
 
@@ -26,7 +27,7 @@ namespace GDGSP\Notification {
 
                 echo json_encode($data);
 
-                register();
+                self::register();
             }
         }
 
@@ -85,13 +86,15 @@ namespace GDGSP\Notification {
             //echo $result;
             $expire = date('Ymd', strtotime("+31 days"));
 
+            $db = DB::getInstance();
+          
             if(self::$channel == '') {
                 $platform = $_GET["platform"];
                 $app_version = $_GET["appversion"];
                 
-                DB::addWNSUsers(self::$channelUri, $expire, $platform, $app_version);
+                $db->addWNSUsers(self::$channelUri, $expire, $platform, $app_version);
             } else {
-                DB::updateWNSUser(self::$channelUri, $expire, self::$channel);
+                $db->updateWNSUser(self::$channelUri, $expire, self::$channel);
             }
         }
 

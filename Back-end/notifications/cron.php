@@ -21,13 +21,13 @@ Coloque um cron job no seu servidor para rodar esse arquivo de minuto em minuto 
 Caso a API tenha um dado diferente do banco de dados, o arquivo enviará uma notificação de novo evento.
 */
 
-include("../index.php");
+// Para o cron funcionar precisou ser assim
+include(dirname(__DIR__)."/index.php");
 
 use GDGSP\API\{ MeetupAPI, OneSignalAPI };
 use GDGSP\Database\DB;
 use GDGSP\Notification\WNS;
 use GDGSP\Util\Utils;
-
 // Supondo que estivesse suportando mais de um meetup, só incrementar esse array
 $meetup_ids = array("GDG-SP");
 

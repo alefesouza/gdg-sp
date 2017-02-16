@@ -41,7 +41,7 @@ namespace GDGSP\Util {
 
         public static function getImage($name, $description) {
             preg_match_all('~<img.*?src=["\']+(.*?)["\']+~', $description, $images);
-            $image = $images[1][0] ?? "";
+            $image = $images[1][0] ?: "";
             if($image == "") {
                 return self::getImage2($name);
             } else {
@@ -103,11 +103,11 @@ namespace GDGSP\Util {
                 $who = $event->group->who;
 
                 if(isset($event->venue)) {
-                    $place = $event->venue->name ?? "";
-                    $address = $event->venue->address_1 ?? "";
-                    $city = (string)$event->venue->city ?? "";
-                    $lat = (float)$event->venue->lat ?? 0;
-                    $lon = (float)$event->venue->lon ?? 0;
+                    $place = $event->venue->name ?: "";
+                    $address = $event->venue->address_1 ?: "";
+                    $city = (string)$event->venue->city ?: "";
+                    $lat = (float)$event->venue->lat ?: 0;
+                    $lon = (float)$event->venue->lon ?: 0;
                 } else {
                     $place = "";
                     $address = "";
@@ -117,23 +117,18 @@ namespace GDGSP\Util {
                 }
 
                 $start = date("d/m/Y H:i", $event->time / 1000);
+                $end = isset($event->duration) ? date("H:i", ($event->time + $event->duration) / 1000) : "";
 
-                if(isset($event->duration)) {
-                    $end = date("H:i", ($event->time + $event->duration) / 1000);
-                } else {
-                    $end = "";
-                }
+                $yes_rsvp_count = (int)$event->yes_rsvp_count ?: 0;
+                $rsvp_limit = (int)$event->rsvp_limit ?: 0;
+                $waitlist_count = (int)$event->waitlist_count ?: 0;
 
-                $yes_rsvp_count = (int)$event->yes_rsvp_count ?? 0;
-                $rsvp_limit = isset($event->rsvp_limit) ? (int)$event->rsvp_limit : 0;
-                $waitlist_count = (int)$event->waitlist_count ?? 0;
+                $response = $event->self->rsvp->response ?: "no";
+                $survey_questions = $event->survey_questions ?: array();
+                $answers = $event->self->rsvp->answers ?: array();
 
-                $response = $event->self->rsvp->response ?? "";
-                $survey_questions = $event->survey_questions ?? array();
-                $answers = $event->self->rsvp->answers ?? array();
-
-                $rsvpable = $event->rsvpable ?? false;
-                $how_to_find_us = $event->how_to_find_us ?? "";
+                $rsvpable = $event->rsvpable ?: false;
+                $how_to_find_us = $event->how_to_find_us ?: "";
                 
                 $new_event = new Event($id, $name, $image, $description, $link, $who, $place, $address, $city, $lat, $lon, $start, $end, $yes_rsvp_count, $rsvp_limit, $waitlist_count, $response, $survey_questions, $answers, $rsvpable, $how_to_find_us);
 

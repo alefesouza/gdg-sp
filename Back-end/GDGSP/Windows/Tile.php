@@ -22,7 +22,7 @@ namespace GDGSP\Windows {
         public function getTile(int $pos) : string {
             $api = new MeetupAPI("");
             $result = $api->getEvents(false, 0, false);
-
+          
             $events = $result->getResultAsArray();
 
             $event = $events[$pos];
@@ -90,9 +90,12 @@ namespace GDGSP\Windows {
                 <?php $content = ob_get_clean();
 
                 $tile = new \SimpleXMLElement($content);
+              
+                header('Content-type: text/xml');
+            } else {
+                return "";
             }
 
-            header('Content-type: text/xml');
             return $tile->asXML();
         }
     }

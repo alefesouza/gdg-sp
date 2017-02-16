@@ -20,7 +20,7 @@ include("../../index.php");
 use GDGSP\Database\DB;
 use GDGSP\Notification\WNS;
 
-WNS::$ChannelUri = $_POST['ChannelUri'];
+WNS::$channelUri = $_POST['ChannelUri'];
 
 if($_POST['check_uri'] == "true") {	
 	WNS::checkURI();

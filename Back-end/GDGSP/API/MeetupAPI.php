@@ -147,8 +147,8 @@ namespace GDGSP\API {
 
             $member_id = $member->id;
             $member_name = $member->name;
-            $member_photo = $member->photo->photo_link;
-            $member_intro = $member->group_profile->intro;
+            $member_photo = $member->photo->photo_link ?: "";
+            $member_intro = $member->group_profile->intro ?: "";
 
             $person = new Person($member_id, $member_name, $member_photo, $member_intro);
             return $person;
