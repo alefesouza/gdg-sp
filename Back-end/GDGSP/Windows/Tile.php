@@ -38,8 +38,8 @@ namespace GDGSP\Windows {
                 $description = $event->description;
 
                 if(isset($event->venue)) {
-                    $place = $event->venue->name ?? "";
-                    $address = $event->venue->address_1 ?? "";
+                    $place = $event->venue->name ?: "";
+                    $address = $event->venue->address_1 ?: "";
                 } else {
                     $place = "";
                     $address = "";

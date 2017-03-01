@@ -19,7 +19,7 @@ namespace GDGSP\Model {
     class Event extends JsonCommon {
         protected $id, $name, $image, $description, $link, $who, $place, $address, $city, $lat, $lon, $start, $end, $yes_rsvp_count, $rsvp_limit, $waitlist_count, $response, $survey_questions, $answers, $rsvpable, $how_to_find_us, $image_width, $image_height;
 
-        public function __construct(int $id, string $name, string $image, string $description, string $link, string $who, string $place, string $address, string $city, float $lat, float $lon, string $start, string $end, int $yes_rsvp_count, int $rsvp_limit, int $waitlist_count, string $response, array $survey_questions, array $answers, bool $rsvpable, string $how_to_find_us) {
+        public function __construct(int $id, string $name, string $image, string $description, string $link, string $who, string $place, string $address, string $city, float $lat, float $lon, string $start, string $end, int $yes_rsvp_count, int $rsvp_limit, int $waitlist_count, string $response, array $survey_questions, $answers, bool $rsvpable, string $how_to_find_us) {
             $this->id = $id;
             $this->name = $name;
             $this->image = $image;
@@ -79,8 +79,8 @@ namespace GDGSP\Model {
         public function getResponse() : string { return $this->response; }
         public function setSurvey_questions(array $survey_questions) { $this->survey_questions = $survey_questions; }
         public function getSurvey_questions() : array { return $this->survey_questions; }
-        public function setAnswers(array $answers) { $this->answers = $answers; }
-        public function getAnswers() : array { return $this->answers; }
+        public function setAnswers($answers) { $this->answers = $answers; }
+        public function getAnswers() { return $this->answers; }
         public function setRsvpable(bool $rsvpable) { $this->rsvpable = $rsvpable; }
         public function getRsvpable() : bool { return $this->rsvpable; }
         public function setHow_to_find_us(string $how_to_find_us) { $this->how_to_find_us = $how_to_find_us; }

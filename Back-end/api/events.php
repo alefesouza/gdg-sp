@@ -21,7 +21,7 @@ use GDGSP\API\MeetupAPI;
 use GDGSP\Database\DB;
 use GDGSP\Util\Utils;
 
-$page = $_GET["page"] ?? 1;
+$page = $_GET["page"] ?: 1;
 
 if(isset($_POST["refresh_token"]) && $_POST["refresh_token"] != "") {
 	$token = MeetupAPI::refreshMeetupToken($_POST["refresh_token"]);

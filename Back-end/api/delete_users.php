@@ -29,7 +29,7 @@ foreach($meetup_ids as $meetup_id) {
   
   foreach($return->players as $player) {
     if($player->invalid_identifier) {
-      $member_id = $player->tags->member_id ?? "";
+      $member_id = $player->tags->member_id ?: "";
       
       if($member_id != "") {
         $db->deleteUser($member_id);

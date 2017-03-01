@@ -125,7 +125,9 @@ namespace GDGSP\Util {
 
                 $response = $event->self->rsvp->response ?: "no";
                 $survey_questions = $event->survey_questions ?: array();
-                $answers = $event->self->rsvp->answers ?: array();
+              
+                // Vai ter que ser null por causa da forma que eu fiz os apps antigamente...
+                $answers = $event->self->rsvp->answers ?: null;
 
                 $rsvpable = $event->rsvpable ?: false;
                 $how_to_find_us = $event->how_to_find_us ?: "";
