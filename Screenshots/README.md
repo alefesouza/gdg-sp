@@ -29,7 +29,7 @@ Written in C# with Xamarin.Forms.
 | <img src="./iOS/phone/4.png"> | <img src="./iOS/tablet9/4.png"> | <img src="./iOS/tablet12/4.png"> |
 | <img src="./iOS/phone/5.png"> | <img src="./iOS/tablet9/5.png"> | <img src="./iOS/tablet12/5.png"> |
 
-### iOS
+### UWP
 
 Written in C# for Universal Windows Platform.
 
