@@ -24,6 +24,19 @@ Para desenvolver os aplicativos eu utilizei as IDEs:
 
 [Visual Studio Code](https://code.visualstudio.com/) e [Codeanywhere](https://codeanywhere.com) no desenvolvimento do back-end.
 
+Screenshots
+-----
+
+As screenshots são do Google Play, App Store e Windows Store listing publicadas em 2015.
+
+| Android | iOS | UWP |
+|-|-|-|
+| <img src="./Screenshots/Android/phone/1.webp"> | <img src="./Screenshots/iOS/phone/1.png"> | <img src="./Screenshots/UWP/1.png"> |
+| <img src="./Screenshots/Android/phone/4.webp"> | <img src="./Screenshots/iOS/phone/2.png"> | <img src="./Screenshots/UWP/2.png"> |
+| <img src="./Screenshots/Android/phone/7.webp"> | <img src="./Screenshots/iOS/phone/4.png"> | <img src="./Screenshots/UWP/3.png"> |
+
+Mais screenshots, incluindo a versão para tablets, [nesse link](./Screenshots/).
+
 Recursos
 -----
 
