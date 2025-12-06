@@ -45,17 +45,11 @@ Features
 With the app, you can:
 
 - View upcoming and past events and what people are saying on Twitter about GDG-SP.
-
 - See who responded to the events.
-
 - RSVP and check in with your meetup account.
-
 - Hold raffles.
-
 - Easily access GDG-SP links.
-
 - Receive notifications of new events.
-
 - If you are an organizer or a selected user, you can send notifications to everyone or to those attending an event.
 
 I tried to keep it very simple to adapt the app for other meetups. Each project has a README containing information on how to do this. If you need help adapting it for another meetup, you can contact me [by clicking here](mailto:contato@alefesouza.com).
