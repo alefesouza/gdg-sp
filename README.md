@@ -1,14 +1,12 @@
 GDG-SP
 =====
 
-##### English
-
 The Google Developers Group is an initiative of people interested in building with technology and disseminating knowledge. Our events are geared towards the community of developers, engineers, designers, and entrepreneurs, organized by our members on a voluntary and non-profit basis.
 
 What's in this repository?
 -----
 
-This repository contains versions of the GDG-SP application that I developed for Android (native Java), Universal Windows Platform (native C#), and in Xamarin.Forms for iOS, Windows Phone, and Windows 8.1. It also includes the back-end code I developed in PHP, and the check-in program code, developed in C# for .NET Framework 4.5.
+This repository contains versions of the GDG-SP application that I developed [for Android (native Java)](./Android/), [Universal Windows Platform (native C#)](./UWP/), and in [Xamarin.Forms for iOS, Windows Phone, and Windows 8.1](./Xamarin/). It also includes the [back-end code I developed in PHP](./Back-end/), and [the event check-in program code](./Desktop/), developed in C# for .NET Framework 4.5.
 
 You can download it from:
 
@@ -33,9 +31,9 @@ The screenshots are from the Google Play, App Store, and Windows Store listings 
 
 | Android | iOS | UWP |
 |-|-|-|
-| <img src="./Screenshots/Android/phone/1.webp"> | <img src="./Screenshots/iOS/phone/1.png"> | <img src="./Screenshots/UWP/1.png"> |
-| <img src="./Screenshots/Android/phone/4.webp"> | <img src="./Screenshots/iOS/phone/2.png"> | <img src="./Screenshots/UWP/2.png"> |
-| <img src="./Screenshots/Android/phone/7.webp"> | <img src="./Screenshots/iOS/phone/4.png"> | <img src="./Screenshots/UWP/3.png"> |
+| <img src="./Screenshots/Android/phone/1.jpg"> | <img src="./Screenshots/iOS/phone/1.png"> | <img src="./Screenshots/UWP/1.png"> |
+| <img src="./Screenshots/Android/phone/4.jpg"> | <img src="./Screenshots/iOS/phone/2.png"> | <img src="./Screenshots/UWP/2.png"> |
+| <img src="./Screenshots/Android/phone/7.jpg"> | <img src="./Screenshots/iOS/phone/4.png"> | <img src="./Screenshots/UWP/3.png"> |
 
 More screenshots, including the tablet version, [at this link](./Screenshots/).
 
@@ -61,7 +59,7 @@ O Google Developers Group é uma iniciativa de pessoas interessadas em construir
 O que há nesse repositório
 -----
 
-Nesse repositório há versões do aplicativo do GDG-SP que desenvolvi para Android (Java nativo), Universal Windows Platform (C# nativo) e em Xamarin.Forms para iOS, Windows Phone e Windows 8.1, também há o código que desenvolvi para o back-end, em PHP, e o código do programa de check-in, desenvolvido em C# para .NET Framework 4.5.
+Nesse repositório há versões do aplicativo do GDG-SP que desenvolvi [para Android (Java nativo)](./Android/), [Universal Windows Platform (C# nativo)](./UWP/) e em [Xamarin.Forms para iOS, Windows Phone e Windows 8.1](./Xamarin/), também há o [código PHP que desenvolvi para o back-end](./Back-end/), e o [código do programa de check-in](./Desktop/), desenvolvido em C# para .NET Framework 4.5.
 
 Você pode baixar na:
 

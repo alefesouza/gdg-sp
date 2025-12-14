@@ -8,14 +8,14 @@ Written in Java.
 
 | Phone | Tablet 7" | Tablet 10" |
 |-|-|-|
-| <img src="./Android/phone/1.webp"> | <img src="./Android/tablet7/1.webp"> | <img src="./Android/tablet10/1.webp"> |
-| <img src="./Android/phone/7.webp"> | | |
-| <img src="./Android/phone/2.webp"> | <img src="./Android/tablet7/2.webp"> | <img src="./Android/tablet10/2.webp"> |
-| <img src="./Android/phone/3.webp"> | <img src="./Android/tablet7/3.webp"> | <img src="./Android/tablet10/3.webp"> |
-| <img src="./Android/phone/4.webp"> | <img src="./Android/tablet7/4.webp"> | <img src="./Android/tablet10/4.webp"> |
-| <img src="./Android/phone/5.webp"> | <img src="./Android/tablet7/5.webp"> | <img src="./Android/tablet10/5.webp"> |
-| <img src="./Android/phone/6.webp"> | <img src="./Android/tablet7/6.webp"> | <img src="./Android/tablet10/6.webp"> |
-| <img src="./Android/phone/8.webp"> | | |
+| <img src="./Android/phone/1.jpg"> | <img src="./Android/tablet7/1.jpg"> | <img src="./Android/tablet10/1.jpg"> |
+| <img src="./Android/phone/7.jpg"> | | |
+| <img src="./Android/phone/2.jpg"> | <img src="./Android/tablet7/2.jpg"> | <img src="./Android/tablet10/2.jpg"> |
+| <img src="./Android/phone/3.jpg"> | <img src="./Android/tablet7/3.jpg"> | <img src="./Android/tablet10/3.jpg"> |
+| <img src="./Android/phone/4.jpg"> | <img src="./Android/tablet7/4.jpg"> | <img src="./Android/tablet10/4.jpg"> |
+| <img src="./Android/phone/5.jpg"> | <img src="./Android/tablet7/5.jpg"> | <img src="./Android/tablet10/5.jpg"> |
+| <img src="./Android/phone/6.jpg"> | <img src="./Android/tablet7/6.jpg"> | <img src="./Android/tablet10/6.jpg"> |
+| <img src="./Android/phone/8.jpg"> | | |
 
 ### iOS
 
@@ -42,3 +42,5 @@ Written in C# for Universal Windows Platform.
 | <img src="./UWP/5.png"> |
 | <img src="./UWP/6.png"> |
 | <img src="./UWP/7.png"> |
+
+Screenshots of the evolution of the app inside [./Evolution](./Evolution/).
